@@ -1,0 +1,15 @@
+50001 
+Lexical Error
+is not a recognized token symbol.
+50002
+Comment Error
+comment does not have closing comment symbol.
+50003
+String Definition Error
+string does not have closing quotation marks.
+50004
+Malformed Character
+contains more than one character.
+50010
+Memory Allocation Error
+unable to allocate memory.
