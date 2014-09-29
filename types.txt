@@ -1,0 +1,34 @@
+%type <n> typedef_name namespace_name original_namespace_name class_name enum_name template_name
+%type <n> identifier literal integer_literal character_literal floating_literal string_literal
+%type <n> boolean_literal translation_unit primary_expression id_expression unqualified_id qualified_id
+%type <n> nested_name_specifier postfix_expression expression_list unary_expression unary_operator
+%type <n> new_expression new_placement new_type_id new_declarator direct_new_declarator new_initializer
+%type <n> delete_expression cast_expression pm_expression multiplicative_expression additive_expression
+%type <n> shift_expression relational_expression equality_expression and_expression exclusive_or_expression
+%type <n> inclusive_or_expression logical_and_expression logical_or_expression conditional_expression
+%type <n> assignment_expression assignment_operator expression constant_expression statement
+%type <n> labeled_statement expression_statement compound_statement statement_seq selection_statement
+%type <n> condition iteration_statement for_init_statement jump_statement declaration_statement
+%type <n> declaration_seq declaration block_declaration simple_declaration decl_specifier
+%type <n> decl_specifier_seq storage_class_specifier function_specifier type_specifier simple_type_specifier
+%type <n> type_name elaborated_type_specifier enum_specifier enumerator_list enumerator_definition
+%type <n> enumerator namespace_definition named_namespace_definition original_namespace_definition
+%type <n> extension_namespace_definition unnamed_namespace_definition namespace_body namespace_alias_definition
+%type <n> qualified_namespace_specifier using_declaration using_directive asm_definition linkage_specification
+%type <n> init_declarator_list init_declarator declarator direct_declarator ptr_operator cv_qualifier_seq
+%type <n> cv_qualifier declarator_id type_id type_specifier_seq abstract_declarator direct_abstract_declarator
+%type <n> parameter_declaration_clause parameter_declaration_list parameter_declaration function_definition
+%type <n> function_body initializer initializer_clause initializer_list class_specifier class_head
+%type <n> class_key member_specification member_declaration member_declarator_list member_declarator
+%type <n> pure_specifier constant_initializer base_clause base_specifier_list base_specifier
+%type <n> access_specifier conversion_function_id conversion_type_id conversion_declarator 
+%type <n> ctor_initializer mem_initializer_list mem_initializer mem_initializer_id operator_function_id
+%type <n> operator template_declaration template_parameter_list template_parameter type_parameter
+%type <n> template_id template_argument_list template_argument explicit_instantiation explicit_specialization
+%type <n> try_block function_try_block handler_seq handler exception_declaration throw_expression
+%type <n> exception_specification type_id_list declaration_seq_opt nested_name_specifier_opt 
+%type <n> expression_list_opt COLONCOLON_opt new_placement_opt new_initializer_opt new_declarator_opt
+%type <n> expression_opt statement_seq_opt condition_opt enumerator_list_opt initializer_opt
+%type <n> constant_expression_opt abstract_declarator_opt type_specifier_seq_opt direct_abstract_declarator_opt
+%type <n> ctor_initializer_opt COMMA_opt member_specification_opt SEMICOLON_opt conversion_declarator_opt
+%type <n> EXPORT_opt handler_seq_opt assignment_expression_opt type_id_list_opt
