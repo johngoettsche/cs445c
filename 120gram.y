@@ -43,10 +43,14 @@
 
 %{
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdarg.h>
 
 #include "errors.h"
 #include "token.h"
 #include "120parse.h"
+#include "parsedef.h"
 
 extern int lineno;
 extern Token *yytoken;
@@ -77,7 +81,8 @@ ErrorMessage *e_message;
 %token <t> OPERATOR PRIVATE PROTECTED PUBLIC REGISTER REINTERPRET_CAST RETURN
 %token <t> SHORT SIGNED SIZEOF STATIC STATIC_CAST STRUCT SWITCH TEMPLATE THIS
 %token <t> THROW TRUE TRY TYPEDEF TYPEID TYPENAME UNION UNSIGNED USING VIRTUAL
-%token <t> VOID VOLATILE WCHAR_T WHILE
+%token <t> VOID VOLATILE WCHAR_T WHILE STR_TYPE
+
 /*
 %type <n> typedef_name namespace_name original_namespace_name class_name enum_name template_name
 %type <n> identifier literal integer_literal character_literal floating_literal string_literal
@@ -124,7 +129,7 @@ ErrorMessage *e_message;
 
 typedef_name:
 	/* identifier */
-	TYPEDEF_NAME
+	TYPEDEF_NAME														{ alacnary(TYPEDEF_NAMEr1, 1, $1); }
 	;
 
 namespace_name:
@@ -567,6 +572,7 @@ simple_type_specifier:
 	| FLOAT
 	| DOUBLE
 	| VOID
+	| STR_TYPE
 	;
 
 type_name:
@@ -1254,7 +1260,7 @@ void getErrorMessage(int ecode){
 void yyerror(char *s)
 {
    errors++;
-   fprintf(stderr, "error #%d: %s, line: %d ", errors, fname, lineno);
+   fprintf(stderr, "\nError #%d: %s, line: %d ", errors, fname, lineno);
 	if(e_message){
 		if(s != NULL) fprintf(stderr, "%s\t\'%s\' %s\n",e_message->errorType, s, e_message->message);
 		else fprintf(stderr, "%s\t%s\n",e_message->errorType, e_message->message);
@@ -1296,6 +1302,21 @@ Token *createToken(int tcode){
 	else token->sval = NULL;
 	
 	return token;
+}
+
+struct TreeNode * alacnary(int prodRule, int children,...){
+	struct TreeNode * nd = (struct TreeNode *)calloc(1, sizeof(struct TreeNode));
+	if(!nd)memoryError();
+	nd->u.n.rule = prodRule;
+	int c = 0;
+	va_list mylist;
+	va_start(mylist, children);
+	while(c < children){
+		nd->u.n.child[c] = va_arg(mylist, struct node *);
+		c++;
+	}
+	va_end(mylist);
+	return nd;
 }
 
 int main(int argc, char **argv){

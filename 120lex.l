@@ -32,23 +32,47 @@
  */
 
 %{
-#include <ctype.h>
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
 
-//#include "errors.h"
+#include "errors.h"
 #include "token.h"
 #include "120parse.h"
 #include "120gram.h"
 
+typedef struct FileStack FileStack;
+struct FileStack {
+   char *filename;
+	int lineno;
+	FileStack *next;
+};
+
+FileStack *topFile = NULL;
 int lineno;
 Token *yytoken;
 TreeNode *n;
+FILE *saved_yyin;
 
 static int yywrap(void);
+void handle_include();
+void pushFileStack();
+void popFileStack();
 static void skip_until_eol(void);
 static void skip_comment(void);
 static int check_identifier(char *);
 static void alac(Token *);
+void lexerr(char *);
+
+int included_iostream = 0;
+int included_cstdlib = 0;
+int included_ctime = 0; 
+int included_string = 0;
+int included_fstream = 0;
+int included_stdio = 0; 
+int included_stdlib = 0;
+
 %}
 
 intsuffix				([uU][lL]?)|([lL][uU]?)
@@ -288,6 +312,17 @@ stringtext				([^"])|(\\.)
 													return WCHAR_T; }
 "while"										{ alac((Token *)createToken(WHILE));
 													return WHILE; }
+													
+"#include"[ ]*\"[^\\"]+\"  			{ handle_include(); }
+
+"#include <iostream>"   				{ included_iostream = 1; }
+"#include <cstdlib>"    				{ included_cstdlib = 1; }
+"#include <ctime>"      				{ included_ctime = 1; }
+"#include <string>"     				{ included_string = 1; }
+"#include <string.h>"     				{ included_string = 1; }
+"#include <fstream>"    				{ included_fstream = 1; }
+"#include <stdio.h>"    				{ included_stdio = 1; }
+"#include <stdlib.h>"   				{ included_stdlib = 1; }
 
 [a-zA-Z_][a-zA-Z_0-9]*					{ return check_identifier(yytext); }
 
@@ -307,22 +342,75 @@ stringtext				([^"])|(\\.)
 													return CHARACTER; }
 "L'"{chartext}*"'"						{ alac((Token *)createToken(CHARACTER));
 													return CHARACTER; }
-/* add error messages for missing ' */
-
+"'"{chartext}*								{ getErrorMessage(ER_MALF_CHAR);
+                                       lexerr(yytext); }
+"L'"{chartext}*							{ getErrorMessage(ER_MALF_CHAR);
+                                       lexerr(yytext); }
 "\""{stringtext}*"\""					{ alac((Token *)createToken(STRING));
 													return STRING; }
 "L\""{stringtext}*"\""					{ alac((Token *)createToken(STRING));
 													return STRING; }
-/* add error messages for missing " */
+"\""{stringtext}*							{ getErrorMessage(ER_STRING_CLOSE);
+													lexerr(NULL); }
+"L\""{stringtext}*						{ getErrorMessage(ER_STRING_CLOSE);
+													lexerr(NULL); }
+													
+.												{ getErrorMessage(ER_UNREC_TOKEN);
+													lexerr(NULL); }
 
-.												{ fprintf(stderr, "%d: unexpected character `%c'\n", lineno, yytext[0]); }
-												/* change to use error system */
+<<EOF>>                 				{ popFileStack();
+													yypop_buffer_state();
+													if ( !YY_CURRENT_BUFFER ) {
+														yyterminate();
+													}
+												}
 %%
 
 static int
 yywrap(void)
 {
 	return 1;
+}
+
+void pushFileStack(){
+	FileStack *fileStack = (FileStack *)calloc(1, sizeof(FileStack));
+	if(fileStack == NULL) memoryError();
+	char *filename = (char *)calloc(strlen(fname) + 1, sizeof(char));
+	if(filename == NULL) memoryError();
+	strcpy(filename, fname);
+	fileStack->filename = filename;
+	fileStack->lineno = lineno;
+	if (topFile == NULL){
+		topFile = fileStack;
+		topFile->next = NULL;
+	} else {
+		fileStack->next = topFile;
+		topFile = fileStack;
+	}
+}
+
+void popFileStack(){
+	if(topFile!=NULL){
+		fname = topFile->filename;
+		lineno = topFile->lineno;
+		topFile=topFile->next;
+	}
+}
+
+void handle_include()
+{
+	pushFileStack();
+   lineno = 1;
+   saved_yyin = yyin;
+	
+   fname = strchr(yytext, '\"')+1;
+   fname[strlen(fname)-1] = '\0';
+   yyin = fopen(fname,"r");
+   if (yyin == NULL) {
+     lexerr("cannot open include file");
+     exit(1);
+   }
+	yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
 }
 
 /*
@@ -374,7 +462,11 @@ int typenametable_lookup(char *s)
    while (tmp) {
       if (!strcmp(s, tmp->name)) return tmp->category;
       tmp = tmp->next;
-   }
+   }	
+	if(strcmp(s, "string") == 0){
+		typenametable_insert(s, STR_TYPE);
+		return STR_TYPE;
+	}
    return IDENTIFIER;
 }
 
@@ -391,7 +483,7 @@ int typenametable_insert(char *s, int cat)
       tmp = tmp->next;
    }
    tmp = calloc(1, sizeof (struct typenametable_entry));
-   if(!tmp) { fprintf(stderr, "tnti out of memory\n"); return -1; }
+   if(!tmp) { memoryError();/*fprintf(stderr, "tnti out of memory\n"); return -1;*/ }
    tmp->name = strdup(s);
    tmp->category = cat;
    tmp->next = head;
@@ -409,4 +501,13 @@ void alac(Token *token)
 	yylval.n = (TreeNode *)calloc(1, sizeof(TreeNode)); 
 	yylval.n->symbol = (int)token->category;
 	yylval.n->u.t.token = token;
+}
+
+void lexerr(char *s)
+{
+   errors++;
+   fprintf(stderr, "\nLexical Error #%d: %s, line: %d ", errors, fname, lineno);
+	if(s != NULL) fprintf(stderr, "%s\t\'%s\' %s\n",e_message->errorType, s, e_message->message);
+	else fprintf(stderr, "%s\t%s\n",e_message->errorType, e_message->message);
+	fflush(stderr);
 }

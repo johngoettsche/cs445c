@@ -135,7 +135,8 @@
      VOID = 352,
      VOLATILE = 353,
      WCHAR_T = 354,
-     WHILE = 355
+     WHILE = 355,
+     STR_TYPE = 356
    };
 #endif
 /* Tokens.  */
@@ -237,6 +238,7 @@
 #define VOLATILE 353
 #define WCHAR_T 354
 #define WHILE 355
+#define STR_TYPE 356
 
 
 
@@ -246,7 +248,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1685 of yacc.c  */
-#line 62 "120gram.y"
+#line 65 "120gram.y"
 
 	Token *t;
 	struct TreeNode *n;
@@ -254,7 +256,7 @@ typedef union YYSTYPE
 
 
 /* Line 1685 of yacc.c  */
-#line 258 "y.tab.h"
+#line 260 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
