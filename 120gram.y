@@ -129,32 +129,32 @@ ErrorMessage *e_message;
 
 typedef_name:
 	/* identifier */
-	TYPEDEF_NAME														{ alacnary(TYPEDEF_NAMEr1, 1, $1); }
+	TYPEDEF_NAME														{ $$ = alacnary(TYPEDEF_NAMEr1, 1, $1); }
 	;
 
 namespace_name:
-	original_namespace_name
+	original_namespace_name											{ $$ = alacnary(NAMESPACE_NAMEr1, 1, $1); }
 	;
 
 original_namespace_name:
 	/* identifier */
-	NAMESPACE_NAME
+	NAMESPACE_NAME														{ $$ = alacnary(ORIGINAL_NAMESPACE_NAMEr1, 1, $1); }
 	;
 
 class_name:
 	/* identifier */
-	CLASS_NAME
-	| template_id
+	CLASS_NAME															{ $$ = alacnary(CLASS_NAMEr1, 1, $1); }
+	| template_id														{ $$ = alacnary(CLASS_NAMEr2, 1, $1); }
 	;
 
 enum_name:
 	/* identifier */
-	ENUM_NAME
+	ENUM_NAME															{ $$ = alacnary(ENUM_NAMEr1, 1, $1); }
 	;
 
 template_name:
 	/* identifier */
-	TEMPLATE_NAME
+	TEMPLATE_NAME														{ $$ = alacnary(TEMPLATE_NAMEr1, 1, $1); }
 	;
 
 /*----------------------------------------------------------------------
@@ -162,36 +162,36 @@ template_name:
  *----------------------------------------------------------------------*/
 
 identifier:
-	IDENTIFIER
+	IDENTIFIER															{ $$ = alacnary(IDENTIFIERr1, 1, $1); }
 	;
 
 literal:
-	integer_literal
-	| character_literal
-	| floating_literal
-	| string_literal
-	| boolean_literal
+	integer_literal													{ $$ = alacnary(LITERALr1, 1, $1); }
+	| character_literal												{ $$ = alacnary(LITERALr2, 1, $1); }
+	| floating_literal												{ $$ = alacnary(LITERALr3, 1, $1); }
+	| string_literal													{ $$ = alacnary(LITERALr4, 1, $1); }
+	| boolean_literal													{ $$ = alacnary(LITERALr5, 1, $1); }
 	;
 
 integer_literal:
-	INTEGER
+	INTEGER																{ $$ = alacnary(INTEGER_LITERALr1, 1, $1); }
 	;
 
 character_literal:
-	CHARACTER
+	CHARACTER															{ $$ = alacnary(CHARACTER_LITERALr1, 1, $1); }
 	;
 
 floating_literal:
-	FLOATING
+	FLOATING																{ $$ = alacnary(FLOATING_LITERALr1, 1, $1); }
 	;
 
 string_literal:
-	STRING
+	STRING																{ $$ = alacnary(STRING_LITERALr1, 1, $1); }
 	;
 
 boolean_literal:
-	TRUE
-	| FALSE
+	TRUE																	{ $$ = alacnary(BOOLEAN_LITERALr1, 1, $1); }
+	| FALSE																{ $$ = alacnary(BOOLEAN_LITERALr2, 1, $1); }
 	;
 
 /*----------------------------------------------------------------------
@@ -199,7 +199,7 @@ boolean_literal:
  *----------------------------------------------------------------------*/
 
 translation_unit:
-	declaration_seq_opt
+	declaration_seq_opt												{ $$ = alacnary(TRANSLATION_UNITr1, 1, $1); }
 	;
 
 /*----------------------------------------------------------------------
@@ -207,220 +207,229 @@ translation_unit:
  *----------------------------------------------------------------------*/
 
 primary_expression:
-	literal
-	| THIS
-	| '(' expression ')'
-	| id_expression
+	literal																{ $$ = alacnary(PRIMARY_EXPRESSIONr1, 1, $1); }
+	| THIS																{ $$ = alacnary(PRIMARY_EXPRESSIONr2, 1, $1); }
+	| '(' expression ')'												{ $$ = alacnary(PRIMARY_EXPRESSIONr3, 1, $2,); }
+	| id_expression													{ $$ = alacnary(PRIMARY_EXPRESSIONr4, 1, $1); }
 	;
 
 id_expression:
-	unqualified_id
-	| qualified_id
+	unqualified_id														{ $$ = alacnary(PRIMARY_EXPRESSIONr1, 1, $1); }
+	| qualified_id														{ $$ = alacnary(PRIMARY_EXPRESSIONr2, 1, $1); }
 	;
 
 unqualified_id:
-	identifier
-	| operator_function_id
-	| conversion_function_id
-	| '~' class_name
+	identifier															{ $$ = alacnary(PRIMARY_EXPRESSIONr1, 1, $1); }
+	| operator_function_id											{ $$ = alacnary(PRIMARY_EXPRESSIONr2, 1, $1); }
+	| conversion_function_id										{ $$ = alacnary(PRIMARY_EXPRESSIONr3, 1, $1); }
+	| '~' class_name													{ $$ = alacnary(PRIMARY_EXPRESSIONr4, 2, $1, $2); }
 	;
 
 qualified_id:
-	nested_name_specifier unqualified_id
-	| nested_name_specifier TEMPLATE unqualified_id
+	nested_name_specifier unqualified_id						{ $$ = alacnary(QUALIFIED_IDr1, 2, $1, $2); }
+	| nested_name_specifier TEMPLATE unqualified_id			{ $$ = alacnary(QUALIFIED_IDr1, 3, $1, $2, $3); }
 	;
 
 nested_name_specifier:
-	class_name COLONCOLON nested_name_specifier
-	namespace_name COLONCOLON nested_name_specifier
-	| class_name COLONCOLON
-	| namespace_name COLONCOLON
+	class_name COLONCOLON nested_name_specifier				{ $$ = alacnary(NESTED_NAME_SPECIFIERr1, 3, $1, $2, $3); }
+	namespace_name COLONCOLON nested_name_specifier			{ $$ = alacnary(NESTED_NAME_SPECIFIERr2, 3, $1, $2, $3); }
+	| class_name COLONCOLON											{ $$ = alacnary(NESTED_NAME_SPECIFIERr3, 2, $1, $2); }
+	| namespace_name COLONCOLON									{ $$ = alacnary(NESTED_NAME_SPECIFIERr4, 2, $1, $2); }
 	;
 
 postfix_expression:
-	primary_expression
-	| postfix_expression '[' expression ']'
-	| postfix_expression '(' expression_list_opt ')'
+	primary_expression												{ $$ = alacnary(POSTFIX_EXRESSIONr1, 1, $1); }
+	| postfix_expression '[' expression ']'					{ $$ = alacnary(POSTFIX_EXRESSIONr2, 2, $1, $3); }
+	| postfix_expression '(' expression_list_opt ')'		{ $$ = alacnary(POSTFIX_EXRESSIONr3, 2, $1, $3); }
 	| postfix_expression '.' TEMPLATE COLONCOLON id_expression
-	| postfix_expression '.' TEMPLATE id_expression
-	| postfix_expression '.' COLONCOLON id_expression
-	| postfix_expression '.' id_expression
+																			{ $$ = alacnary(POSTFIX_EXRESSIONr4, 3, $1, $3, $4); }
+	| postfix_expression '.' TEMPLATE id_expression			{ $$ = alacnary(POSTFIX_EXRESSIONr5, 3, $1, $3, $4); }
+	| postfix_expression '.' COLONCOLON id_expression		{ $$ = alacnary(POSTFIX_EXRESSIONr6, 3, $1, $3, $4); }
+	| postfix_expression '.' id_expression						{ $$ = alacnary(POSTFIX_EXRESSIONr7, 2, $1, $3); }
 	| postfix_expression ARROW TEMPLATE COLONCOLON id_expression
-	| postfix_expression ARROW TEMPLATE id_expression
-	| postfix_expression ARROW COLONCOLON id_expression
-	| postfix_expression ARROW id_expression
-	| postfix_expression PLUSPLUS
-	| postfix_expression MINUSMINUS
-	| DYNAMIC_CAST '<' type_id '>' '(' expression ')'
-	| STATIC_CAST '<' type_id '>' '(' expression ')'
-	| REINTERPRET_CAST '<' type_id '>' '(' expression ')'
-	| CONST_CAST '<' type_id '>' '(' expression ')'
-	| TYPEID '(' expression ')'
-	| TYPEID '(' type_id ')'
+																			{ $$ = alacnary(POSTFIX_EXRESSIONr8, 5, $1, $2, $3, $4, $5); }
+	| postfix_expression ARROW TEMPLATE id_expression		{ $$ = alacnary(POSTFIX_EXRESSIONr9, 4, $1, $2, $3, $4); }
+	| postfix_expression ARROW COLONCOLON id_expression	{ $$ = alacnary(POSTFIX_EXRESSIONr10, 4, $1, $2, $3, $4); }
+	| postfix_expression ARROW id_expression					{ $$ = alacnary(POSTFIX_EXRESSIONr11, 3, $1, $2, $3); }
+	| postfix_expression PLUSPLUS									{ $$ = alacnary(POSTFIX_EXRESSIONr12, 2, $1, $2); }
+	| postfix_expression MINUSMINUS								{ $$ = alacnary(POSTFIX_EXRESSIONr13, 2, $1, $2); }
+	| DYNAMIC_CAST '<' type_id '>' '(' expression ')'		{ $$ = alacnary(POSTFIX_EXRESSIONr14, 3, $1, $3, $6); }
+	| STATIC_CAST '<' type_id '>' '(' expression ')'		{ $$ = alacnary(POSTFIX_EXRESSIONr15, 3, $1, $3, $6); }
+	| REINTERPRET_CAST '<' type_id '>' '(' expression ')'	{ $$ = alacnary(POSTFIX_EXRESSIONr16, 3, $1, $3, $6); }
+	| CONST_CAST '<' type_id '>' '(' expression ')'			{ $$ = alacnary(POSTFIX_EXRESSIONr17, 3, $1, $3, $6); }
+	| TYPEID '(' expression ')'									{ $$ = alacnary(POSTFIX_EXRESSIONr18, 2, $1, $3); }
+	| TYPEID '(' type_id ')'										{ $$ = alacnary(POSTFIX_EXRESSIONr19, 2, $1, $3); }
 	;
 
 expression_list:
-	assignment_expression
-	| expression_list ',' assignment_expression
+	assignment_expression											{ $$ = alacnary(EXPRESSION_LISTr1, 1, $1); }
+	| expression_list ',' assignment_expression				{ $$ = alacnary(EXPRESSION_LISTr2, 2, $1, $3); }
 	;
 
 unary_expression:
-	postfix_expression
-	| PLUSPLUS cast_expression
-	| MINUSMINUS cast_expression
-	| '*' cast_expression
-	| '&' cast_expression
-	| unary_operator cast_expression
-	| SIZEOF unary_expression
-	| SIZEOF '(' type_id ')'
-	| new_expression
-	| delete_expression
+	postfix_expression												{ $$ = alacnary(UNARY_EXPRESSIONr1, 1, $1); }
+	| PLUSPLUS cast_expression										{ $$ = alacnary(UNARY_EXPRESSIONr2, 2, $1, $2); }
+	| MINUSMINUS cast_expression									{ $$ = alacnary(UNARY_EXPRESSIONr3, 2, $1, $2); }
+	| '*' cast_expression											{ $$ = alacnary(UNARY_EXPRESSIONr4, 1, $2); }
+	| '&' cast_expression											{ $$ = alacnary(UNARY_EXPRESSIONr5, 1, $2); }
+	| unary_operator cast_expression								{ $$ = alacnary(UNARY_EXPRESSIONr6, 2, $1, $2); }
+	| SIZEOF unary_expression										{ $$ = alacnary(UNARY_EXPRESSIONr7, 2, $1, $2); }
+	| SIZEOF '(' type_id ')'										{ $$ = alacnary(UNARY_EXPRESSIONr8, 2, $1, $3); }
+	| new_expression													{ $$ = alacnary(UNARY_EXPRESSIONr9, 1, $1); }
+	| delete_expression												{ $$ = alacnary(UNARY_EXPRESSIONr10, 1, $1); }
 	;
 
 unary_operator:
-	  '+'
-	| '-'
-	| '!'
-	| '~'
+	  '+'																	{ $$ = $1 }
+	| '-'																	{ $$ = $1 }
+	| '!'																	{ $$ = $1 }
+	| '~'																	{ $$ = $1 }
 	;
 
 new_expression:
 	  NEW new_placement_opt new_type_id new_initializer_opt
+																			{ $$ = alacnary(NEW_EXPRESSIONr1, 4, $1, $2, $3, $4); }
 	| COLONCOLON NEW new_placement_opt new_type_id new_initializer_opt
+																			{ $$ = alacnary(NEW_EXPRESSIONr2, 5, $1, $2, $3, $4, $5); }
 	| NEW new_placement_opt '(' type_id ')' new_initializer_opt
+																			{ $$ = alacnary(NEW_EXPRESSIONr3, 4, $1, $2, $4, $6); }
 	| COLONCOLON NEW new_placement_opt '(' type_id ')' new_initializer_opt
+																			{ $$ = alacnary(NEW_EXPRESSIONr4, 5, $1, $2, $3, $5, $7); }
 	;
 
 new_placement:
-	'(' expression_list ')'
+	'(' expression_list ')'											{ $$ = alacnary(NEW_PLACEMENTr1, 1, $2); }
 	;
 
 new_type_id:
-	type_specifier_seq new_declarator_opt
+	type_specifier_seq new_declarator_opt						{ $$ = alacnary(NEW_TYPE_IDr1, 2, $1, $2); }
 	;
 
 new_declarator:
-	ptr_operator new_declarator_opt
-	| direct_new_declarator
+	ptr_operator new_declarator_opt								{ $$ = alacnary(NEW_DECLARATORr1, 2, $1, $2); }
+	| direct_new_declarator											{ $$ = alacnary(NEW_DECLARATORr2, 1, $1); }
 	;
 
 direct_new_declarator:
-	'[' expression ']'
-	| direct_new_declarator '[' constant_expression ']'
+	'[' expression ']'												{ $$ = alacnary(DIRECT_NEW_DECLARATORr1, 1, $2); }
+	| direct_new_declarator '[' constant_expression ']'	{ $$ = alacnary(DIRECT_NEW_DECLARATORr2, 2, $1, $3); }
 	;
 
 new_initializer:
-	'(' expression_list_opt ')'
+	'(' expression_list_opt ')'									{ $$ = alacnary(NEW_INITIALIZERr1, 1, $2); }
 	;
 
 delete_expression:
-	  DELETE cast_expression
-	| COLONCOLON DELETE cast_expression
-	| DELETE '[' ']' cast_expression
-	| COLONCOLON DELETE '[' ']' cast_expression
+	  DELETE cast_expression										{ $$ = alacnary(DELETE_EXPRESSIONr1, 2, $1, $2); }
+	| COLONCOLON DELETE cast_expression							{ $$ = alacnary(DELETE_EXPRESSIONr2, 3, $1, $2, $3); }
+	| DELETE '[' ']' cast_expression								{ $$ = alacnary(DELETE_EXPRESSIONr3, 2, $1, $4); }
+	| COLONCOLON DELETE '[' ']' cast_expression				{ $$ = alacnary(DELETE_EXPRESSIONr4, 3, $1, $2, $5); }
 	;
 
 cast_expression:
-	unary_expression
-	| '(' type_id ')' cast_expression
+	unary_expression													{ $$ = alacnary(CAST_EXPRESSIONr1, 1, $1); }
+	| '(' type_id ')' cast_expression							{ $$ = alacnary(CAST_EXPRESSIONr2, 2, $2, $4); }
 	;
 
 pm_expression:
-	cast_expression
-	| pm_expression DOTSTAR cast_expression
-	| pm_expression ARROWSTAR cast_expression
+	cast_expression													{ $$ = alacnary(PM_EXPRESSIONr1, 1, $1); }
+	| pm_expression DOTSTAR cast_expression					{ $$ = alacnary(PM_EXPRESSIONr2, 3, $1, $2, $3); }
+	| pm_expression ARROWSTAR cast_expression					{ $$ = alacnary(PM_EXPRESSIONr3, 3, $1, $2, $3); }
 	;
 
 multiplicative_expression:
-	pm_expression
-	| multiplicative_expression '*' pm_expression
-	| multiplicative_expression '/' pm_expression
-	| multiplicative_expression '%' pm_expression
+	pm_expression														{ $$ = alacnary(MULTIPLICATIVE_EXPRESSIONr1, 1, $1); }
+	| multiplicative_expression '*' pm_expression			{ $$ = alacnary(MULTIPLICATIVE_EXPRESSIONr2, 2, $1, $3); }
+	| multiplicative_expression '/' pm_expression			{ $$ = alacnary(MULTIPLICATIVE_EXPRESSIONr3, 2, $1, $3); }
+	| multiplicative_expression '%' pm_expression			{ $$ = alacnary(MULTIPLICATIVE_EXPRESSIONr4, 2, $1, $3); }
 	;
 
 additive_expression:
-	multiplicative_expression
-	| additive_expression '+' multiplicative_expression
-	| additive_expression '-' multiplicative_expression
+	multiplicative_expression										{ $$ = alacnary(ADDITIVE_EXPRESSIONr1, 1, $1); }
+	| additive_expression '+' multiplicative_expression	{ $$ = alacnary(ADDITIVE_EXPRESSIONr2, 2, $1, $3); }
+	| additive_expression '-' multiplicative_expression	{ $$ = alacnary(ADDITIVE_EXPRESSIONr3, 2, $1, $3); }
 	;
 
 shift_expression:
-	additive_expression
-	| shift_expression SL additive_expression
-	| shift_expression SR additive_expression
+	additive_expression												{ $$ = alacnary(SHIFT_EXPRESSIONr1, 1, $1); }
+	| shift_expression SL additive_expression					{ $$ = alacnary(SHIFT_EXPRESSIONr2, 3, $1, $2, $3); }
+	| shift_expression SR additive_expression					{ $$ = alacnary(SHIFT_EXPRESSIONr3, 3, $1, $2, $3); }
 	;
 
 relational_expression:
-	shift_expression
-	| relational_expression '<' shift_expression
-	| relational_expression '>' shift_expression
-	| relational_expression LTEQ shift_expression
-	| relational_expression GTEQ shift_expression
+	shift_expression													{ $$ = alacnary(RELATIONAL_EXPRESSIONr1, 1, $1); }
+	| relational_expression '<' shift_expression				{ $$ = alacnary(RELATIONAL_EXPRESSIONr2, 2, $1, $3); }
+	| relational_expression '>' shift_expression				{ $$ = alacnary(RELATIONAL_EXPRESSIONr3, 2, $1, $3); }
+	| relational_expression LTEQ shift_expression			{ $$ = alacnary(RELATIONAL_EXPRESSIONr4, 3, $1, $2, $3); }
+	| relational_expression GTEQ shift_expression			{ $$ = alacnary(RELATIONAL_EXPRESSIONr5, 3, $1, $2, $3); }
 	;
 
 equality_expression:
-	relational_expression
-	| equality_expression EQ relational_expression
-	| equality_expression NOTEQ relational_expression
+	relational_expression											{ $$ = alacnary(EQUALITY_EXPRESSIONr1, 1, $1); }
+	| equality_expression EQ relational_expression			{ $$ = alacnary(EQUALITY_EXPRESSIONr2, 3, $1, $2, $3); }
+	| equality_expression NOTEQ relational_expression		{ $$ = alacnary(EQUALITY_EXPRESSIONr3, 1, $1, $2, $3); }
 	;
 
 and_expression:
-	equality_expression
-	| and_expression '&' equality_expression
+	equality_expression												{ $$ = alacnary(AND_EXPRESSIONr1, 1, $1); }
+	| and_expression '&' equality_expression					{ $$ = alacnary(AND_EXPRESSIONr2, 2, $1, $3); }
 	;
 
 exclusive_or_expression:
-	and_expression
-	| exclusive_or_expression '^' and_expression
+	and_expression														{ $$ = alacnary(EXCLUSIVE_OR_EXPRESSIONr1, 1, $1); }
+	| exclusive_or_expression '^' and_expression				{ $$ = alacnary(EXCLUSIVE_OR_EXPRESSIONr2, 2, $1, $3); }
 	;
 
 inclusive_or_expression:
-	exclusive_or_expression
-	| inclusive_or_expression '|' exclusive_or_expression
+	exclusive_or_expression											{ $$ = alacnary(INCLUSIVE_OR_EXPRESSIONr1, 1, $1); }
+	| inclusive_or_expression '|' exclusive_or_expression	{ $$ = alacnary(INCLUSIVE_OR_EXPRESSIONr2, 2, $1, $3); }
 	;
 
 logical_and_expression:
-	inclusive_or_expression
+	inclusive_or_expression											{ $$ = alacnary(LOGICAL_AND_EXPRESSIONr1, 1, $1); }
 	| logical_and_expression ANDAND inclusive_or_expression
+																			{ $$ = alacnary(LOGICAL_AND_EXPRESSIONr1, 3, $1, $2, $3); }
 	;
 
 logical_or_expression:
-	logical_and_expression
-	| logical_or_expression OROR logical_and_expression
+	logical_and_expression											{ $$ = alacnary(LOGICAL_OR_EXPRESSIONr1, 1, $1); }
+	| logical_or_expression OROR logical_and_expression	{ $$ = alacnary(LOGICAL_OR_EXPRESSIONr2, 3, $1, $2, $3); }
 	;
 
 conditional_expression:
-	logical_or_expression
+	logical_or_expression											{ $$ = alacnary(CONDITIONAL_EXPRESSIONr1, 1, $1); }
 	| logical_or_expression  '?' expression ':' assignment_expression
+																			{ $$ = alacnary(CONDITIONAL_EXPRESSIONr2, 3, $1, $3, $5); }
 	;
 
 assignment_expression:
-	conditional_expression
+	conditional_expression											{ $$ = alacnary(ASSIGNMENT_EXPRESSIONr1, 1, $1); }
 	| logical_or_expression assignment_operator assignment_expression
-	| throw_expression
+																			{ $$ = alacnary(ASSIGNMENT_EXPRESSIONr2, 3, $1, $2, $3); }
+	| throw_expression												{ $$ = alacnary(ASSIGNMENT_EXPRESSIONr3, 1, $1); }
 	;
 
 assignment_operator:
-	'='
-	| MULEQ
-	| DIVEQ
-	| MODEQ
-	| ADDEQ
-	| SUBEQ
-	| SREQ
-	| SLEQ
-	| ANDEQ
-	| XOREQ
-	| OREQ
+	'='																	{ $$ = $1 }
+	| MULEQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr1, 1, $1); }
+	| DIVEQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr2, 1, $1); }
+	| MODEQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr3, 1, $1); }
+	| ADDEQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr4, 1, $1); }
+	| SUBEQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr5, 1, $1); }
+	| SREQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr6, 1, $1); }
+	| SLEQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr7, 1, $1); }
+	| ANDEQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr8, 1, $1); }
+	| XOREQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr9, 1, $1); }
+	| OREQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr10, 1, $1); }
 	;
 
 expression:
-	assignment_expression
-	| expression ',' assignment_expression
+	assignment_expression											{ $$ = alacnary(EXPRESSIONr1, 1, $1); }
+	| expression ',' assignment_expression						{ $$ = alacnary(EXPRESSIONr2, 2, $1, $3); }
 	;
 
 constant_expression:
-	conditional_expression
+	conditional_expression											{ $$ = alacnary(CONSTANT_EXPRESSIONr1, 1, $1); }
 	;
 
 /*----------------------------------------------------------------------
@@ -428,66 +437,68 @@ constant_expression:
  *----------------------------------------------------------------------*/
 
 statement:
-	labeled_statement
-	| expression_statement
-	| compound_statement
-	| selection_statement
-	| iteration_statement
-	| jump_statement
-	| declaration_statement
-	| try_block
+	labeled_statement													{ $$ = alacnary(STATEMENTr1, 1, $1); }
+	| expression_statement											{ $$ = alacnary(STATEMENTr2, 1, $1); }
+	| compound_statement												{ $$ = alacnary(STATEMENTr3, 1, $1); }
+	| selection_statement											{ $$ = alacnary(STATEMENTr4, 1, $1); }
+	| iteration_statement											{ $$ = alacnary(STATEMENTr5, 1, $1); }
+	| jump_statement													{ $$ = alacnary(STATEMENTr6, 1, $1); }
+	| declaration_statement											{ $$ = alacnary(STATEMENTr7, 1, $1); }
+	| try_block															{ $$ = alacnary(STATEMENTr8, 1, $1); }
 	;
 
 labeled_statement:
-	identifier ':' statement
-	| CASE constant_expression ':' statement
-	| DEFAULT ':' statement
+	identifier ':' statement										{ $$ = alacnary(LABELED_STATEMENTr1, 2, $1, $3); }
+	| CASE constant_expression ':' statement					{ $$ = alacnary(LABELED_STATEMENTr2, 3, $1, $2, $4); }
+	| DEFAULT ':' statement											{ $$ = alacnary(LABELED_STATEMENTr3, 2, $1, $3); }
 	;
 
 expression_statement:
-	expression_opt ';'
+	expression_opt ';'												{ $$ = alacnary(EXPRESSION_STATEMENTr1, 1, $1); }
 	;
 
 compound_statement:
-	'{' statement_seq_opt '}'
+	'{' statement_seq_opt '}'										{ $$ = alacnary(COMPOUND_STATEMENTr1, 1, $1); }
 	;
 
 statement_seq:
-	statement
-	| statement_seq statement
+	statement															{ $$ = alacnary(STATEMENT_SEQr1, 1, $1); }
+	| statement_seq statement										{ $$ = alacnary(STATEMENT_SEQr2, 2, $1, $2); }
 	;
 
 selection_statement:
-	IF '(' condition ')' statement
-	| IF '(' condition ')' statement ELSE statement
-	| SWITCH '(' condition ')' statement
+	IF '(' condition ')' statement								{ $$ = alacnary(SELECTION_STATEMENT_SEQr1, 3, $1, $3, $5); }
+	| IF '(' condition ')' statement ELSE statement			{ $$ = alacnary(SELECTION_STATEMENT_SEQr2, 5, $1, $3, $5, $6, $7); }
+	| SWITCH '(' condition ')' statement						{ $$ = alacnary(SELECTION_STATEMENT_SEQr3, 3, $1, $3, $5); }
 	;
 
 condition:
-	expression
+	expression															{ $$ = alacnary(CONDITIONr1, 1, $1); }
 	| type_specifier_seq declarator '=' assignment_expression
+																			{ $$ = alacnary(CONDITIONr2, 3, $1, $2, $4); }
 	;
 
 iteration_statement:
-	WHILE '(' condition ')' statement
-	| DO statement WHILE '(' expression ')' ';'
+	WHILE '(' condition ')' statement							{ $$ = alacnary(ITERATION_STATEMENTr1, 3, $1, $3, $5); }
+	| DO statement WHILE '(' expression ')' ';'				{ $$ = alacnary(ITERATION_STATEMENTr2, 4, $1, $2, $3, $5); }
 	| FOR '(' for_init_statement condition_opt ';' expression_opt ')' statement
+																			{ $$ = alacnary(ITERATION_STATEMENTr3, 5, $1, $3, $4, $6, $8); }
 	;
 
 for_init_statement:
-	expression_statement
-	| simple_declaration
+	expression_statement												{ $$ = alacnary(FOR_INIT_STATEMENTr1, 1, $1); }
+	| simple_declaration												{ $$ = alacnary(FOR_INIT_STATEMENTr2, 1, $1); }
 	;
 
 jump_statement:
-	BREAK ';'
-	| CONTINUE ';'
-	| RETURN expression_opt ';'
-	| GOTO identifier ';'
+	BREAK ';'															{ $$ = alacnary(JUMP_STATEMENTr1, 1, $1); }
+	| CONTINUE ';'														{ $$ = alacnary(JUMP_STATEMENTr2, 1, $1); }
+	| RETURN expression_opt ';'									{ $$ = alacnary(JUMP_STATEMENTr3, 2, $1, $2); }
+	| GOTO identifier ';'											{ $$ = alacnary(JUMP_STATEMENTr4, 2, $1, $2); }
 	;
 
 declaration_statement:
-	block_declaration
+	block_declaration													{ $$ = alacnary(DECLARATION_STATEMENTr1, 1, $1); }
 	;
 
 /*----------------------------------------------------------------------
@@ -495,100 +506,102 @@ declaration_statement:
  *----------------------------------------------------------------------*/
 
 declaration_seq:
-	declaration
-	| declaration_seq declaration
+	declaration															{ $$ = alacnary(DECLARATION_SEQr1, 1, $1); }
+	| declaration_seq declaration									{ $$ = alacnary(DECLARATION_SEQr2, 2, $1, $2); }
 	;
 
 declaration:
-	block_declaration
-	| function_definition
-	| template_declaration
-	| explicit_instantiation
-	| explicit_specialization
-	| linkage_specification
-	| namespace_definition
+	block_declaration													{ $$ = alacnary(DECLARATIONr1, 1, $1); }
+	| function_definition											{ $$ = alacnary(DECLARATIONr2, 1, $1); }
+	| template_declaration											{ $$ = alacnary(DECLARATIONr3, 1, $1); }
+	| explicit_instantiation										{ $$ = alacnary(DECLARATIONr4, 1, $1); }
+	| explicit_specialization										{ $$ = alacnary(DECLARATIONr5, 1, $1); }
+	| linkage_specification											{ $$ = alacnary(DECLARATIONr6, 1, $1); }
+	| namespace_definition											{ $$ = alacnary(DECLARATIONr7, 1, $1); }
 	;
 
 block_declaration:
-	simple_declaration
-	| asm_definition
-	| namespace_alias_definition
-	| using_declaration
-	| using_directive
+	simple_declaration												{ $$ = alacnary(BLOCK_DECLARATIONr1, 1, $1); }
+	| asm_definition													{ $$ = alacnary(BLOCK_DECLARATIONr2, 1, $1); }
+	| namespace_alias_definition									{ $$ = alacnary(BLOCK_DECLARATIONr3, 1, $1); }
+	| using_declaration												{ $$ = alacnary(BLOCK_DECLARATIONr4, 1, $1); }
+	| using_directive													{ $$ = alacnary(BLOCK_DECLARATIONr5, 1, $1); }
 	;
 
 simple_declaration:
-	  decl_specifier_seq init_declarator_list ';'
-	|  decl_specifier_seq ';'
+	decl_specifier_seq init_declarator_list ';'				{ $$ = alacnary(SIMPLE_DECLARATIONr1, 2, $1, $2); }
+	|  decl_specifier_seq ';'										{ $$ = alacnary(SIMPLE_DECLARATIONr2, 1, $1); }
 	;
 
 decl_specifier:
-	storage_class_specifier
-	| type_specifier
-	| function_specifier
-	| FRIEND
-	| TYPEDEF
+	storage_class_specifier											{ $$ = alacnary(DECL_SPECIFIERr1, 1, $1); }
+	| type_specifier													{ $$ = alacnary(DECL_SPECIFIERr2, 1, $1); }
+	| function_specifier												{ $$ = alacnary(DECL_SPECIFIERr3, 1, $1); }
+	| FRIEND																{ $$ = alacnary(DECL_SPECIFIERr4, 1, $1); }
+	| TYPEDEF															{ $$ = alacnary(DECL_SPECIFIERr5, 1, $1); }
 	;
 
 decl_specifier_seq:
-	  decl_specifier
-	| decl_specifier_seq decl_specifier
+	decl_specifier														{ $$ = alacnary(DECL_SPECIFIER_SEQr1, 1, $1); }
+	| decl_specifier_seq decl_specifier							{ $$ = alacnary(DECL_SPECIFIER_SEQr2, 2, $1, $2); }
 	;
 
 storage_class_specifier:
-	AUTO
-	| REGISTER
-	| STATIC
-	| EXTERN
-	| MUTABLE
+	AUTO																	{ $$ = alacnary(STORAGE_CLASS_SPECIFIERr1, 1, $1); }
+	| REGISTER															{ $$ = alacnary(STORAGE_CLASS_SPECIFIERr2, 1, $1); }
+	| STATIC																{ $$ = alacnary(STORAGE_CLASS_SPECIFIERr3, 1, $1); }
+	| EXTERN																{ $$ = alacnary(STORAGE_CLASS_SPECIFIERr4, 1, $1); }
+	| MUTABLE															{ $$ = alacnary(STORAGE_CLASS_SPECIFIERr5, 1, $1); }
 	;
 
 function_specifier:
-	INLINE
-	| VIRTUAL
-	| EXPLICIT
+	INLINE																{ $$ = alacnary(FUNCTION_SPECIFIERr1, 1, $1); }
+	| VIRTUAL															{ $$ = alacnary(FUNCTION_SPECIFIERr2, 1, $1); }
+	| EXPLICIT															{ $$ = alacnary(FUNCTION_SPECIFIERr3, 1, $1); }
 	;
 
 type_specifier:
-	simple_type_specifier
-	| class_specifier
-	| enum_specifier
-	| elaborated_type_specifier
-	| cv_qualifier
+	simple_type_specifier											{ $$ = alacnary(TYPE_SPECIFIERr1, 1, $1); }
+	| class_specifier													{ $$ = alacnary(TYPE_SPECIFIERr2, 1, $1); }
+	| enum_specifier													{ $$ = alacnary(TYPE_SPECIFIERr3, 1, $1); }
+	| elaborated_type_specifier									{ $$ = alacnary(TYPE_SPECIFIERr4, 1, $1); }
+	| cv_qualifier														{ $$ = alacnary(TYPE_SPECIFIERr5, 1, $1); }
 	;
 
 simple_type_specifier:
-	  type_name
-	| nested_name_specifier type_name
-	| COLONCOLON nested_name_specifier_opt type_name
-	| CHAR
-	| WCHAR_T
-	| BOOL
-	| SHORT
-	| INT
-	| LONG
-	| SIGNED
-	| UNSIGNED
-	| FLOAT
-	| DOUBLE
-	| VOID
-	| STR_TYPE
+	type_name															{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr1, 1, $1); }
+	| nested_name_specifier type_name							{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr2, 2, $1, $2); }
+	| COLONCOLON nested_name_specifier_opt type_name		{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr3, 3, $1, $2, $3); }
+	| CHAR																{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr4, 1, $1); }
+	| WCHAR_T															{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr5, 1, $1); }
+	| BOOL																{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr6, 1, $1); }
+	| SHORT																{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr7, 1, $1); }
+	| INT																	{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr8, 1, $1); }
+	| LONG																{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr9, 1, $1); }
+	| SIGNED																{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr10, 1, $1); }
+	| UNSIGNED															{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr11, 1, $1); }
+	| FLOAT																{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr12, 1, $1); }
+	| DOUBLE																{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr13, 1, $1); }
+	| VOID																{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr14, 1, $1); }
+	| STR_TYPE															{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr15, 1, $1); }
 	;
 
 type_name:
-	class_name
-	| enum_name
-	| typedef_name
+	class_name															{ $$ = alacnary(TYPE_NAMEr1, 1, $1); }
+	| enum_name															{ $$ = alacnary(TYPE_NAMEr2, 1, $1); }
+	| typedef_name														{ $$ = alacnary(TYPE_NAMEr3, 1, $1); }
 	;
 
 elaborated_type_specifier:
-	  class_key COLONCOLON nested_name_specifier identifier
-	| class_key COLONCOLON identifier
-	| ENUM COLONCOLON nested_name_specifier identifier
-	| ENUM COLONCOLON identifier
-	| ENUM nested_name_specifier identifier
+	class_key COLONCOLON nested_name_specifier identifier	{ $$ = alacnary(ELABORATED_TYPE_SPECIFIERr1, 4, $1, $2, $3, $4); }
+	| class_key COLONCOLON identifier							{ $$ = alacnary(ELABORATED_TYPE_SPECIFIERr2, 3, $1, $2, $3); }
+	| ENUM COLONCOLON nested_name_specifier identifier		{ $$ = alacnary(ELABORATED_TYPE_SPECIFIERr3, 4, $1, $2, $3, $4); }
+	| ENUM COLONCOLON identifier									{ $$ = alacnary(ELABORATED_TYPE_SPECIFIERr4, 3, $1, $2, $3); }
+	| ENUM nested_name_specifier identifier					{ $$ = alacnary(ELABORATED_TYPE_SPECIFIERr5, 3, $1, $2, $3); }
 	| TYPENAME COLONCOLON_opt nested_name_specifier identifier
+																			{ $$ = alacnary(ELABORATED_TYPE_SPECIFIERr6, 4, $1, $2, $3, $4); }
 	| TYPENAME COLONCOLON_opt nested_name_specifier identifier '<' template_argument_list '>'
+																			{ $$ = alacnary(ELABORATED_TYPE_SPECIFIERr7, 5, $1, $2, $3, $4, $6); }
 	;
 
 /*
