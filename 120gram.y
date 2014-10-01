@@ -68,6 +68,9 @@ FILE *yyin;
 char *fname;
 int errors;
 ErrorMessage *e_message;
+TreeNode *root;
+
+TreeNode *alacnary(int, int,...);
 
 //static void yyerror(char *s);
 %}
@@ -138,32 +141,32 @@ ErrorMessage *e_message;
 
 typedef_name:
 	/* identifier */
-	TYPEDEF_NAME														{ $$ = alacnary(TYPEDEF_NAMEr1, 1, $1); }
+	TYPEDEF_NAME														{ $$ = (TreeNode *)alacnary(TYPEDEF_NAMEr1, 1, $1); }
 	;
 
 namespace_name:
-	original_namespace_name											{ $$ = alacnary(NAMESPACE_NAMEr1, 1, $1); }
+	original_namespace_name											{ $$ = (TreeNode *)alacnary(NAMESPACE_NAMEr1, 1, $1); }
 	;
 
 original_namespace_name:
 	/* identifier */
-	NAMESPACE_NAME														{ $$ = alacnary(ORIGINAL_NAMESPACE_NAMEr1, 1, $1); }
+	NAMESPACE_NAME														{ $$ = (TreeNode *)alacnary(ORIGINAL_NAMESPACE_NAMEr1, 1, $1); }
 	;
 
 class_name:
 	/* identifier */
-	CLASS_NAME															{ $$ = alacnary(CLASS_NAMEr1, 1, $1); }
-	| template_id														{ $$ = alacnary(CLASS_NAMEr2, 1, $1); }
+	CLASS_NAME															{ $$ = (TreeNode *)alacnary(CLASS_NAMEr1, 1, $1); }
+	| template_id														{ $$ = (TreeNode *)alacnary(CLASS_NAMEr2, 1, $1); }
 	;
 
 enum_name:
 	/* identifier */
-	ENUM_NAME															{ $$ = alacnary(ENUM_NAMEr1, 1, $1); }
+	ENUM_NAME															{ $$ = (TreeNode *)alacnary(ENUM_NAMEr1, 1, $1); }
 	;
 
 template_name:
 	/* identifier */
-	TEMPLATE_NAME														{ $$ = alacnary(TEMPLATE_NAMEr1, 1, $1); }
+	TEMPLATE_NAME														{ $$ = (TreeNode *)alacnary(TEMPLATE_NAMEr1, 1, $1); }
 	;
 
 /*----------------------------------------------------------------------
@@ -171,36 +174,36 @@ template_name:
  *----------------------------------------------------------------------*/
 
 identifier:
-	IDENTIFIER															{ $$ = alacnary(IDENTIFIERr1, 1, $1); }
+	IDENTIFIER															{ $$ = (TreeNode *)alacnary(IDENTIFIERr1, 1, $1); }
 	;
 
 literal:
-	integer_literal													{ $$ = alacnary(LITERALr1, 1, $1); }
-	| character_literal												{ $$ = alacnary(LITERALr2, 1, $1); }
-	| floating_literal												{ $$ = alacnary(LITERALr3, 1, $1); }
-	| string_literal													{ $$ = alacnary(LITERALr4, 1, $1); }
-	| boolean_literal													{ $$ = alacnary(LITERALr5, 1, $1); }
+	integer_literal													{ $$ = (TreeNode *)alacnary(LITERALr1, 1, $1); }
+	| character_literal												{ $$ = (TreeNode *)alacnary(LITERALr2, 1, $1); }
+	| floating_literal												{ $$ = (TreeNode *)alacnary(LITERALr3, 1, $1); }
+	| string_literal													{ $$ = (TreeNode *)alacnary(LITERALr4, 1, $1); }
+	| boolean_literal													{ $$ = (TreeNode *)alacnary(LITERALr5, 1, $1); }
 	;
 
 integer_literal:
-	INTEGER																{ $$ = alacnary(INTEGER_LITERALr1, 1, $1); }
+	INTEGER																{ $$ = (TreeNode *)alacnary(INTEGER_LITERALr1, 1, $1); }
 	;
 
 character_literal:
-	CHARACTER															{ $$ = alacnary(CHARACTER_LITERALr1, 1, $1); }
+	CHARACTER															{ $$ = (TreeNode *)alacnary(CHARACTER_LITERALr1, 1, $1); }
 	;
 
 floating_literal:
-	FLOATING																{ $$ = alacnary(FLOATING_LITERALr1, 1, $1); }
+	FLOATING																{ $$ = (TreeNode *)alacnary(FLOATING_LITERALr1, 1, $1); }
 	;
 
 string_literal:
-	STRING																{ $$ = alacnary(STRING_LITERALr1, 1, $1); }
+	STRING																{ $$ = (TreeNode *)alacnary(STRING_LITERALr1, 1, $1); }
 	;
 
 boolean_literal:
-	TRUE																	{ $$ = alacnary(BOOLEAN_LITERALr1, 1, $1); }
-	| FALSE																{ $$ = alacnary(BOOLEAN_LITERALr2, 1, $1); }
+	TRUE																	{ $$ = (TreeNode *)alacnary(BOOLEAN_LITERALr1, 1, $1); }
+	| FALSE																{ $$ = (TreeNode *)alacnary(BOOLEAN_LITERALr2, 1, $1); }
 	;
 
 /*----------------------------------------------------------------------
@@ -208,7 +211,7 @@ boolean_literal:
  *----------------------------------------------------------------------*/
 
 translation_unit:
-	declaration_seq_opt												{ $$ = alacnary(TRANSLATION_UNITr1, 1, $1); }
+	declaration_seq_opt												{ root = (TreeNode *)alacnary(TRANSLATION_UNITr1, 1, $1); }
 	;
 
 /*----------------------------------------------------------------------
@@ -216,167 +219,167 @@ translation_unit:
  *----------------------------------------------------------------------*/
 
 primary_expression:
-	literal																{ $$ = alacnary(PRIMARY_EXPRESSIONr1, 1, $1); }
-	| THIS																{ $$ = alacnary(PRIMARY_EXPRESSIONr2, 1, $1); }
-	| '(' expression ')'												{ $$ = alacnary(PRIMARY_EXPRESSIONr3, 1, $2,); }
-	| id_expression													{ $$ = alacnary(PRIMARY_EXPRESSIONr4, 1, $1); }
+	literal																{ $$ = (TreeNode *)alacnary(PRIMARY_EXPRESSIONr1, 1, $1); }
+	| THIS																{ $$ = (TreeNode *)alacnary(PRIMARY_EXPRESSIONr2, 1, $1); }
+	| '(' expression ')'												{ $$ = (TreeNode *)alacnary(PRIMARY_EXPRESSIONr3, 1, $2); }
+	| id_expression													{ $$ = (TreeNode *)alacnary(PRIMARY_EXPRESSIONr4, 1, $1); }
 	;
 
 id_expression:
-	unqualified_id														{ $$ = alacnary(PRIMARY_EXPRESSIONr1, 1, $1); }
-	| qualified_id														{ $$ = alacnary(PRIMARY_EXPRESSIONr2, 1, $1); }
+	unqualified_id														{ $$ = (TreeNode *)alacnary(PRIMARY_EXPRESSIONr1, 1, $1); }
+	| qualified_id														{ $$ = (TreeNode *)alacnary(PRIMARY_EXPRESSIONr2, 1, $1); }
 	;
 
 unqualified_id:
-	identifier															{ $$ = alacnary(PRIMARY_EXPRESSIONr1, 1, $1); }
-	| operator_function_id											{ $$ = alacnary(PRIMARY_EXPRESSIONr2, 1, $1); }
-	| conversion_function_id										{ $$ = alacnary(PRIMARY_EXPRESSIONr3, 1, $1); }
-	| '~' class_name													{ $$ = alacnary(PRIMARY_EXPRESSIONr4, 1, $2); }
+	identifier															{ $$ = (TreeNode *)alacnary(PRIMARY_EXPRESSIONr1, 1, $1); }
+	| operator_function_id											{ $$ = (TreeNode *)alacnary(PRIMARY_EXPRESSIONr2, 1, $1); }
+	| conversion_function_id										{ $$ = (TreeNode *)alacnary(PRIMARY_EXPRESSIONr3, 1, $1); }
+	| '~' class_name													{ $$ = (TreeNode *)alacnary(PRIMARY_EXPRESSIONr4, 1, $2); }
 	;
 
 qualified_id:
-	nested_name_specifier unqualified_id						{ $$ = alacnary(QUALIFIED_IDr1, 2, $1, $2); }
-	| nested_name_specifier TEMPLATE unqualified_id			{ $$ = alacnary(QUALIFIED_IDr1, 3, $1, $2, $3); }
+	nested_name_specifier unqualified_id						{ $$ = (TreeNode *)alacnary(QUALIFIED_IDr1, 2, $1, $2); }
+	| nested_name_specifier TEMPLATE unqualified_id			{ $$ = (TreeNode *)alacnary(QUALIFIED_IDr1, 3, $1, $2, $3); }
 	;
 
 nested_name_specifier:
-	class_name COLONCOLON nested_name_specifier				{ $$ = alacnary(NESTED_NAME_SPECIFIERr1, 3, $1, $2, $3); }
-	| namespace_name COLONCOLON nested_name_specifier		{ $$ = alacnary(NESTED_NAME_SPECIFIERr2, 3, $1, $2, $3); }
-	| class_name COLONCOLON											{ $$ = alacnary(NESTED_NAME_SPECIFIERr3, 2, $1, $2); }
-	| namespace_name COLONCOLON									{ $$ = alacnary(NESTED_NAME_SPECIFIERr4, 2, $1, $2); }
+	class_name COLONCOLON nested_name_specifier				{ $$ = (TreeNode *)alacnary(NESTED_NAME_SPECIFIERr1, 3, $1, $2, $3); }
+	| namespace_name COLONCOLON nested_name_specifier		{ $$ = (TreeNode *)alacnary(NESTED_NAME_SPECIFIERr2, 3, $1, $2, $3); }
+	| class_name COLONCOLON											{ $$ = (TreeNode *)alacnary(NESTED_NAME_SPECIFIERr3, 2, $1, $2); }
+	| namespace_name COLONCOLON									{ $$ = (TreeNode *)alacnary(NESTED_NAME_SPECIFIERr4, 2, $1, $2); }
 	;
 
 postfix_expression:
-	primary_expression												{ $$ = alacnary(POSTFIX_EXRESSIONr1, 1, $1); }
-	| postfix_expression '[' expression ']'					{ $$ = alacnary(POSTFIX_EXRESSIONr2, 2, $1, $3); }
-	| postfix_expression '(' expression_list_opt ')'		{ $$ = alacnary(POSTFIX_EXRESSIONr3, 2, $1, $3); }
+	primary_expression												{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr1, 1, $1); }
+	| postfix_expression '[' expression ']'					{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr2, 2, $1, $3); }
+	| postfix_expression '(' expression_list_opt ')'		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr3, 2, $1, $3); }
 	| postfix_expression '.' TEMPLATE COLONCOLON id_expression
-																			{ $$ = alacnary(POSTFIX_EXRESSIONr4, 3, $1, $3, $4); }
-	| postfix_expression '.' TEMPLATE id_expression			{ $$ = alacnary(POSTFIX_EXRESSIONr5, 3, $1, $3, $4); }
-	| postfix_expression '.' COLONCOLON id_expression		{ $$ = alacnary(POSTFIX_EXRESSIONr6, 3, $1, $3, $4); }
-	| postfix_expression '.' id_expression						{ $$ = alacnary(POSTFIX_EXRESSIONr7, 2, $1, $3); }
+																			{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr4, 3, $1, $3, $4); }
+	| postfix_expression '.' TEMPLATE id_expression			{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr5, 3, $1, $3, $4); }
+	| postfix_expression '.' COLONCOLON id_expression		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr6, 3, $1, $3, $4); }
+	| postfix_expression '.' id_expression						{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr7, 2, $1, $3); }
 	| postfix_expression ARROW TEMPLATE COLONCOLON id_expression
-																			{ $$ = alacnary(POSTFIX_EXRESSIONr8, 5, $1, $2, $3, $4, $5); }
-	| postfix_expression ARROW TEMPLATE id_expression		{ $$ = alacnary(POSTFIX_EXRESSIONr9, 4, $1, $2, $3, $4); }
-	| postfix_expression ARROW COLONCOLON id_expression	{ $$ = alacnary(POSTFIX_EXRESSIONr10, 4, $1, $2, $3, $4); }
-	| postfix_expression ARROW id_expression					{ $$ = alacnary(POSTFIX_EXRESSIONr11, 3, $1, $2, $3); }
-	| postfix_expression PLUSPLUS									{ $$ = alacnary(POSTFIX_EXRESSIONr12, 2, $1, $2); }
-	| postfix_expression MINUSMINUS								{ $$ = alacnary(POSTFIX_EXRESSIONr13, 2, $1, $2); }
-	| DYNAMIC_CAST '<' type_id '>' '(' expression ')'		{ $$ = alacnary(POSTFIX_EXRESSIONr14, 3, $1, $3, $6); }
-	| STATIC_CAST '<' type_id '>' '(' expression ')'		{ $$ = alacnary(POSTFIX_EXRESSIONr15, 3, $1, $3, $6); }
-	| REINTERPRET_CAST '<' type_id '>' '(' expression ')'	{ $$ = alacnary(POSTFIX_EXRESSIONr16, 3, $1, $3, $6); }
-	| CONST_CAST '<' type_id '>' '(' expression ')'			{ $$ = alacnary(POSTFIX_EXRESSIONr17, 3, $1, $3, $6); }
-	| TYPEID '(' expression ')'									{ $$ = alacnary(POSTFIX_EXRESSIONr18, 2, $1, $3); }
-	| TYPEID '(' type_id ')'										{ $$ = alacnary(POSTFIX_EXRESSIONr19, 2, $1, $3); }
+																			{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr8, 5, $1, $2, $3, $4, $5); }
+	| postfix_expression ARROW TEMPLATE id_expression		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr9, 4, $1, $2, $3, $4); }
+	| postfix_expression ARROW COLONCOLON id_expression	{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr10, 4, $1, $2, $3, $4); }
+	| postfix_expression ARROW id_expression					{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr11, 3, $1, $2, $3); }
+	| postfix_expression PLUSPLUS									{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr12, 2, $1, $2); }
+	| postfix_expression MINUSMINUS								{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr13, 2, $1, $2); }
+	| DYNAMIC_CAST '<' type_id '>' '(' expression ')'		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr14, 3, $1, $3, $6); }
+	| STATIC_CAST '<' type_id '>' '(' expression ')'		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr15, 3, $1, $3, $6); }
+	| REINTERPRET_CAST '<' type_id '>' '(' expression ')'	{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr16, 3, $1, $3, $6); }
+	| CONST_CAST '<' type_id '>' '(' expression ')'			{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr17, 3, $1, $3, $6); }
+	| TYPEID '(' expression ')'									{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr18, 2, $1, $3); }
+	| TYPEID '(' type_id ')'										{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr19, 2, $1, $3); }
 	;
 
 expression_list:
-	assignment_expression											{ $$ = alacnary(EXPRESSION_LISTr1, 1, $1); }
-	| expression_list ',' assignment_expression				{ $$ = alacnary(EXPRESSION_LISTr2, 2, $1, $3); }
+	assignment_expression											{ $$ = (TreeNode *)alacnary(EXPRESSION_LISTr1, 1, $1); }
+	| expression_list ',' assignment_expression				{ $$ = (TreeNode *)alacnary(EXPRESSION_LISTr2, 2, $1, $3); }
 	;
 
 unary_expression:
-	postfix_expression												{ $$ = alacnary(UNARY_EXPRESSIONr1, 1, $1); }
-	| PLUSPLUS cast_expression										{ $$ = alacnary(UNARY_EXPRESSIONr2, 2, $1, $2); }
-	| MINUSMINUS cast_expression									{ $$ = alacnary(UNARY_EXPRESSIONr3, 2, $1, $2); }
-	| '*' cast_expression											{ $$ = alacnary(UNARY_EXPRESSIONr4, 1, $2); }
-	| '&' cast_expression											{ $$ = alacnary(UNARY_EXPRESSIONr5, 1, $2); }
-	| unary_operator cast_expression								{ $$ = alacnary(UNARY_EXPRESSIONr6, 2, $1, $2); }
-	| SIZEOF unary_expression										{ $$ = alacnary(UNARY_EXPRESSIONr7, 2, $1, $2); }
-	| SIZEOF '(' type_id ')'										{ $$ = alacnary(UNARY_EXPRESSIONr8, 2, $1, $3); }
-	| new_expression													{ $$ = alacnary(UNARY_EXPRESSIONr9, 1, $1); }
-	| delete_expression												{ $$ = alacnary(UNARY_EXPRESSIONr10, 1, $1); }
+	postfix_expression												{ $$ = (TreeNode *)alacnary(UNARY_EXPRESSIONr1, 1, $1); }
+	| PLUSPLUS cast_expression										{ $$ = (TreeNode *)alacnary(UNARY_EXPRESSIONr2, 2, $1, $2); }
+	| MINUSMINUS cast_expression									{ $$ = (TreeNode *)alacnary(UNARY_EXPRESSIONr3, 2, $1, $2); }
+	| '*' cast_expression											{ $$ = (TreeNode *)alacnary(UNARY_EXPRESSIONr4, 1, $2); }
+	| '&' cast_expression											{ $$ = (TreeNode *)alacnary(UNARY_EXPRESSIONr5, 1, $2); }
+	| unary_operator cast_expression								{ $$ = (TreeNode *)alacnary(UNARY_EXPRESSIONr6, 2, $1, $2); }
+	| SIZEOF unary_expression										{ $$ = (TreeNode *)alacnary(UNARY_EXPRESSIONr7, 2, $1, $2); }
+	| SIZEOF '(' type_id ')'										{ $$ = (TreeNode *)alacnary(UNARY_EXPRESSIONr8, 2, $1, $3); }
+	| new_expression													{ $$ = (TreeNode *)alacnary(UNARY_EXPRESSIONr9, 1, $1); }
+	| delete_expression												{ $$ = (TreeNode *)alacnary(UNARY_EXPRESSIONr10, 1, $1); }
 	;
 
 unary_operator:
-	  '+'																	{ $$ = alacnary(UNARY_OPERATOR1, 0); }
-	| '-'																	{ $$ = alacnary(UNARY_OPERATOR2, 0); }
-	| '!'																	{ $$ = alacnary(UNARY_OPERATOR3, 0); }
-	| '~'																	{ $$ = alacnary(UNARY_OPERATOR4, 0); }
+	  '+'																	{ $$ = (TreeNode *)alacnary(UNARY_OPERATORr1, 0); }
+	| '-'																	{ $$ = (TreeNode *)alacnary(UNARY_OPERATORr2, 0); }
+	| '!'																	{ $$ = (TreeNode *)alacnary(UNARY_OPERATORr3, 0); }
+	| '~'																	{ $$ = (TreeNode *)alacnary(UNARY_OPERATORr4, 0); }
 	;
 
 new_expression:
 	  NEW new_placement_opt new_type_id new_initializer_opt
-																			{ $$ = alacnary(NEW_EXPRESSIONr1, 4, $1, $2, $3, $4); }
+																			{ $$ = (TreeNode *)alacnary(NEW_EXPRESSIONr1, 4, $1, $2, $3, $4); }
 	| COLONCOLON NEW new_placement_opt new_type_id new_initializer_opt
-																			{ $$ = alacnary(NEW_EXPRESSIONr2, 5, $1, $2, $3, $4, $5); }
+																			{ $$ = (TreeNode *)alacnary(NEW_EXPRESSIONr2, 5, $1, $2, $3, $4, $5); }
 	| NEW new_placement_opt '(' type_id ')' new_initializer_opt
-																			{ $$ = alacnary(NEW_EXPRESSIONr3, 4, $1, $2, $4, $6); }
+																			{ $$ = (TreeNode *)alacnary(NEW_EXPRESSIONr3, 4, $1, $2, $4, $6); }
 	| COLONCOLON NEW new_placement_opt '(' type_id ')' new_initializer_opt
-																			{ $$ = alacnary(NEW_EXPRESSIONr4, 5, $1, $2, $3, $5, $7); }
+																			{ $$ = (TreeNode *)alacnary(NEW_EXPRESSIONr4, 5, $1, $2, $3, $5, $7); }
 	;
 
 new_placement:
-	'(' expression_list ')'											{ $$ = alacnary(NEW_PLACEMENTr1, 1, $2); }
+	'(' expression_list ')'											{ $$ = (TreeNode *)alacnary(NEW_PLACEMENTr1, 1, $2); }
 	;
 
 new_type_id:
-	type_specifier_seq new_declarator_opt						{ $$ = alacnary(NEW_TYPE_IDr1, 2, $1, $2); }
+	type_specifier_seq new_declarator_opt						{ $$ = (TreeNode *)alacnary(NEW_TYPE_IDr1, 2, $1, $2); }
 	;
 
 new_declarator:
-	ptr_operator new_declarator_opt								{ $$ = alacnary(NEW_DECLARATORr1, 2, $1, $2); }
-	| direct_new_declarator											{ $$ = alacnary(NEW_DECLARATORr2, 1, $1); }
+	ptr_operator new_declarator_opt								{ $$ = (TreeNode *)alacnary(NEW_DECLARATORr1, 2, $1, $2); }
+	| direct_new_declarator											{ $$ = (TreeNode *)alacnary(NEW_DECLARATORr2, 1, $1); }
 	;
 
 direct_new_declarator:
-	'[' expression ']'												{ $$ = alacnary(DIRECT_NEW_DECLARATORr1, 1, $2); }
-	| direct_new_declarator '[' constant_expression ']'	{ $$ = alacnary(DIRECT_NEW_DECLARATORr2, 2, $1, $3); }
+	'[' expression ']'												{ $$ = (TreeNode *)alacnary(DIRECT_NEW_DECLARATORr1, 1, $2); }
+	| direct_new_declarator '[' constant_expression ']'	{ $$ = (TreeNode *)alacnary(DIRECT_NEW_DECLARATORr2, 2, $1, $3); }
 	;
 
 new_initializer:
-	'(' expression_list_opt ')'									{ $$ = alacnary(NEW_INITIALIZERr1, 1, $2); }
+	'(' expression_list_opt ')'									{ $$ = (TreeNode *)alacnary(NEW_INITIALIZERr1, 1, $2); }
 	;
 
 delete_expression:
-	  DELETE cast_expression										{ $$ = alacnary(DELETE_EXPRESSIONr1, 2, $1, $2); }
-	| COLONCOLON DELETE cast_expression							{ $$ = alacnary(DELETE_EXPRESSIONr2, 3, $1, $2, $3); }
-	| DELETE '[' ']' cast_expression								{ $$ = alacnary(DELETE_EXPRESSIONr3, 2, $1, $4); }
-	| COLONCOLON DELETE '[' ']' cast_expression				{ $$ = alacnary(DELETE_EXPRESSIONr4, 3, $1, $2, $5); }
+	  DELETE cast_expression										{ $$ = (TreeNode *)alacnary(DELETE_EXPRESSIONr1, 2, $1, $2); }
+	| COLONCOLON DELETE cast_expression							{ $$ = (TreeNode *)alacnary(DELETE_EXPRESSIONr2, 3, $1, $2, $3); }
+	| DELETE '[' ']' cast_expression								{ $$ = (TreeNode *)alacnary(DELETE_EXPRESSIONr3, 2, $1, $4); }
+	| COLONCOLON DELETE '[' ']' cast_expression				{ $$ = (TreeNode *)alacnary(DELETE_EXPRESSIONr4, 3, $1, $2, $5); }
 	;
 
 cast_expression:
-	unary_expression													{ $$ = alacnary(CAST_EXPRESSIONr1, 1, $1); }
-	| '(' type_id ')' cast_expression							{ $$ = alacnary(CAST_EXPRESSIONr2, 2, $2, $4); }
+	unary_expression													{ $$ = (TreeNode *)alacnary(CAST_EXPRESSIONr1, 1, $1); }
+	| '(' type_id ')' cast_expression							{ $$ = (TreeNode *)alacnary(CAST_EXPRESSIONr2, 2, $2, $4); }
 	;
 
 pm_expression:
-	cast_expression													{ $$ = alacnary(PM_EXPRESSIONr1, 1, $1); }
-	| pm_expression DOTSTAR cast_expression					{ $$ = alacnary(PM_EXPRESSIONr2, 3, $1, $2, $3); }
-	| pm_expression ARROWSTAR cast_expression					{ $$ = alacnary(PM_EXPRESSIONr3, 3, $1, $2, $3); }
+	cast_expression													{ $$ = (TreeNode *)alacnary(PM_EXPRESSIONr1, 1, $1); }
+	| pm_expression DOTSTAR cast_expression					{ $$ = (TreeNode *)alacnary(PM_EXPRESSIONr2, 3, $1, $2, $3); }
+	| pm_expression ARROWSTAR cast_expression					{ $$ =(TreeNode *)alacnary(PM_EXPRESSIONr3, 3, $1, $2, $3); }
 	;
 
 multiplicative_expression:
-	pm_expression														{ $$ = alacnary(MULTIPLICATIVE_EXPRESSIONr1, 1, $1); }
-	| multiplicative_expression '*' pm_expression			{ $$ = alacnary(MULTIPLICATIVE_EXPRESSIONr2, 2, $1, $3); }
-	| multiplicative_expression '/' pm_expression			{ $$ = alacnary(MULTIPLICATIVE_EXPRESSIONr3, 2, $1, $3); }
-	| multiplicative_expression '%' pm_expression			{ $$ = alacnary(MULTIPLICATIVE_EXPRESSIONr4, 2, $1, $3); }
+	pm_expression														{ $$ = (TreeNode *)alacnary(MULTIPLICATIVE_EXPRESSIONr1, 1, $1); }
+	| multiplicative_expression '*' pm_expression			{ $$ = (TreeNode *)alacnary(MULTIPLICATIVE_EXPRESSIONr2, 2, $1, $3); }
+	| multiplicative_expression '/' pm_expression			{ $$ = (TreeNode *)alacnary(MULTIPLICATIVE_EXPRESSIONr3, 2, $1, $3); }
+	| multiplicative_expression '%' pm_expression			{ $$ = (TreeNode *)alacnary(MULTIPLICATIVE_EXPRESSIONr4, 2, $1, $3); }
 	;
 
 additive_expression:
-	multiplicative_expression										{ $$ = alacnary(ADDITIVE_EXPRESSIONr1, 1, $1); }
-	| additive_expression '+' multiplicative_expression	{ $$ = alacnary(ADDITIVE_EXPRESSIONr2, 2, $1, $3); }
-	| additive_expression '-' multiplicative_expression	{ $$ = alacnary(ADDITIVE_EXPRESSIONr3, 2, $1, $3); }
+	multiplicative_expression										{ $$ = (TreeNode *)alacnary(ADDITIVE_EXPRESSIONr1, 1, $1); }
+	| additive_expression '+' multiplicative_expression	{ $$ = (TreeNode *)alacnary(ADDITIVE_EXPRESSIONr2, 2, $1, $3); }
+	| additive_expression '-' multiplicative_expression	{ $$ = (TreeNode *)alacnary(ADDITIVE_EXPRESSIONr3, 2, $1, $3); }
 	;
 
 shift_expression:
-	additive_expression												{ $$ = alacnary(SHIFT_EXPRESSIONr1, 1, $1); }
-	| shift_expression SL additive_expression					{ $$ = alacnary(SHIFT_EXPRESSIONr2, 3, $1, $2, $3); }
-	| shift_expression SR additive_expression					{ $$ = alacnary(SHIFT_EXPRESSIONr3, 3, $1, $2, $3); }
+	additive_expression												{ $$ = (TreeNode *)alacnary(SHIFT_EXPRESSIONr1, 1, $1); }
+	| shift_expression SL additive_expression					{ $$ = (TreeNode *)alacnary(SHIFT_EXPRESSIONr2, 3, $1, $2, $3); }
+	| shift_expression SR additive_expression					{ $$ = (TreeNode *)alacnary(SHIFT_EXPRESSIONr3, 3, $1, $2, $3); }
 	;
 
 relational_expression:
-	shift_expression													{ $$ = alacnary(RELATIONAL_EXPRESSIONr1, 1, $1); }
-	| relational_expression '<' shift_expression				{ $$ = alacnary(RELATIONAL_EXPRESSIONr2, 2, $1, $3); }
-	| relational_expression '>' shift_expression				{ $$ = alacnary(RELATIONAL_EXPRESSIONr3, 2, $1, $3); }
-	| relational_expression LTEQ shift_expression			{ $$ = alacnary(RELATIONAL_EXPRESSIONr4, 3, $1, $2, $3); }
-	| relational_expression GTEQ shift_expression			{ $$ = alacnary(RELATIONAL_EXPRESSIONr5, 3, $1, $2, $3); }
+	shift_expression													{ $$ = (TreeNode *)alacnary(RELATIONAL_EXPRESSIONr1, 1, $1); }
+	| relational_expression '<' shift_expression				{ $$ = (TreeNode *)alacnary(RELATIONAL_EXPRESSIONr2, 2, $1, $3); }
+	| relational_expression '>' shift_expression				{ $$ = (TreeNode *)alacnary(RELATIONAL_EXPRESSIONr3, 2, $1, $3); }
+	| relational_expression LTEQ shift_expression			{ $$ = (TreeNode *)alacnary(RELATIONAL_EXPRESSIONr4, 3, $1, $2, $3); }
+	| relational_expression GTEQ shift_expression			{ $$ = (TreeNode *)alacnary(RELATIONAL_EXPRESSIONr5, 3, $1, $2, $3); }
 	;
 
 equality_expression:
-	relational_expression											{ $$ = alacnary(EQUALITY_EXPRESSIONr1, 1, $1); }
-	| equality_expression EQ relational_expression			{ $$ = alacnary(EQUALITY_EXPRESSIONr2, 3, $1, $2, $3); }
-	| equality_expression NOTEQ relational_expression		{ $$ = alacnary(EQUALITY_EXPRESSIONr3, 1, $1, $2, $3); }
+	relational_expression											{ $$ = (TreeNode *)alacnary(EQUALITY_EXPRESSIONr1, 1, $1); }
+	| equality_expression EQ relational_expression			{ $$ = (TreeNode *)alacnary(EQUALITY_EXPRESSIONr2, 3, $1, $2, $3); }
+	| equality_expression NOTEQ relational_expression		{ $$ = (TreeNode *)alacnary(EQUALITY_EXPRESSIONr3, 1, $1, $2, $3); }
 	;
 
 and_expression:
@@ -476,9 +479,9 @@ statement_seq:
 	;
 
 selection_statement:
-	IF '(' condition ')' statement								{ $$ = alacnary(SELECTION_STATEMENT_SEQr1, 3, $1, $3, $5); }
-	| IF '(' condition ')' statement ELSE statement			{ $$ = alacnary(SELECTION_STATEMENT_SEQr2, 5, $1, $3, $5, $6, $7); }
-	| SWITCH '(' condition ')' statement						{ $$ = alacnary(SELECTION_STATEMENT_SEQr3, 3, $1, $3, $5); }
+	IF '(' condition ')' statement								{ $$ = alacnary(SELECTION_STATEMENTr1, 3, $1, $3, $5); }
+	| IF '(' condition ')' statement ELSE statement			{ $$ = alacnary(SELECTION_STATEMENTr2, 5, $1, $3, $5, $6, $7); }
+	| SWITCH '(' condition ')' statement						{ $$ = alacnary(SELECTION_STATEMENTr3, 3, $1, $3, $5); }
 	;
 
 condition:
@@ -687,10 +690,10 @@ namespace_alias_definition:
 	;
 
 qualified_namespace_specifier:
-	COLONCOLON nested_name_specifier namespace_name			{ $$ = alacnary(NAMESPACE_ALIAS_DEFINITIONr1, 3, $1, $2, $3); }
-	| COLONCOLON namespace_name									{ $$ = alacnary(NAMESPACE_ALIAS_DEFINITIONr2, 2, $1, $2); }
-	| nested_name_specifier namespace_name						{ $$ = alacnary(NAMESPACE_ALIAS_DEFINITIONr3, 2, $1, $2); }
-	| namespace_name													{ $$ = alacnary(NAMESPACE_ALIAS_DEFINITIONr4, 1, $1); }
+	COLONCOLON nested_name_specifier namespace_name			{ $$ = alacnary(QUALIFIED_NAMESPACE_SPECIFIERr1, 3, $1, $2, $3); }
+	| COLONCOLON namespace_name									{ $$ = alacnary(QUALIFIED_NAMESPACE_SPECIFIERr2, 2, $1, $2); }
+	| nested_name_specifier namespace_name						{ $$ = alacnary(QUALIFIED_NAMESPACE_SPECIFIERr3, 2, $1, $2); }
+	| namespace_name													{ $$ = alacnary(QUALIFIED_NAMESPACE_SPECIFIERr4, 1, $1); }
 	;
 
 using_declaration:
@@ -766,8 +769,8 @@ ptr_operator:
 	;
 
 cv_qualifier_seq:
-	cv_qualifier														{ $$ = alacnary(CV_QUALIFIER-SEQr1, 1, $1); }
-	| cv_qualifier cv_qualifier_seq								{ $$ = alacnary(CV_QUALIFIER-SEQr2, 2, $1, $2); }
+	cv_qualifier														{ $$ = alacnary(CV_QUALIFIER_SEQr1, 1, $1); }
+	| cv_qualifier cv_qualifier_seq								{ $$ = alacnary(CV_QUALIFIER_SEQr2, 2, $1, $2); }
 	;
 
 cv_qualifier:
@@ -813,7 +816,7 @@ parameter_declaration_clause:
 	parameter_declaration_list ELLIPSIS							{ $$ = alacnary(PARAMETER_DECLARATION_CLAUSEr1, 2, $1, $2); }
 	| parameter_declaration_list									{ $$ = alacnary(PARAMETER_DECLARATION_CLAUSEr2, 1, $1); }
 	| ELLIPSIS															{ $$ = alacnary(PARAMETER_DECLARATION_CLAUSEr3, 1, $1); }
-	| 																		{ $$ = alacnary(PARAMETER_DECLARATION_CLAUSEr4, 0); }
+	| /* epsilon */													{ $$ = alacnary(PARAMETER_DECLARATION_CLAUSEr4, 0); }
 	| parameter_declaration_list ',' ELLIPSIS					{ $$ = alacnary(PARAMETER_DECLARATION_CLAUSEr5, 2, $1, $3); }
 	;
 
@@ -904,7 +907,7 @@ member_declarator_list:
 	;
 
 member_declarator:
-	| declarator														{ $$ = alacnary(MEMBER_DECLARATORr1, 1, $1); }
+	declarator															{ $$ = alacnary(MEMBER_DECLARATORr1, 1, $1); }
 	| declarator pure_specifier									{ $$ = alacnary(MEMBER_DECLARATORr2, 2, $1, $2); }
 	| declarator constant_initializer							{ $$ = alacnary(MEMBER_DECLARATORr3, 2, $1, $2); }
 	| identifier ':' constant_expression						{ $$ = alacnary(MEMBER_DECLARATORr4, 2, $1, $3); }
@@ -1129,10 +1132,10 @@ handler:
 	;
 
 exception_declaration:
-	type_specifier_seq declarator								{ $$ = alacnary(EXECEPTION_DECLARATIONr1, 2, $1, $2); }
-	| type_specifier_seq abstract_declarator				{ $$ = alacnary(EXECEPTION_DECLARATIONr2, 2, $1, $2); }
-	| type_specifier_seq											{ $$ = alacnary(EXECEPTION_DECLARATIONr3, 1, $1); }
-	| ELLIPSIS														{ $$ = alacnary(EXECEPTION_DECLARATIONr4, 1, $1); }
+	type_specifier_seq declarator								{ $$ = alacnary(EXCEPTION_DECLARATIONr1, 2, $1, $2); }
+	| type_specifier_seq abstract_declarator				{ $$ = alacnary(EXCEPTION_DECLARATIONr2, 2, $1, $2); }
+	| type_specifier_seq											{ $$ = alacnary(EXCEPTION_DECLARATIONr3, 1, $1); }
+	| ELLIPSIS														{ $$ = alacnary(EXCEPTION_DECLARATIONr4, 1, $1); }
 	;
 
 throw_expression:
@@ -1188,8 +1191,8 @@ new_declarator_opt:
 	;
 
 expression_opt:
-	/* epsilon */													{ $$ = alacnary(NEW_EXPRESSION_OPTr1, 0); }
-	| expression													{ $$ = alacnary(NEW_EXPRESSION_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = alacnary(EXPRESSION_OPTr1, 0); }
+	| expression													{ $$ = alacnary(EXPRESSION_OPTr2, 1, $1); }
 	;
 
 statement_seq_opt:
@@ -1198,83 +1201,83 @@ statement_seq_opt:
 	;
 
 condition_opt:
-	/* epsilon */													{ $$ = alacnary(CONDITION_OPTr1, 0); }
-	| condition														{ $$ = alacnary(CONDITION_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(CONDITION_OPTr1, 0); }
+	| condition														{ $$ = (TreeNode *)alacnary(CONDITION_OPTr2, 1, $1); }
 	;
 
 enumerator_list_opt:
-	/* epsilon */													{ $$ = alacnary(ENUMERATOR_LIST_OPTr1, 0); }
-	| enumerator_list												{ $$ = alacnary(ENUMERATOR_LIST_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(ENUMERATOR_LIST_OPTr1, 0); }
+	| enumerator_list												{ $$ = (TreeNode *)alacnary(ENUMERATOR_LIST_OPTr2, 1, $1); }
 	;
 
 initializer_opt:
-	/* epsilon */													{ $$ = alacnary(INITIALIZER_OPTr1, 0); }
-	| initializer													{ $$ = alacnary(INITIALIZER_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(INITIALIZER_OPTr1, 0); }
+	| initializer													{ $$ = (TreeNode *)alacnary(INITIALIZER_OPTr2, 1, $1); }
 	;
 
 constant_expression_opt:
-	/* epsilon */													{ $$ = alacnary(CONSTANT_EXPRESSION_OPTr1, 0); }
-	| constant_expression										{ $$ = alacnary(CONSTANT_EXPRESSION_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(CONSTANT_EXPRESSION_OPTr1, 0); }
+	| constant_expression										{ $$ = (TreeNode *)alacnary(CONSTANT_EXPRESSION_OPTr2, 1, $1); }
 	;
 
 abstract_declarator_opt:
-	/* epsilon */													{ $$ = alacnary(ABSTRACT_DECLARATOR_OPTr1, 0); }
-	| abstract_declarator										{ $$ = alacnary(ABSTRACT_DECLARATOR_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(ABSTRACT_DECLARATOR_OPTr1, 0); }
+	| abstract_declarator										{ $$ = (TreeNode *)alacnary(ABSTRACT_DECLARATOR_OPTr2, 1, $1); }
 	;
 
 type_specifier_seq_opt:
-	/* epsilon */													{ $$ = alacnary(TYPE_SPECIFIER_SEQ_OPTr1, 0); }
-	| type_specifier_seq											{ $$ = alacnary(TYPE_SPECIFIER_SEQ_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(TYPE_SPECIFIER_SEQ_OPTr1, 0); }
+	| type_specifier_seq											{ $$ = (TreeNode *)alacnary(TYPE_SPECIFIER_SEQ_OPTr2, 1, $1); }
 	;
 
 direct_abstract_declarator_opt:
-	/* epsilon */													{ $$ = alacnary(DIRECT_ABSTRACT_DECLARATOR_OPTr1, 0); }
-	| direct_abstract_declarator								{ $$ = alacnary(DIRECT_ABSTRACT_DECLARATOR_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(DIRECT_ABSTRACT_DECLARATOR_OPTr1, 0); }
+	| direct_abstract_declarator								{ $$ = (TreeNode *)alacnary(DIRECT_ABSTRACT_DECLARATOR_OPTr2, 1, $1); }
 	;
 
 ctor_initializer_opt:
-	/* epsilon */													{ $$ = alacnary(CTOR_INITIALIZER_OPTr1, 0); }
-	| ctor_initializer											{ $$ = alacnary(CTOR_INITIALIZER_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(CTOR_INITIALIZER_OPTr1, 0); }
+	| ctor_initializer											{ $$ = (TreeNode *)alacnary(CTOR_INITIALIZER_OPTr2, 1, $1); }
 	;
 
 COMMA_opt:
-	/* epsilon */													{ $$ = alacnary(COMMA_OPTr1, 0); }
-	| ','																{ $$ = alacnary(COMMA_OPTr2, 0); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(COMMA_OPTr1, 0); }
+	| ','																{ $$ = (TreeNode *)alacnary(COMMA_OPTr2, 0); }
 	;
 
 member_specification_opt:
-	/* epsilon */													{ $$ = alacnary(MEMBER_SPECIFICATION_OPTr1, 0); }
-	| member_specification										{ $$ = alacnary(MEMBER_SPECIFICATION_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(MEMBER_SPECIFICATION_OPTr1, 0); }
+	| member_specification										{ $$ = (TreeNode *)alacnary(MEMBER_SPECIFICATION_OPTr2, 1, $1); }
 	;
 
 SEMICOLON_opt:
-	/* epsilon */													{ $$ = alacnary(SEMICOLON_OPTr1, 0); }
-	| ';'																{ $$ = alacnary(SEMICOLON_OPTr2, 0); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(SEMICOLON_OPTr1, 0); }
+	| ';'																{ $$ = (TreeNode *)alacnary(SEMICOLON_OPTr2, 0); }
 	;
 
 conversion_declarator_opt:
-	/* epsilon */													{ $$ = alacnary(CONVERSION_DECLARATOR_OPTr1, 0); }
-	| conversion_declarator										{ $$ = alacnary(CONVERSION_DECLARATOR_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(CONVERSION_DECLARATOR_OPTr1, 0); }
+	| conversion_declarator										{ $$ = (TreeNode *)alacnary(CONVERSION_DECLARATOR_OPTr2, 1, $1); }
 	;
 
 EXPORT_opt:
-	/* epsilon */													{ $$ = alacnary(EXPORT_OPTr1, 0); }
-	| EXPORT															{ $$ = alacnary(EXPORT_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(EXPORT_OPTr1, 0); }
+	| EXPORT															{ $$ = (TreeNode *)alacnary(EXPORT_OPTr2, 1, $1); }
 	;
 
 handler_seq_opt:
-	/* epsilon */													{ $$ = alacnary(HANDLER_SEQ_OPTr1, 0); }
-	| handler_seq													{ $$ = alacnary(HANDLER_SEQ_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(HANDLER_SEQ_OPTr1, 0); }
+	| handler_seq													{ $$ = (TreeNode *)alacnary(HANDLER_SEQ_OPTr2, 1, $1); }
 	;
 
 assignment_expression_opt:
-	/* epsilon */													{ $$ = alacnary(ASSIGNMENT_EXPRESSION_OPTr1, 0); }
-	| assignment_expression										{ $$ = alacnary(ASSIGNMENT_EXPRESSION_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(ASSIGNMENT_EXPRESSION_OPTr1, 0); }
+	| assignment_expression										{ $$ = (TreeNode *)alacnary(ASSIGNMENT_EXPRESSION_OPTr2, 1, $1); }
 	;
 
 type_id_list_opt:
-	/* epsilon */													{ $$ = alacnary(TYPE_ID_LIST_OPTr1, 0); }
-	| type_id_list													{ $$ = alacnary(TYPE_ID_LIST_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(TYPE_ID_LIST_OPTr1, 0); }
+	| type_id_list													{ $$ = (TreeNode *)alacnary(TYPE_ID_LIST_OPTr2, 1, $1); }
 	;
 
 %%
@@ -1345,7 +1348,7 @@ Token *createToken(int tcode){
    token->filename =filename;
 	
 	if(tcode == INTEGER) token->ival = atoi(token->text);
-	else token->ival = NULL;
+//	else token->ival = NULL;
    if(tcode == STRING){
       token->ival = length;
       int *st = (int *)calloc(length, sizeof(int));
@@ -1359,23 +1362,38 @@ Token *createToken(int tcode){
 	return token;
 }
 
-struct TreeNode * alacnary(int prodRule, int children,...){
-	struct TreeNode * nd = (struct TreeNode *)calloc(1, sizeof(struct TreeNode));
+TreeNode *alacnary(int prodRule, int children,...){
+	TreeNode *nd = (TreeNode *)calloc(1, sizeof(TreeNode));
 	if(!nd)memoryError();
+	
+	nd->u.n.rule = (int)(prodRule / 100) * 100;
 	nd->u.n.rule = prodRule;
+	nd->u.n.children = children;
 	int c = 0;
 	va_list mylist;
 	va_start(mylist, children);
 	while(c < children){
-		nd->u.n.child[c] = va_arg(mylist, struct node *);
+		nd->u.n.child[c] = va_arg(mylist, TreeNode *);
 		c++;
 	}
 	va_end(mylist);
 	return nd;
 }
+/*
+char *humanreadable(int){
+	
+}*/
 
-TreeNode *alacnary(int rule, int children, ...){
-	TreeNode tn = treenode();
+void printTree(struct TreeNode *t, int depth)
+{
+	int i;
+
+	printf("%*s %d: %d\n", depth*2, " ", t->u.n.rule, t->u.n.children);
+
+	if(t->u.n.children > 0)
+		for(i=0; i<t->u.n.children; i++)
+			printTree(t->u.n.child[i], depth+1);
+
 }
 
 int main(int argc, char **argv){
@@ -1399,5 +1417,6 @@ int main(int argc, char **argv){
 		printf("Missing file name.\n");
 		exit(1);
 	}
+	printTree(root, 0);
    return 0;
 }

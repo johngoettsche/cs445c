@@ -11,7 +11,7 @@ struct TokenStackNode {
 
 typedef struct TreeNode TreeNode;
 struct TreeNode {
-//	int symbol;		/* <1000 is terminal, >=1000 is non-terminal */
+	int symbol;		/* <1000 is terminal, >=1000 is non-terminal */
    union {
       struct leaf {
 			Token *token;
@@ -20,6 +20,7 @@ struct TreeNode {
       } t;
       struct nonleaf {
          int rule;
+			int children;
          struct TreeNode *child[1]; /* 9 not big enough for some grammars */
       } n;
    } u;

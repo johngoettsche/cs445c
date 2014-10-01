@@ -14,7 +14,6 @@ State 155 conflicts: 4 shift/reduce
 State 156 conflicts: 2 shift/reduce
 State 173 conflicts: 3 shift/reduce
 State 174 conflicts: 3 shift/reduce
-State 197 conflicts: 1 shift/reduce
 State 210 conflicts: 1 shift/reduce
 State 214 conflicts: 1 shift/reduce
 State 216 conflicts: 1 shift/reduce
@@ -28,16 +27,13 @@ State 299 conflicts: 1 shift/reduce
 State 325 conflicts: 1 shift/reduce
 State 340 conflicts: 1 shift/reduce
 State 341 conflicts: 1 shift/reduce
-State 342 conflicts: 1 shift/reduce
 State 345 conflicts: 1 shift/reduce
-State 347 conflicts: 1 shift/reduce
 State 380 conflicts: 1 shift/reduce
 State 391 conflicts: 1 shift/reduce
 State 453 conflicts: 1 shift/reduce
 State 454 conflicts: 1 shift/reduce
 State 504 conflicts: 1 shift/reduce
 State 506 conflicts: 1 shift/reduce
-State 525 conflicts: 1 shift/reduce
 State 529 conflicts: 2 shift/reduce
 State 534 conflicts: 2 shift/reduce
 State 536 conflicts: 1 shift/reduce
@@ -512,260 +508,259 @@ Grammar
   339 member_declarator_list: member_declarator
   340                       | member_declarator_list ',' member_declarator
 
-  341 member_declarator: /* empty */
-  342                  | declarator
-  343                  | declarator pure_specifier
-  344                  | declarator constant_initializer
-  345                  | identifier ':' constant_expression
+  341 member_declarator: declarator
+  342                  | declarator pure_specifier
+  343                  | declarator constant_initializer
+  344                  | identifier ':' constant_expression
 
-  346 pure_specifier: '=' '0'
+  345 pure_specifier: '=' '0'
 
-  347 constant_initializer: '=' constant_expression
+  346 constant_initializer: '=' constant_expression
 
-  348 base_clause: ':' base_specifier_list
+  347 base_clause: ':' base_specifier_list
 
-  349 base_specifier_list: base_specifier
-  350                    | base_specifier_list ',' base_specifier
+  348 base_specifier_list: base_specifier
+  349                    | base_specifier_list ',' base_specifier
 
-  351 base_specifier: COLONCOLON nested_name_specifier class_name
-  352               | COLONCOLON class_name
-  353               | nested_name_specifier class_name
-  354               | class_name
-  355               | VIRTUAL access_specifier COLONCOLON nested_name_specifier_opt class_name
-  356               | VIRTUAL access_specifier nested_name_specifier_opt class_name
-  357               | VIRTUAL COLONCOLON nested_name_specifier_opt class_name
-  358               | VIRTUAL nested_name_specifier_opt class_name
-  359               | access_specifier VIRTUAL COLONCOLON nested_name_specifier_opt class_name
-  360               | access_specifier VIRTUAL nested_name_specifier_opt class_name
-  361               | access_specifier COLONCOLON nested_name_specifier_opt class_name
-  362               | access_specifier nested_name_specifier_opt class_name
+  350 base_specifier: COLONCOLON nested_name_specifier class_name
+  351               | COLONCOLON class_name
+  352               | nested_name_specifier class_name
+  353               | class_name
+  354               | VIRTUAL access_specifier COLONCOLON nested_name_specifier_opt class_name
+  355               | VIRTUAL access_specifier nested_name_specifier_opt class_name
+  356               | VIRTUAL COLONCOLON nested_name_specifier_opt class_name
+  357               | VIRTUAL nested_name_specifier_opt class_name
+  358               | access_specifier VIRTUAL COLONCOLON nested_name_specifier_opt class_name
+  359               | access_specifier VIRTUAL nested_name_specifier_opt class_name
+  360               | access_specifier COLONCOLON nested_name_specifier_opt class_name
+  361               | access_specifier nested_name_specifier_opt class_name
 
-  363 access_specifier: PRIVATE
-  364                 | PROTECTED
-  365                 | PUBLIC
+  362 access_specifier: PRIVATE
+  363                 | PROTECTED
+  364                 | PUBLIC
 
-  366 conversion_function_id: OPERATOR conversion_type_id
+  365 conversion_function_id: OPERATOR conversion_type_id
 
-  367 conversion_type_id: type_specifier_seq conversion_declarator_opt
+  366 conversion_type_id: type_specifier_seq conversion_declarator_opt
 
-  368 conversion_declarator: ptr_operator conversion_declarator_opt
+  367 conversion_declarator: ptr_operator conversion_declarator_opt
 
-  369 ctor_initializer: ':' mem_initializer_list
+  368 ctor_initializer: ':' mem_initializer_list
 
-  370 mem_initializer_list: mem_initializer
-  371                     | mem_initializer ',' mem_initializer_list
+  369 mem_initializer_list: mem_initializer
+  370                     | mem_initializer ',' mem_initializer_list
 
-  372 mem_initializer: mem_initializer_id '(' expression_list_opt ')'
+  371 mem_initializer: mem_initializer_id '(' expression_list_opt ')'
 
-  373 mem_initializer_id: COLONCOLON nested_name_specifier class_name
-  374                   | COLONCOLON class_name
-  375                   | nested_name_specifier class_name
-  376                   | class_name
-  377                   | identifier
+  372 mem_initializer_id: COLONCOLON nested_name_specifier class_name
+  373                   | COLONCOLON class_name
+  374                   | nested_name_specifier class_name
+  375                   | class_name
+  376                   | identifier
 
-  378 operator_function_id: OPERATOR operator
+  377 operator_function_id: OPERATOR operator
 
-  379 operator: NEW
-  380         | DELETE
-  381         | NEW '[' ']'
-  382         | DELETE '[' ']'
-  383         | '+'
-  384         | '_'
-  385         | '*'
-  386         | '/'
-  387         | '%'
-  388         | '^'
-  389         | '&'
-  390         | '|'
-  391         | '~'
-  392         | '!'
-  393         | '='
-  394         | '<'
-  395         | '>'
-  396         | ADDEQ
-  397         | SUBEQ
-  398         | MULEQ
-  399         | DIVEQ
-  400         | MODEQ
-  401         | XOREQ
-  402         | ANDEQ
-  403         | OREQ
-  404         | SL
-  405         | SR
-  406         | SREQ
-  407         | SLEQ
-  408         | EQ
-  409         | NOTEQ
-  410         | LTEQ
-  411         | GTEQ
-  412         | ANDAND
-  413         | OROR
-  414         | PLUSPLUS
-  415         | MINUSMINUS
-  416         | ','
-  417         | ARROWSTAR
-  418         | ARROW
-  419         | '(' ')'
-  420         | '[' ']'
+  378 operator: NEW
+  379         | DELETE
+  380         | NEW '[' ']'
+  381         | DELETE '[' ']'
+  382         | '+'
+  383         | '_'
+  384         | '*'
+  385         | '/'
+  386         | '%'
+  387         | '^'
+  388         | '&'
+  389         | '|'
+  390         | '~'
+  391         | '!'
+  392         | '='
+  393         | '<'
+  394         | '>'
+  395         | ADDEQ
+  396         | SUBEQ
+  397         | MULEQ
+  398         | DIVEQ
+  399         | MODEQ
+  400         | XOREQ
+  401         | ANDEQ
+  402         | OREQ
+  403         | SL
+  404         | SR
+  405         | SREQ
+  406         | SLEQ
+  407         | EQ
+  408         | NOTEQ
+  409         | LTEQ
+  410         | GTEQ
+  411         | ANDAND
+  412         | OROR
+  413         | PLUSPLUS
+  414         | MINUSMINUS
+  415         | ','
+  416         | ARROWSTAR
+  417         | ARROW
+  418         | '(' ')'
+  419         | '[' ']'
 
-  421 template_declaration: EXPORT_opt TEMPLATE '<' template_parameter_list '>' declaration
+  420 template_declaration: EXPORT_opt TEMPLATE '<' template_parameter_list '>' declaration
 
-  422 template_parameter_list: template_parameter
-  423                        | template_parameter_list ',' template_parameter
+  421 template_parameter_list: template_parameter
+  422                        | template_parameter_list ',' template_parameter
 
-  424 template_parameter: type_parameter
-  425                   | parameter_declaration
+  423 template_parameter: type_parameter
+  424                   | parameter_declaration
 
-  426 type_parameter: CLASS identifier
-  427               | CLASS identifier '=' type_id
-  428               | TYPENAME identifier
-  429               | TYPENAME identifier '=' type_id
-  430               | TEMPLATE '<' template_parameter_list '>' CLASS identifier
-  431               | TEMPLATE '<' template_parameter_list '>' CLASS identifier '=' template_name
+  425 type_parameter: CLASS identifier
+  426               | CLASS identifier '=' type_id
+  427               | TYPENAME identifier
+  428               | TYPENAME identifier '=' type_id
+  429               | TEMPLATE '<' template_parameter_list '>' CLASS identifier
+  430               | TEMPLATE '<' template_parameter_list '>' CLASS identifier '=' template_name
 
-  432 template_id: template_name '<' template_argument_list '>'
+  431 template_id: template_name '<' template_argument_list '>'
 
-  433 template_argument_list: template_argument
-  434                       | template_argument_list ',' template_argument
+  432 template_argument_list: template_argument
+  433                       | template_argument_list ',' template_argument
 
-  435 template_argument: assignment_expression
-  436                  | type_id
-  437                  | template_name
+  434 template_argument: assignment_expression
+  435                  | type_id
+  436                  | template_name
 
-  438 explicit_instantiation: TEMPLATE declaration
+  437 explicit_instantiation: TEMPLATE declaration
 
-  439 explicit_specialization: TEMPLATE '<' '>' declaration
+  438 explicit_specialization: TEMPLATE '<' '>' declaration
 
-  440 try_block: TRY compound_statement handler_seq
+  439 try_block: TRY compound_statement handler_seq
 
-  441 function_try_block: TRY ctor_initializer_opt function_body handler_seq
+  440 function_try_block: TRY ctor_initializer_opt function_body handler_seq
 
-  442 handler_seq: handler handler_seq_opt
+  441 handler_seq: handler handler_seq_opt
 
-  443 handler: CATCH '(' exception_declaration ')' compound_statement
+  442 handler: CATCH '(' exception_declaration ')' compound_statement
 
-  444 exception_declaration: type_specifier_seq declarator
-  445                      | type_specifier_seq abstract_declarator
-  446                      | type_specifier_seq
-  447                      | ELLIPSIS
+  443 exception_declaration: type_specifier_seq declarator
+  444                      | type_specifier_seq abstract_declarator
+  445                      | type_specifier_seq
+  446                      | ELLIPSIS
 
-  448 throw_expression: THROW assignment_expression_opt
+  447 throw_expression: THROW assignment_expression_opt
 
-  449 exception_specification: THROW '(' type_id_list_opt ')'
+  448 exception_specification: THROW '(' type_id_list_opt ')'
 
-  450 type_id_list: type_id
-  451             | type_id_list ',' type_id
+  449 type_id_list: type_id
+  450             | type_id_list ',' type_id
 
-  452 declaration_seq_opt: /* empty */
-  453                    | declaration_seq
+  451 declaration_seq_opt: /* empty */
+  452                    | declaration_seq
 
-  454 nested_name_specifier_opt: /* empty */
-  455                          | nested_name_specifier
+  453 nested_name_specifier_opt: /* empty */
+  454                          | nested_name_specifier
 
-  456 expression_list_opt: /* empty */
-  457                    | expression_list
+  455 expression_list_opt: /* empty */
+  456                    | expression_list
 
-  458 COLONCOLON_opt: /* empty */
-  459               | COLONCOLON
+  457 COLONCOLON_opt: /* empty */
+  458               | COLONCOLON
 
-  460 new_placement_opt: /* empty */
-  461                  | new_placement
+  459 new_placement_opt: /* empty */
+  460                  | new_placement
 
-  462 new_initializer_opt: /* empty */
-  463                    | new_initializer
+  461 new_initializer_opt: /* empty */
+  462                    | new_initializer
 
-  464 new_declarator_opt: /* empty */
-  465                   | new_declarator
+  463 new_declarator_opt: /* empty */
+  464                   | new_declarator
 
-  466 expression_opt: /* empty */
-  467               | expression
+  465 expression_opt: /* empty */
+  466               | expression
 
-  468 statement_seq_opt: /* empty */
-  469                  | statement_seq
+  467 statement_seq_opt: /* empty */
+  468                  | statement_seq
 
-  470 condition_opt: /* empty */
-  471              | condition
+  469 condition_opt: /* empty */
+  470              | condition
 
-  472 enumerator_list_opt: /* empty */
-  473                    | enumerator_list
+  471 enumerator_list_opt: /* empty */
+  472                    | enumerator_list
 
-  474 initializer_opt: /* empty */
-  475                | initializer
+  473 initializer_opt: /* empty */
+  474                | initializer
 
-  476 constant_expression_opt: /* empty */
-  477                        | constant_expression
+  475 constant_expression_opt: /* empty */
+  476                        | constant_expression
 
-  478 abstract_declarator_opt: /* empty */
-  479                        | abstract_declarator
+  477 abstract_declarator_opt: /* empty */
+  478                        | abstract_declarator
 
-  480 type_specifier_seq_opt: /* empty */
-  481                       | type_specifier_seq
+  479 type_specifier_seq_opt: /* empty */
+  480                       | type_specifier_seq
 
-  482 direct_abstract_declarator_opt: /* empty */
-  483                               | direct_abstract_declarator
+  481 direct_abstract_declarator_opt: /* empty */
+  482                               | direct_abstract_declarator
 
-  484 ctor_initializer_opt: /* empty */
-  485                     | ctor_initializer
+  483 ctor_initializer_opt: /* empty */
+  484                     | ctor_initializer
 
-  486 COMMA_opt: /* empty */
-  487          | ','
+  485 COMMA_opt: /* empty */
+  486          | ','
 
-  488 member_specification_opt: /* empty */
-  489                         | member_specification
+  487 member_specification_opt: /* empty */
+  488                         | member_specification
 
-  490 SEMICOLON_opt: /* empty */
-  491              | ';'
+  489 SEMICOLON_opt: /* empty */
+  490              | ';'
 
-  492 conversion_declarator_opt: /* empty */
-  493                          | conversion_declarator
+  491 conversion_declarator_opt: /* empty */
+  492                          | conversion_declarator
 
-  494 EXPORT_opt: /* empty */
-  495           | EXPORT
+  493 EXPORT_opt: /* empty */
+  494           | EXPORT
 
-  496 handler_seq_opt: /* empty */
-  497                | handler_seq
+  495 handler_seq_opt: /* empty */
+  496                | handler_seq
 
-  498 assignment_expression_opt: /* empty */
-  499                          | assignment_expression
+  497 assignment_expression_opt: /* empty */
+  498                          | assignment_expression
 
-  500 type_id_list_opt: /* empty */
-  501                 | type_id_list
+  499 type_id_list_opt: /* empty */
+  500                 | type_id_list
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'!' (33) 70 392
-'%' (37) 95 387
-'&' (38) 62 111 275 389
+'!' (33) 70 391
+'%' (37) 95 386
+'&' (38) 62 111 275 388
 '(' (40) 23 39 50 51 52 53 54 55 65 74 75 76 82 88 154 155 156 159
-    160 161 258 267 268 269 270 272 292 293 294 295 297 315 372 419
-    443 449
+    160 161 258 267 268 269 270 272 292 293 294 295 297 315 371 418
+    442 448
 ')' (41) 23 39 50 51 52 53 54 55 65 74 75 76 82 88 154 155 156 159
-    160 161 258 267 268 269 270 272 292 293 294 295 297 315 372 419
-    443 449
-'*' (42) 61 93 273 274 276 277 278 279 385
-'+' (43) 68 97 383
-',' (44) 57 137 232 262 302 304 320 340 350 371 416 423 434 451 487
+    160 161 258 267 268 269 270 272 292 293 294 295 297 315 371 418
+    442 448
+'*' (42) 61 93 273 274 276 277 278 279 384
+'+' (43) 68 97 382
+',' (44) 57 137 232 262 302 304 320 340 349 370 415 422 433 450 486
 '-' (45) 69 98
 '.' (46) 40 41 42 43
-'/' (47) 94 386
-'0' (48) 346
-':' (58) 121 147 148 149 330 345 348 369
+'/' (47) 94 385
+'0' (48) 345
+':' (58) 121 147 148 149 330 344 347 368
 ';' (59) 150 160 161 164 165 166 167 183 184 244 249 250 251 252 253
-    254 255 256 257 258 331 332 333 334 336 491
-'<' (60) 50 51 52 53 103 229 394 421 430 431 432 439
-'=' (61) 125 158 234 244 306 308 314 346 347 393 427 429 431
-'>' (62) 50 51 52 53 104 229 395 421 430 431 432 439
+    254 255 256 257 258 331 332 333 334 336 490
+'<' (60) 50 51 52 53 103 229 393 420 429 430 431 438
+'=' (61) 125 158 234 244 306 308 314 345 346 392 426 428 430
+'>' (62) 50 51 52 53 104 229 394 420 429 430 431 438
 '?' (63) 121
-'[' (91) 38 80 81 85 86 271 296 381 382 420
-']' (93) 38 80 81 85 86 271 296 381 382 420
-'^' (94) 113 388
-'_' (95) 384
+'[' (91) 38 80 81 85 86 271 296 380 381 419
+']' (93) 38 80 81 85 86 271 296 380 381 419
+'^' (94) 113 387
+'_' (95) 383
 '{' (123) 151 230 240 241 242 259 317 318 321
-'|' (124) 115 390
+'|' (124) 115 389
 '}' (125) 151 230 240 241 242 259 317 318 321
-'~' (126) 30 71 391
+'~' (126) 30 71 390
 error (256)
 IDENTIFIER (258) 8
 INTEGER (259) 14
@@ -777,53 +772,53 @@ NAMESPACE_NAME (264) 3
 CLASS_NAME (265) 4
 ENUM_NAME (266) 6
 TEMPLATE_NAME (267) 7
-ELLIPSIS (268) 298 300 302 447
+ELLIPSIS (268) 298 300 302 446
 COLONCOLON (269) 33 34 35 36 40 42 44 46 73 75 84 86 207 223 224 225
-    226 245 246 249 251 253 254 255 278 279 285 286 287 351 352 355
-    357 359 361 373 374 459
+    226 245 246 249 251 253 254 255 278 279 285 286 287 350 351 354
+    356 358 360 372 373 458
 DOTSTAR (270) 90
-ADDEQ (271) 129 396
-SUBEQ (272) 130 397
-MULEQ (273) 126 398
-DIVEQ (274) 127 399
-MODEQ (275) 128 400
-XOREQ (276) 134 401
-ANDEQ (277) 133 402
-OREQ (278) 135 403
-SL (279) 100 404
-SR (280) 101 405
-SREQ (281) 131 406
-SLEQ (282) 132 407
-EQ (283) 108 408
-NOTEQ (284) 109 409
-LTEQ (285) 105 410
-GTEQ (286) 106 411
-ANDAND (287) 117 412
-OROR (288) 119 413
-PLUSPLUS (289) 48 59 414
-MINUSMINUS (290) 49 60 415
-ARROWSTAR (291) 91 417
-ARROW (292) 44 45 46 47 418
+ADDEQ (271) 129 395
+SUBEQ (272) 130 396
+MULEQ (273) 126 397
+DIVEQ (274) 127 398
+MODEQ (275) 128 399
+XOREQ (276) 134 400
+ANDEQ (277) 133 401
+OREQ (278) 135 402
+SL (279) 100 403
+SR (280) 101 404
+SREQ (281) 131 405
+SLEQ (282) 132 406
+EQ (283) 108 407
+NOTEQ (284) 109 408
+LTEQ (285) 105 409
+GTEQ (286) 106 410
+ANDAND (287) 117 411
+OROR (288) 119 412
+PLUSPLUS (289) 48 59 413
+MINUSMINUS (290) 49 60 414
+ARROWSTAR (291) 91 416
+ARROW (292) 44 45 46 47 417
 ASM (293) 258
 AUTO (294) 192
 BOOL (295) 210
 BREAK (296) 164
 CASE (297) 148
-CATCH (298) 443
+CATCH (298) 442
 CHAR (299) 208
-CLASS (300) 326 426 427 430 431
+CLASS (300) 326 425 426 429 430
 CONST (301) 282
 CONST_CAST (302) 53
 CONTINUE (303) 165
 DEFAULT (304) 149
-DELETE (305) 83 84 85 86 380 382
+DELETE (305) 83 84 85 86 379 381
 DO (306) 160
 DOUBLE (307) 217
 DYNAMIC_CAST (308) 50
 ELSE (309) 155
 ENUM (310) 225 226 227 230
 EXPLICIT (311) 199
-EXPORT (312) 495
+EXPORT (312) 494
 EXTERN (313) 195 259 260
 FALSE (314) 19
 FLOAT (315) 216
@@ -836,11 +831,11 @@ INT (321) 212
 LONG (322) 213
 MUTABLE (323) 196
 NAMESPACE (324) 240 241 242 244 254 255 256 257
-NEW (325) 72 73 74 75 379 381
-OPERATOR (326) 366 378
-PRIVATE (327) 363
-PROTECTED (328) 364
-PUBLIC (329) 365
+NEW (325) 72 73 74 75 378 380
+OPERATOR (326) 365 377
+PRIVATE (327) 362
+PROTECTED (328) 363
+PUBLIC (329) 364
 REGISTER (330) 193
 REINTERPRET_CAST (331) 52
 RETURN (332) 166
@@ -851,18 +846,18 @@ STATIC (336) 194
 STATIC_CAST (337) 51
 STRUCT (338) 327
 SWITCH (339) 156
-TEMPLATE (340) 32 40 41 44 45 421 430 431 438 439
+TEMPLATE (340) 32 40 41 44 45 420 429 430 437 438
 THIS (341) 22
-THROW (342) 448 449
+THROW (342) 447 448
 TRUE (343) 18
-TRY (344) 440 441
+TRY (344) 439 440
 TYPEDEF (345) 189
 TYPEID (346) 54 55
-TYPENAME (347) 228 229 249 250 428 429
+TYPENAME (347) 228 229 249 250 427 428
 UNION (348) 328
 UNSIGNED (349) 215
 USING (350) 249 250 251 252 253 254 255 256 257
-VIRTUAL (351) 198 355 356 357 358 359 360
+VIRTUAL (351) 198 354 355 356 357 358 359
 VOID (352) 218
 VOLATILE (353) 283
 WCHAR_T (354) 209
@@ -881,15 +876,15 @@ namespace_name (130)
 original_namespace_name (131)
     on left: 3, on right: 2 241
 class_name (132)
-    on left: 4 5, on right: 30 33 35 220 351 352 353 354 355 356 357
-    358 359 360 361 362 373 374 375 376
+    on left: 4 5, on right: 30 33 35 220 350 351 352 353 354 355 356
+    357 358 359 360 361 372 373 374 375
 enum_name (133)
     on left: 6, on right: 221
 template_name (134)
-    on left: 7, on right: 431 432 437
+    on left: 7, on right: 430 431 436
 identifier (135)
     on left: 8, on right: 27 147 167 223 224 225 226 227 228 229 230
-    235 240 244 322 323 324 325 345 377 426 427 428 429 430 431
+    235 240 244 322 323 324 325 344 376 425 426 427 428 429 430
 literal (136)
     on left: 9 10 11 12 13, on right: 21
 integer_literal (137)
@@ -915,12 +910,12 @@ qualified_id (146)
 nested_name_specifier (147)
     on left: 33 34 35 36, on right: 31 32 33 34 206 223 225 227 228
     229 245 247 249 250 251 252 254 256 276 277 278 279 286 324 325
-    351 353 373 375 455
+    350 352 372 374 454
 postfix_expression (148)
     on left: 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54
     55, on right: 38 39 40 41 42 43 44 45 46 47 48 49 58
 expression_list (149)
-    on left: 56 57, on right: 57 76 315 457
+    on left: 56 57, on right: 57 76 315 456
 unary_expression (150)
     on left: 58 59 60 61 62 63 64 65 66 67, on right: 64 87
 unary_operator (151)
@@ -928,15 +923,15 @@ unary_operator (151)
 new_expression (152)
     on left: 72 73 74 75, on right: 66
 new_placement (153)
-    on left: 76, on right: 461
+    on left: 76, on right: 460
 new_type_id (154)
     on left: 77, on right: 72 73
 new_declarator (155)
-    on left: 78 79, on right: 465
+    on left: 78 79, on right: 464
 direct_new_declarator (156)
     on left: 80 81, on right: 79 81
 new_initializer (157)
-    on left: 82, on right: 463
+    on left: 82, on right: 462
 delete_expression (158)
     on left: 83 84 85 86, on right: 67
 cast_expression (159)
@@ -968,15 +963,15 @@ conditional_expression (171)
     on left: 120 121, on right: 122 138
 assignment_expression (172)
     on left: 122 123 124, on right: 56 57 121 123 136 137 158 306 308
-    316 435 499
+    316 434 498
 assignment_operator (173)
     on left: 125 126 127 128 129 130 131 132 133 134 135, on right:
     123
 expression (174)
     on left: 136 137, on right: 23 38 50 51 52 53 54 80 121 137 157
-    160 467
+    160 466
 constant_expression (175)
-    on left: 138, on right: 81 148 234 345 347 477
+    on left: 138, on right: 81 148 234 344 346 476
 statement (176)
     on left: 139 140 141 142 143 144 145 146, on right: 147 148 149
     152 153 154 155 156 159 160 161
@@ -985,13 +980,13 @@ labeled_statement (177)
 expression_statement (178)
     on left: 150, on right: 140 162
 compound_statement (179)
-    on left: 151, on right: 141 313 440 443
+    on left: 151, on right: 141 313 439 442
 statement_seq (180)
-    on left: 152 153, on right: 153 469
+    on left: 152 153, on right: 153 468
 selection_statement (181)
     on left: 154 155 156, on right: 142
 condition (182)
-    on left: 157 158, on right: 154 155 156 159 471
+    on left: 157 158, on right: 154 155 156 159 470
 iteration_statement (183)
     on left: 159 160 161, on right: 143
 for_init_statement (184)
@@ -1001,10 +996,10 @@ jump_statement (185)
 declaration_statement (186)
     on left: 168, on right: 145
 declaration_seq (187)
-    on left: 169 170, on right: 170 453
+    on left: 169 170, on right: 170 452
 declaration (188)
-    on left: 171 172 173 174 175 176 177, on right: 169 170 260 421
-    438 439
+    on left: 171 172 173 174 175 176 177, on right: 169 170 260 420
+    437 438
 block_declaration (189)
     on left: 178 179 180 181 182, on right: 168 171
 simple_declaration (190)
@@ -1030,7 +1025,7 @@ elaborated_type_specifier (198)
 enum_specifier (199)
     on left: 230, on right: 202
 enumerator_list (200)
-    on left: 231 232, on right: 232 473
+    on left: 231 232, on right: 232 472
 enumerator_definition (201)
     on left: 233 234, on right: 231 232
 enumerator (202)
@@ -1065,12 +1060,12 @@ init_declarator (216)
     on left: 263, on right: 261 262
 declarator (217)
     on left: 264 265, on right: 158 263 265 272 305 306 309 310 311
-    312 342 343 344 444
+    312 341 342 343 443
 direct_declarator (218)
     on left: 266 267 268 269 270 271 272, on right: 264 267 268 269
     270 271
 ptr_operator (219)
-    on left: 273 274 275 276 277 278 279, on right: 78 265 290 368
+    on left: 273 274 275 276 277 278 279, on right: 78 265 290 367
 cv_qualifier_seq (220)
     on left: 280 281, on right: 267 268 274 277 279 281 292 293
 cv_qualifier (221)
@@ -1078,27 +1073,27 @@ cv_qualifier (221)
 declarator_id (222)
     on left: 284 285 286 287, on right: 266
 type_id (223)
-    on left: 288, on right: 50 51 52 53 55 65 74 75 88 427 429 436
-    450 451
+    on left: 288, on right: 50 51 52 53 55 65 74 75 88 426 428 435
+    449 450
 type_specifier_seq (224)
-    on left: 289, on right: 77 158 288 367 444 445 446 481
+    on left: 289, on right: 77 158 288 366 443 444 445 480
 abstract_declarator (225)
-    on left: 290 291, on right: 297 445 479
+    on left: 290 291, on right: 297 444 478
 direct_abstract_declarator (226)
-    on left: 292 293 294 295 296 297, on right: 291 483
+    on left: 292 293 294 295 296 297, on right: 291 482
 parameter_declaration_clause (227)
     on left: 298 299 300 301 302, on right: 267 268 269 270 292 293
     294 295
 parameter_declaration_list (228)
     on left: 303 304, on right: 298 299 302 304
 parameter_declaration (229)
-    on left: 305 306 307 308, on right: 303 304 425
+    on left: 305 306 307 308, on right: 303 304 424
 function_definition (230)
     on left: 309 310 311 312, on right: 172 335
 function_body (231)
-    on left: 313, on right: 309 310 441
+    on left: 313, on right: 309 310 440
 initializer (232)
-    on left: 314 315, on right: 475
+    on left: 314 315, on right: 474
 initializer_clause (233)
     on left: 316 317 318, on right: 314 319 320
 initializer_list (234)
@@ -1110,130 +1105,130 @@ class_head (236)
 class_key (237)
     on left: 326 327 328, on right: 223 224 322 323 324 325
 member_specification (238)
-    on left: 329 330, on right: 489
+    on left: 329 330, on right: 488
 member_declaration (239)
     on left: 331 332 333 334 335 336 337 338, on right: 329
 member_declarator_list (240)
     on left: 339 340, on right: 331 333 340
 member_declarator (241)
-    on left: 341 342 343 344 345, on right: 339 340
+    on left: 341 342 343 344, on right: 339 340
 pure_specifier (242)
-    on left: 346, on right: 343
+    on left: 345, on right: 342
 constant_initializer (243)
-    on left: 347, on right: 344
+    on left: 346, on right: 343
 base_clause (244)
-    on left: 348, on right: 323 325
+    on left: 347, on right: 323 325
 base_specifier_list (245)
-    on left: 349 350, on right: 348 350
+    on left: 348 349, on right: 347 349
 base_specifier (246)
-    on left: 351 352 353 354 355 356 357 358 359 360 361 362, on right:
-    349 350
+    on left: 350 351 352 353 354 355 356 357 358 359 360 361, on right:
+    348 349
 access_specifier (247)
-    on left: 363 364 365, on right: 330 355 356 359 360 361 362
+    on left: 362 363 364, on right: 330 354 355 358 359 360 361
 conversion_function_id (248)
-    on left: 366, on right: 29
+    on left: 365, on right: 29
 conversion_type_id (249)
-    on left: 367, on right: 366
+    on left: 366, on right: 365
 conversion_declarator (250)
-    on left: 368, on right: 493
+    on left: 367, on right: 492
 ctor_initializer (251)
-    on left: 369, on right: 485
+    on left: 368, on right: 484
 mem_initializer_list (252)
-    on left: 370 371, on right: 369 371
+    on left: 369 370, on right: 368 370
 mem_initializer (253)
-    on left: 372, on right: 370 371
+    on left: 371, on right: 369 370
 mem_initializer_id (254)
-    on left: 373 374 375 376 377, on right: 372
+    on left: 372 373 374 375 376, on right: 371
 operator_function_id (255)
-    on left: 378, on right: 28
+    on left: 377, on right: 28
 operator (256)
-    on left: 379 380 381 382 383 384 385 386 387 388 389 390 391 392
-    393 394 395 396 397 398 399 400 401 402 403 404 405 406 407 408
-    409 410 411 412 413 414 415 416 417 418 419 420, on right: 378
+    on left: 378 379 380 381 382 383 384 385 386 387 388 389 390 391
+    392 393 394 395 396 397 398 399 400 401 402 403 404 405 406 407
+    408 409 410 411 412 413 414 415 416 417 418 419, on right: 377
 template_declaration (257)
-    on left: 421, on right: 173 338
+    on left: 420, on right: 173 338
 template_parameter_list (258)
-    on left: 422 423, on right: 421 423 430 431
+    on left: 421 422, on right: 420 422 429 430
 template_parameter (259)
-    on left: 424 425, on right: 422 423
+    on left: 423 424, on right: 421 422
 type_parameter (260)
-    on left: 426 427 428 429 430 431, on right: 424
+    on left: 425 426 427 428 429 430, on right: 423
 template_id (261)
-    on left: 432, on right: 5
+    on left: 431, on right: 5
 template_argument_list (262)
-    on left: 433 434, on right: 229 432 434
+    on left: 432 433, on right: 229 431 433
 template_argument (263)
-    on left: 435 436 437, on right: 433 434
+    on left: 434 435 436, on right: 432 433
 explicit_instantiation (264)
-    on left: 438, on right: 174
+    on left: 437, on right: 174
 explicit_specialization (265)
-    on left: 439, on right: 175
+    on left: 438, on right: 175
 try_block (266)
-    on left: 440, on right: 146
+    on left: 439, on right: 146
 function_try_block (267)
-    on left: 441, on right: 311 312
+    on left: 440, on right: 311 312
 handler_seq (268)
-    on left: 442, on right: 440 441 497
+    on left: 441, on right: 439 440 496
 handler (269)
-    on left: 443, on right: 442
+    on left: 442, on right: 441
 exception_declaration (270)
-    on left: 444 445 446 447, on right: 443
+    on left: 443 444 445 446, on right: 442
 throw_expression (271)
-    on left: 448, on right: 124
+    on left: 447, on right: 124
 exception_specification (272)
-    on left: 449, on right: 267 269 292 294
+    on left: 448, on right: 267 269 292 294
 type_id_list (273)
-    on left: 450 451, on right: 451 501
+    on left: 449 450, on right: 450 500
 declaration_seq_opt (274)
-    on left: 452 453, on right: 20 243 259
+    on left: 451 452, on right: 20 243 259
 nested_name_specifier_opt (275)
-    on left: 454 455, on right: 207 355 356 357 358 359 360 361 362
+    on left: 453 454, on right: 207 354 355 356 357 358 359 360 361
 expression_list_opt (276)
-    on left: 456 457, on right: 39 82 372
+    on left: 455 456, on right: 39 82 371
 COLONCOLON_opt (277)
-    on left: 458 459, on right: 228 229
+    on left: 457 458, on right: 228 229
 new_placement_opt (278)
-    on left: 460 461, on right: 72 73 74 75
+    on left: 459 460, on right: 72 73 74 75
 new_initializer_opt (279)
-    on left: 462 463, on right: 72 73 74 75
+    on left: 461 462, on right: 72 73 74 75
 new_declarator_opt (280)
-    on left: 464 465, on right: 77 78
+    on left: 463 464, on right: 77 78
 expression_opt (281)
-    on left: 466 467, on right: 150 161 166
+    on left: 465 466, on right: 150 161 166
 statement_seq_opt (282)
-    on left: 468 469, on right: 151
+    on left: 467 468, on right: 151
 condition_opt (283)
-    on left: 470 471, on right: 161
+    on left: 469 470, on right: 161
 enumerator_list_opt (284)
-    on left: 472 473, on right: 230
+    on left: 471 472, on right: 230
 initializer_opt (285)
-    on left: 474 475, on right: 263
+    on left: 473 474, on right: 263
 constant_expression_opt (286)
-    on left: 476 477, on right: 271 296
+    on left: 475 476, on right: 271 296
 abstract_declarator_opt (287)
-    on left: 478 479, on right: 288 290 307 308
+    on left: 477 478, on right: 288 290 307 308
 type_specifier_seq_opt (288)
-    on left: 480 481, on right: 289
+    on left: 479 480, on right: 289
 direct_abstract_declarator_opt (289)
-    on left: 482 483, on right: 292 293 294 295 296
+    on left: 481 482, on right: 292 293 294 295 296
 ctor_initializer_opt (290)
-    on left: 484 485, on right: 309 310 441
+    on left: 483 484, on right: 309 310 440
 COMMA_opt (291)
-    on left: 486 487, on right: 317
+    on left: 485 486, on right: 317
 member_specification_opt (292)
-    on left: 488 489, on right: 321 329 330
+    on left: 487 488, on right: 321 329 330
 SEMICOLON_opt (293)
-    on left: 490 491, on right: 335
+    on left: 489 490, on right: 335
 conversion_declarator_opt (294)
-    on left: 492 493, on right: 367 368
+    on left: 491 492, on right: 366 367
 EXPORT_opt (295)
-    on left: 494 495, on right: 421
+    on left: 493 494, on right: 420
 handler_seq_opt (296)
-    on left: 496 497, on right: 442
+    on left: 495 496, on right: 441
 assignment_expression_opt (297)
-    on left: 498 499, on right: 448
+    on left: 497 498, on right: 447
 type_id_list_opt (298)
-    on left: 500 501, on right: 449
+    on left: 499 500, on right: 448
 
 
 state 0
@@ -1287,8 +1282,8 @@ state 0
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    TEMPLATE  [reduce using rule 494 (EXPORT_opt)]
-    $default  reduce using rule 452 (declaration_seq_opt)
+    TEMPLATE  [reduce using rule 493 (EXPORT_opt)]
+    $default  reduce using rule 451 (declaration_seq_opt)
 
     typedef_name                    go to state 47
     namespace_name                  go to state 48
@@ -1404,10 +1399,10 @@ state 7
     OPERATOR        shift, and go to state 26
     '~'             shift, and go to state 44
 
-    TYPEDEF_NAME   [reduce using rule 454 (nested_name_specifier_opt)]
-    CLASS_NAME     [reduce using rule 454 (nested_name_specifier_opt)]
-    ENUM_NAME      [reduce using rule 454 (nested_name_specifier_opt)]
-    TEMPLATE_NAME  [reduce using rule 454 (nested_name_specifier_opt)]
+    TYPEDEF_NAME   [reduce using rule 453 (nested_name_specifier_opt)]
+    CLASS_NAME     [reduce using rule 453 (nested_name_specifier_opt)]
+    ENUM_NAME      [reduce using rule 453 (nested_name_specifier_opt)]
+    TEMPLATE_NAME  [reduce using rule 453 (nested_name_specifier_opt)]
 
     typedef_name               go to state 47
     namespace_name             go to state 48
@@ -1507,9 +1502,9 @@ state 16
 
 state 17
 
-  495 EXPORT_opt: EXPORT .
+  494 EXPORT_opt: EXPORT .
 
-    $default  reduce using rule 495 (EXPORT_opt)
+    $default  reduce using rule 494 (EXPORT_opt)
 
 
 state 18
@@ -1584,8 +1579,8 @@ state 25
 
 state 26
 
-  366 conversion_function_id: OPERATOR . conversion_type_id
-  378 operator_function_id: OPERATOR . operator
+  365 conversion_function_id: OPERATOR . conversion_type_id
+  377 operator_function_id: OPERATOR . operator
 
     TYPEDEF_NAME    shift, and go to state 2
     NAMESPACE_NAME  shift, and go to state 3
@@ -1712,8 +1707,8 @@ state 31
 
 state 32
 
-  438 explicit_instantiation: TEMPLATE . declaration
-  439 explicit_specialization: TEMPLATE . '<' '>' declaration
+  437 explicit_instantiation: TEMPLATE . declaration
+  438 explicit_specialization: TEMPLATE . '<' '>' declaration
 
     IDENTIFIER      shift, and go to state 1
     TYPEDEF_NAME    shift, and go to state 2
@@ -1763,7 +1758,7 @@ state 32
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    TEMPLATE  [reduce using rule 494 (EXPORT_opt)]
+    TEMPLATE  [reduce using rule 493 (EXPORT_opt)]
 
     typedef_name                    go to state 47
     namespace_name                  go to state 48
@@ -1830,7 +1825,7 @@ state 34
 
     COLONCOLON  shift, and go to state 161
 
-    $default  reduce using rule 458 (COLONCOLON_opt)
+    $default  reduce using rule 457 (COLONCOLON_opt)
 
     COLONCOLON_opt  go to state 162
 
@@ -2020,7 +2015,7 @@ state 51
 
 state 52
 
-  432 template_id: template_name . '<' template_argument_list '>'
+  431 template_id: template_name . '<' template_argument_list '>'
 
     '<'  shift, and go to state 175
 
@@ -2093,7 +2088,7 @@ state 58
 state 59
 
   170 declaration_seq: declaration_seq . declaration
-  453 declaration_seq_opt: declaration_seq .
+  452 declaration_seq_opt: declaration_seq .
 
     IDENTIFIER      shift, and go to state 1
     TYPEDEF_NAME    shift, and go to state 2
@@ -2142,8 +2137,8 @@ state 59
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    TEMPLATE  [reduce using rule 494 (EXPORT_opt)]
-    $default  reduce using rule 453 (declaration_seq_opt)
+    TEMPLATE  [reduce using rule 493 (EXPORT_opt)]
+    $default  reduce using rule 452 (declaration_seq_opt)
 
     typedef_name                    go to state 47
     namespace_name                  go to state 48
@@ -2436,7 +2431,7 @@ state 82
     TRY  shift, and go to state 189
     ':'  shift, and go to state 190
 
-    $default  reduce using rule 484 (ctor_initializer_opt)
+    $default  reduce using rule 483 (ctor_initializer_opt)
 
     ctor_initializer      go to state 191
     function_try_block    go to state 192
@@ -2602,7 +2597,7 @@ state 97
 
 state 98
 
-  421 template_declaration: EXPORT_opt . TEMPLATE '<' template_parameter_list '>' declaration
+  420 template_declaration: EXPORT_opt . TEMPLATE '<' template_parameter_list '>' declaration
 
     TEMPLATE  shift, and go to state 201
 
@@ -2621,7 +2616,7 @@ state 100
   278 ptr_operator: COLONCOLON nested_name_specifier . '*'
   279             | COLONCOLON nested_name_specifier . '*' cv_qualifier_seq
   286 declarator_id: COLONCOLON nested_name_specifier . type_name
-  455 nested_name_specifier_opt: nested_name_specifier .
+  454 nested_name_specifier_opt: nested_name_specifier .
 
     IDENTIFIER     shift, and go to state 1
     TYPEDEF_NAME   shift, and go to state 2
@@ -2633,10 +2628,10 @@ state 100
     '~'            shift, and go to state 44
     '*'            shift, and go to state 202
 
-    TYPEDEF_NAME   [reduce using rule 455 (nested_name_specifier_opt)]
-    CLASS_NAME     [reduce using rule 455 (nested_name_specifier_opt)]
-    ENUM_NAME      [reduce using rule 455 (nested_name_specifier_opt)]
-    TEMPLATE_NAME  [reduce using rule 455 (nested_name_specifier_opt)]
+    TYPEDEF_NAME   [reduce using rule 454 (nested_name_specifier_opt)]
+    CLASS_NAME     [reduce using rule 454 (nested_name_specifier_opt)]
+    ENUM_NAME      [reduce using rule 454 (nested_name_specifier_opt)]
+    TEMPLATE_NAME  [reduce using rule 454 (nested_name_specifier_opt)]
 
     typedef_name            go to state 47
     class_name              go to state 179
@@ -2786,7 +2781,7 @@ state 109
     '&'             shift, and go to state 46
     '{'             shift, and go to state 210
 
-    TEMPLATE  [reduce using rule 494 (EXPORT_opt)]
+    TEMPLATE  [reduce using rule 493 (EXPORT_opt)]
 
     typedef_name                    go to state 47
     namespace_name                  go to state 48
@@ -2890,8 +2885,8 @@ state 110
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    TEMPLATE  [reduce using rule 494 (EXPORT_opt)]
-    $default  reduce using rule 452 (declaration_seq_opt)
+    TEMPLATE  [reduce using rule 493 (EXPORT_opt)]
+    $default  reduce using rule 451 (declaration_seq_opt)
 
     typedef_name                    go to state 47
     namespace_name                  go to state 48
@@ -2971,9 +2966,9 @@ state 113
     CLASS_NAME      shift, and go to state 4
     TEMPLATE_NAME   shift, and go to state 6
 
-    CLASS_NAME     [reduce using rule 454 (nested_name_specifier_opt)]
-    TEMPLATE_NAME  [reduce using rule 454 (nested_name_specifier_opt)]
-    $default       reduce using rule 454 (nested_name_specifier_opt)
+    CLASS_NAME     [reduce using rule 453 (nested_name_specifier_opt)]
+    TEMPLATE_NAME  [reduce using rule 453 (nested_name_specifier_opt)]
+    $default       reduce using rule 453 (nested_name_specifier_opt)
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -2986,290 +2981,290 @@ state 113
 
 state 114
 
-  396 operator: ADDEQ .
+  395 operator: ADDEQ .
 
-    $default  reduce using rule 396 (operator)
+    $default  reduce using rule 395 (operator)
 
 
 state 115
 
-  397 operator: SUBEQ .
+  396 operator: SUBEQ .
 
-    $default  reduce using rule 397 (operator)
+    $default  reduce using rule 396 (operator)
 
 
 state 116
 
-  398 operator: MULEQ .
+  397 operator: MULEQ .
 
-    $default  reduce using rule 398 (operator)
+    $default  reduce using rule 397 (operator)
 
 
 state 117
 
-  399 operator: DIVEQ .
+  398 operator: DIVEQ .
 
-    $default  reduce using rule 399 (operator)
+    $default  reduce using rule 398 (operator)
 
 
 state 118
 
-  400 operator: MODEQ .
+  399 operator: MODEQ .
 
-    $default  reduce using rule 400 (operator)
+    $default  reduce using rule 399 (operator)
 
 
 state 119
 
-  401 operator: XOREQ .
+  400 operator: XOREQ .
 
-    $default  reduce using rule 401 (operator)
+    $default  reduce using rule 400 (operator)
 
 
 state 120
 
-  402 operator: ANDEQ .
+  401 operator: ANDEQ .
 
-    $default  reduce using rule 402 (operator)
+    $default  reduce using rule 401 (operator)
 
 
 state 121
 
-  403 operator: OREQ .
+  402 operator: OREQ .
 
-    $default  reduce using rule 403 (operator)
+    $default  reduce using rule 402 (operator)
 
 
 state 122
 
-  404 operator: SL .
+  403 operator: SL .
 
-    $default  reduce using rule 404 (operator)
+    $default  reduce using rule 403 (operator)
 
 
 state 123
 
-  405 operator: SR .
+  404 operator: SR .
 
-    $default  reduce using rule 405 (operator)
+    $default  reduce using rule 404 (operator)
 
 
 state 124
 
-  406 operator: SREQ .
+  405 operator: SREQ .
 
-    $default  reduce using rule 406 (operator)
+    $default  reduce using rule 405 (operator)
 
 
 state 125
 
-  407 operator: SLEQ .
+  406 operator: SLEQ .
 
-    $default  reduce using rule 407 (operator)
+    $default  reduce using rule 406 (operator)
 
 
 state 126
 
-  408 operator: EQ .
+  407 operator: EQ .
 
-    $default  reduce using rule 408 (operator)
+    $default  reduce using rule 407 (operator)
 
 
 state 127
 
-  409 operator: NOTEQ .
+  408 operator: NOTEQ .
 
-    $default  reduce using rule 409 (operator)
+    $default  reduce using rule 408 (operator)
 
 
 state 128
 
-  410 operator: LTEQ .
+  409 operator: LTEQ .
 
-    $default  reduce using rule 410 (operator)
+    $default  reduce using rule 409 (operator)
 
 
 state 129
 
-  411 operator: GTEQ .
+  410 operator: GTEQ .
 
-    $default  reduce using rule 411 (operator)
+    $default  reduce using rule 410 (operator)
 
 
 state 130
 
-  412 operator: ANDAND .
+  411 operator: ANDAND .
 
-    $default  reduce using rule 412 (operator)
+    $default  reduce using rule 411 (operator)
 
 
 state 131
 
-  413 operator: OROR .
+  412 operator: OROR .
 
-    $default  reduce using rule 413 (operator)
+    $default  reduce using rule 412 (operator)
 
 
 state 132
 
-  414 operator: PLUSPLUS .
+  413 operator: PLUSPLUS .
 
-    $default  reduce using rule 414 (operator)
+    $default  reduce using rule 413 (operator)
 
 
 state 133
 
-  415 operator: MINUSMINUS .
+  414 operator: MINUSMINUS .
 
-    $default  reduce using rule 415 (operator)
+    $default  reduce using rule 414 (operator)
 
 
 state 134
 
-  417 operator: ARROWSTAR .
+  416 operator: ARROWSTAR .
 
-    $default  reduce using rule 417 (operator)
+    $default  reduce using rule 416 (operator)
 
 
 state 135
 
-  418 operator: ARROW .
+  417 operator: ARROW .
 
-    $default  reduce using rule 418 (operator)
+    $default  reduce using rule 417 (operator)
 
 
 state 136
 
-  380 operator: DELETE .
-  382         | DELETE . '[' ']'
+  379 operator: DELETE .
+  381         | DELETE . '[' ']'
 
     '['  shift, and go to state 218
-
-    '['       [reduce using rule 380 (operator)]
-    $default  reduce using rule 380 (operator)
-
-
-state 137
-
-  379 operator: NEW .
-  381         | NEW . '[' ']'
-
-    '['  shift, and go to state 219
 
     '['       [reduce using rule 379 (operator)]
     $default  reduce using rule 379 (operator)
 
 
+state 137
+
+  378 operator: NEW .
+  380         | NEW . '[' ']'
+
+    '['  shift, and go to state 219
+
+    '['       [reduce using rule 378 (operator)]
+    $default  reduce using rule 378 (operator)
+
+
 state 138
 
-  419 operator: '(' . ')'
+  418 operator: '(' . ')'
 
     ')'  shift, and go to state 220
 
 
 state 139
 
-  391 operator: '~' .
+  390 operator: '~' .
 
-    $default  reduce using rule 391 (operator)
+    $default  reduce using rule 390 (operator)
 
 
 state 140
 
-  420 operator: '[' . ']'
+  419 operator: '[' . ']'
 
     ']'  shift, and go to state 221
 
 
 state 141
 
-  394 operator: '<' .
-
-    $default  reduce using rule 394 (operator)
-
-
-state 142
-
-  395 operator: '>' .
-
-    $default  reduce using rule 395 (operator)
-
-
-state 143
-
-  416 operator: ',' .
-
-    $default  reduce using rule 416 (operator)
-
-
-state 144
-
-  385 operator: '*' .
-
-    $default  reduce using rule 385 (operator)
-
-
-state 145
-
-  389 operator: '&' .
-
-    $default  reduce using rule 389 (operator)
-
-
-state 146
-
-  383 operator: '+' .
-
-    $default  reduce using rule 383 (operator)
-
-
-state 147
-
-  392 operator: '!' .
-
-    $default  reduce using rule 392 (operator)
-
-
-state 148
-
-  386 operator: '/' .
-
-    $default  reduce using rule 386 (operator)
-
-
-state 149
-
-  387 operator: '%' .
-
-    $default  reduce using rule 387 (operator)
-
-
-state 150
-
-  388 operator: '^' .
-
-    $default  reduce using rule 388 (operator)
-
-
-state 151
-
-  390 operator: '|' .
-
-    $default  reduce using rule 390 (operator)
-
-
-state 152
-
-  393 operator: '=' .
+  393 operator: '<' .
 
     $default  reduce using rule 393 (operator)
 
 
-state 153
+state 142
 
-  384 operator: '_' .
+  394 operator: '>' .
+
+    $default  reduce using rule 394 (operator)
+
+
+state 143
+
+  415 operator: ',' .
+
+    $default  reduce using rule 415 (operator)
+
+
+state 144
+
+  384 operator: '*' .
 
     $default  reduce using rule 384 (operator)
+
+
+state 145
+
+  388 operator: '&' .
+
+    $default  reduce using rule 388 (operator)
+
+
+state 146
+
+  382 operator: '+' .
+
+    $default  reduce using rule 382 (operator)
+
+
+state 147
+
+  391 operator: '!' .
+
+    $default  reduce using rule 391 (operator)
+
+
+state 148
+
+  385 operator: '/' .
+
+    $default  reduce using rule 385 (operator)
+
+
+state 149
+
+  386 operator: '%' .
+
+    $default  reduce using rule 386 (operator)
+
+
+state 150
+
+  387 operator: '^' .
+
+    $default  reduce using rule 387 (operator)
+
+
+state 151
+
+  389 operator: '|' .
+
+    $default  reduce using rule 389 (operator)
+
+
+state 152
+
+  392 operator: '=' .
+
+    $default  reduce using rule 392 (operator)
+
+
+state 153
+
+  383 operator: '_' .
+
+    $default  reduce using rule 383 (operator)
 
 
 state 154
@@ -3319,11 +3314,11 @@ state 155
     WCHAR_T         shift, and go to state 41
     STR_TYPE        shift, and go to state 42
 
-    NAMESPACE_NAME  [reduce using rule 480 (type_specifier_seq_opt)]
-    CLASS_NAME      [reduce using rule 480 (type_specifier_seq_opt)]
-    TEMPLATE_NAME   [reduce using rule 480 (type_specifier_seq_opt)]
-    COLONCOLON      [reduce using rule 480 (type_specifier_seq_opt)]
-    $default        reduce using rule 480 (type_specifier_seq_opt)
+    NAMESPACE_NAME  [reduce using rule 479 (type_specifier_seq_opt)]
+    CLASS_NAME      [reduce using rule 479 (type_specifier_seq_opt)]
+    TEMPLATE_NAME   [reduce using rule 479 (type_specifier_seq_opt)]
+    COLONCOLON      [reduce using rule 479 (type_specifier_seq_opt)]
+    $default        reduce using rule 479 (type_specifier_seq_opt)
 
     typedef_name               go to state 47
     namespace_name             go to state 48
@@ -3348,7 +3343,7 @@ state 155
 
 state 156
 
-  367 conversion_type_id: type_specifier_seq . conversion_declarator_opt
+  366 conversion_type_id: type_specifier_seq . conversion_declarator_opt
 
     NAMESPACE_NAME  shift, and go to state 3
     CLASS_NAME      shift, and go to state 4
@@ -3357,9 +3352,9 @@ state 156
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    '*'       [reduce using rule 492 (conversion_declarator_opt)]
-    '&'       [reduce using rule 492 (conversion_declarator_opt)]
-    $default  reduce using rule 492 (conversion_declarator_opt)
+    '*'       [reduce using rule 491 (conversion_declarator_opt)]
+    '&'       [reduce using rule 491 (conversion_declarator_opt)]
+    $default  reduce using rule 491 (conversion_declarator_opt)
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -3374,37 +3369,37 @@ state 156
 
 state 157
 
-  366 conversion_function_id: OPERATOR conversion_type_id .
+  365 conversion_function_id: OPERATOR conversion_type_id .
 
-    $default  reduce using rule 366 (conversion_function_id)
+    $default  reduce using rule 365 (conversion_function_id)
 
 
 state 158
 
-  378 operator_function_id: OPERATOR operator .
+  377 operator_function_id: OPERATOR operator .
 
-    $default  reduce using rule 378 (operator_function_id)
+    $default  reduce using rule 377 (operator_function_id)
 
 
 state 159
 
-  439 explicit_specialization: TEMPLATE '<' . '>' declaration
+  438 explicit_specialization: TEMPLATE '<' . '>' declaration
 
     '>'  shift, and go to state 229
 
 
 state 160
 
-  438 explicit_instantiation: TEMPLATE declaration .
+  437 explicit_instantiation: TEMPLATE declaration .
 
-    $default  reduce using rule 438 (explicit_instantiation)
+    $default  reduce using rule 437 (explicit_instantiation)
 
 
 state 161
 
-  459 COLONCOLON_opt: COLONCOLON .
+  458 COLONCOLON_opt: COLONCOLON .
 
-    $default  reduce using rule 459 (COLONCOLON_opt)
+    $default  reduce using rule 458 (COLONCOLON_opt)
 
 
 state 162
@@ -3634,7 +3629,7 @@ state 174
 
 state 175
 
-  432 template_id: template_name '<' . template_argument_list '>'
+  431 template_id: template_name '<' . template_argument_list '>'
 
     IDENTIFIER        shift, and go to state 1
     INTEGER           shift, and go to state 244
@@ -3856,8 +3851,8 @@ state 188
     ':'  shift, and go to state 190
     '='  shift, and go to state 308
 
-    '{'       reduce using rule 484 (ctor_initializer_opt)
-    $default  reduce using rule 474 (initializer_opt)
+    '{'       reduce using rule 483 (ctor_initializer_opt)
+    $default  reduce using rule 473 (initializer_opt)
 
     initializer           go to state 309
     ctor_initializer      go to state 191
@@ -3868,11 +3863,11 @@ state 188
 
 state 189
 
-  441 function_try_block: TRY . ctor_initializer_opt function_body handler_seq
+  440 function_try_block: TRY . ctor_initializer_opt function_body handler_seq
 
     ':'  shift, and go to state 190
 
-    $default  reduce using rule 484 (ctor_initializer_opt)
+    $default  reduce using rule 483 (ctor_initializer_opt)
 
     ctor_initializer      go to state 191
     ctor_initializer_opt  go to state 313
@@ -3880,7 +3875,7 @@ state 189
 
 state 190
 
-  369 ctor_initializer: ':' . mem_initializer_list
+  368 ctor_initializer: ':' . mem_initializer_list
 
     IDENTIFIER      shift, and go to state 1
     NAMESPACE_NAME  shift, and go to state 3
@@ -3902,9 +3897,9 @@ state 190
 
 state 191
 
-  485 ctor_initializer_opt: ctor_initializer .
+  484 ctor_initializer_opt: ctor_initializer .
 
-    $default  reduce using rule 485 (ctor_initializer_opt)
+    $default  reduce using rule 484 (ctor_initializer_opt)
 
 
 state 192
@@ -4031,7 +4026,7 @@ state 195
     '-'               shift, and go to state 267
     '!'               shift, and go to state 268
 
-    $default  reduce using rule 476 (constant_expression_opt)
+    $default  reduce using rule 475 (constant_expression_opt)
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -4133,10 +4128,8 @@ state 197
     '&'             shift, and go to state 46
     ';'             shift, and go to state 339
 
-    TEMPLATE  reduce using rule 494 (EXPORT_opt)
-    ';'       [reduce using rule 341 (member_declarator)]
-    '}'       reduce using rule 488 (member_specification_opt)
-    $default  reduce using rule 341 (member_declarator)
+    TEMPLATE  reduce using rule 493 (EXPORT_opt)
+    $default  reduce using rule 487 (member_specification_opt)
 
     typedef_name               go to state 47
     namespace_name             go to state 48
@@ -4224,7 +4217,7 @@ state 200
 
 state 201
 
-  421 template_declaration: EXPORT_opt TEMPLATE . '<' template_parameter_list '>' declaration
+  420 template_declaration: EXPORT_opt TEMPLATE . '<' template_parameter_list '>' declaration
 
     '<'  shift, and go to state 358
 
@@ -4286,7 +4279,7 @@ state 208
 
     IDENTIFIER  shift, and go to state 1
 
-    $default  reduce using rule 472 (enumerator_list_opt)
+    $default  reduce using rule 471 (enumerator_list_opt)
 
     identifier             go to state 362
     enumerator_list        go to state 363
@@ -4353,8 +4346,8 @@ state 210
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    TEMPLATE  [reduce using rule 494 (EXPORT_opt)]
-    $default  reduce using rule 452 (declaration_seq_opt)
+    TEMPLATE  [reduce using rule 493 (EXPORT_opt)]
+    $default  reduce using rule 451 (declaration_seq_opt)
 
     typedef_name                    go to state 47
     namespace_name                  go to state 48
@@ -4481,8 +4474,8 @@ state 214
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    TEMPLATE  [reduce using rule 494 (EXPORT_opt)]
-    $default  reduce using rule 452 (declaration_seq_opt)
+    TEMPLATE  [reduce using rule 493 (EXPORT_opt)]
+    $default  reduce using rule 451 (declaration_seq_opt)
 
     typedef_name                    go to state 47
     namespace_name                  go to state 48
@@ -4607,8 +4600,8 @@ state 216
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    TEMPLATE  [reduce using rule 494 (EXPORT_opt)]
-    $default  reduce using rule 452 (declaration_seq_opt)
+    TEMPLATE  [reduce using rule 493 (EXPORT_opt)]
+    $default  reduce using rule 451 (declaration_seq_opt)
 
     typedef_name                    go to state 47
     namespace_name                  go to state 48
@@ -4666,44 +4659,44 @@ state 216
 
 state 217
 
-  455 nested_name_specifier_opt: nested_name_specifier .
+  454 nested_name_specifier_opt: nested_name_specifier .
 
-    $default  reduce using rule 455 (nested_name_specifier_opt)
+    $default  reduce using rule 454 (nested_name_specifier_opt)
 
 
 state 218
 
-  382 operator: DELETE '[' . ']'
+  381 operator: DELETE '[' . ']'
 
     ']'  shift, and go to state 375
 
 
 state 219
 
-  381 operator: NEW '[' . ']'
+  380 operator: NEW '[' . ']'
 
     ']'  shift, and go to state 376
 
 
 state 220
 
-  419 operator: '(' ')' .
+  418 operator: '(' ')' .
 
-    $default  reduce using rule 419 (operator)
+    $default  reduce using rule 418 (operator)
 
 
 state 221
 
-  420 operator: '[' ']' .
+  419 operator: '[' ']' .
 
-    $default  reduce using rule 420 (operator)
+    $default  reduce using rule 419 (operator)
 
 
 state 222
 
-  481 type_specifier_seq_opt: type_specifier_seq .
+  480 type_specifier_seq_opt: type_specifier_seq .
 
-    $default  reduce using rule 481 (type_specifier_seq_opt)
+    $default  reduce using rule 480 (type_specifier_seq_opt)
 
 
 state 223
@@ -4740,7 +4733,7 @@ state 225
 
 state 226
 
-  368 conversion_declarator: ptr_operator . conversion_declarator_opt
+  367 conversion_declarator: ptr_operator . conversion_declarator_opt
 
     NAMESPACE_NAME  shift, and go to state 3
     CLASS_NAME      shift, and go to state 4
@@ -4749,9 +4742,9 @@ state 226
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    '*'       [reduce using rule 492 (conversion_declarator_opt)]
-    '&'       [reduce using rule 492 (conversion_declarator_opt)]
-    $default  reduce using rule 492 (conversion_declarator_opt)
+    '*'       [reduce using rule 491 (conversion_declarator_opt)]
+    '&'       [reduce using rule 491 (conversion_declarator_opt)]
+    $default  reduce using rule 491 (conversion_declarator_opt)
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -4766,21 +4759,21 @@ state 226
 
 state 227
 
-  493 conversion_declarator_opt: conversion_declarator .
+  492 conversion_declarator_opt: conversion_declarator .
 
-    $default  reduce using rule 493 (conversion_declarator_opt)
+    $default  reduce using rule 492 (conversion_declarator_opt)
 
 
 state 228
 
-  367 conversion_type_id: type_specifier_seq conversion_declarator_opt .
+  366 conversion_type_id: type_specifier_seq conversion_declarator_opt .
 
-    $default  reduce using rule 367 (conversion_type_id)
+    $default  reduce using rule 366 (conversion_type_id)
 
 
 state 229
 
-  439 explicit_specialization: TEMPLATE '<' '>' . declaration
+  438 explicit_specialization: TEMPLATE '<' '>' . declaration
 
     IDENTIFIER      shift, and go to state 1
     TYPEDEF_NAME    shift, and go to state 2
@@ -4829,7 +4822,7 @@ state 229
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    TEMPLATE  [reduce using rule 494 (EXPORT_opt)]
+    TEMPLATE  [reduce using rule 493 (EXPORT_opt)]
 
     typedef_name                    go to state 47
     namespace_name                  go to state 48
@@ -5080,9 +5073,9 @@ state 247
     DELETE          shift, and go to state 390
     NEW             shift, and go to state 391
 
-    CLASS_NAME     [reduce using rule 454 (nested_name_specifier_opt)]
-    TEMPLATE_NAME  [reduce using rule 454 (nested_name_specifier_opt)]
-    $default       reduce using rule 454 (nested_name_specifier_opt)
+    CLASS_NAME     [reduce using rule 453 (nested_name_specifier_opt)]
+    TEMPLATE_NAME  [reduce using rule 453 (nested_name_specifier_opt)]
+    $default       reduce using rule 453 (nested_name_specifier_opt)
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -5309,8 +5302,8 @@ state 254
 
     '('  shift, and go to state 398
 
-    '('       [reduce using rule 460 (new_placement_opt)]
-    $default  reduce using rule 460 (new_placement_opt)
+    '('       [reduce using rule 459 (new_placement_opt)]
+    $default  reduce using rule 459 (new_placement_opt)
 
     new_placement      go to state 399
     new_placement_opt  go to state 400
@@ -5401,7 +5394,7 @@ state 258
 
 state 259
 
-  448 throw_expression: THROW . assignment_expression_opt
+  447 throw_expression: THROW . assignment_expression_opt
 
     IDENTIFIER        shift, and go to state 1
     INTEGER           shift, and go to state 244
@@ -5435,7 +5428,7 @@ state 259
     '-'               shift, and go to state 267
     '!'               shift, and go to state 268
 
-    $default  reduce using rule 498 (assignment_expression_opt)
+    $default  reduce using rule 497 (assignment_expression_opt)
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -5771,12 +5764,12 @@ state 268
 
 state 269
 
-  432 template_id: template_name . '<' template_argument_list '>'
-  437 template_argument: template_name .
+  431 template_id: template_name . '<' template_argument_list '>'
+  436 template_argument: template_name .
 
     '<'  shift, and go to state 175
 
-    $default  reduce using rule 437 (template_argument)
+    $default  reduce using rule 436 (template_argument)
 
 
 state 270
@@ -6132,16 +6125,16 @@ state 296
 
 state 297
 
-  435 template_argument: assignment_expression .
+  434 template_argument: assignment_expression .
 
-    $default  reduce using rule 435 (template_argument)
+    $default  reduce using rule 434 (template_argument)
 
 
 state 298
 
-  436 template_argument: type_id .
+  435 template_argument: type_id .
 
-    $default  reduce using rule 436 (template_argument)
+    $default  reduce using rule 435 (template_argument)
 
 
 state 299
@@ -6156,9 +6149,9 @@ state 299
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    '('       [reduce using rule 482 (direct_abstract_declarator_opt)]
-    '['       reduce using rule 482 (direct_abstract_declarator_opt)
-    $default  reduce using rule 478 (abstract_declarator_opt)
+    '('       [reduce using rule 481 (direct_abstract_declarator_opt)]
+    '['       reduce using rule 481 (direct_abstract_declarator_opt)
+    $default  reduce using rule 477 (abstract_declarator_opt)
 
     namespace_name                  go to state 48
     original_namespace_name         go to state 49
@@ -6175,8 +6168,8 @@ state 299
 
 state 300
 
-  432 template_id: template_name '<' template_argument_list . '>'
-  434 template_argument_list: template_argument_list . ',' template_argument
+  431 template_id: template_name '<' template_argument_list . '>'
+  433 template_argument_list: template_argument_list . ',' template_argument
 
     '>'  shift, and go to state 459
     ','  shift, and go to state 460
@@ -6184,9 +6177,9 @@ state 300
 
 state 301
 
-  433 template_argument_list: template_argument .
+  432 template_argument_list: template_argument .
 
-    $default  reduce using rule 433 (template_argument_list)
+    $default  reduce using rule 432 (template_argument_list)
 
 
 state 302
@@ -6410,9 +6403,9 @@ state 308
 
 state 309
 
-  475 initializer_opt: initializer .
+  474 initializer_opt: initializer .
 
-    $default  reduce using rule 475 (initializer_opt)
+    $default  reduce using rule 474 (initializer_opt)
 
 
 state 310
@@ -6441,7 +6434,7 @@ state 312
 
 state 313
 
-  441 function_try_block: TRY ctor_initializer_opt . function_body handler_seq
+  440 function_try_block: TRY ctor_initializer_opt . function_body handler_seq
 
     '{'  shift, and go to state 321
 
@@ -6451,8 +6444,8 @@ state 313
 
 state 314
 
-  373 mem_initializer_id: COLONCOLON . nested_name_specifier class_name
-  374                   | COLONCOLON . class_name
+  372 mem_initializer_id: COLONCOLON . nested_name_specifier class_name
+  373                   | COLONCOLON . class_name
 
     NAMESPACE_NAME  shift, and go to state 3
     CLASS_NAME      shift, and go to state 4
@@ -6470,23 +6463,23 @@ state 315
 
    33 nested_name_specifier: class_name . COLONCOLON nested_name_specifier
    35                      | class_name . COLONCOLON
-  376 mem_initializer_id: class_name .
+  375 mem_initializer_id: class_name .
 
     COLONCOLON  shift, and go to state 174
 
-    $default  reduce using rule 376 (mem_initializer_id)
+    $default  reduce using rule 375 (mem_initializer_id)
 
 
 state 316
 
-  377 mem_initializer_id: identifier .
+  376 mem_initializer_id: identifier .
 
-    $default  reduce using rule 377 (mem_initializer_id)
+    $default  reduce using rule 376 (mem_initializer_id)
 
 
 state 317
 
-  375 mem_initializer_id: nested_name_specifier . class_name
+  374 mem_initializer_id: nested_name_specifier . class_name
 
     CLASS_NAME     shift, and go to state 4
     TEMPLATE_NAME  shift, and go to state 6
@@ -6498,24 +6491,24 @@ state 317
 
 state 318
 
-  369 ctor_initializer: ':' mem_initializer_list .
+  368 ctor_initializer: ':' mem_initializer_list .
 
-    $default  reduce using rule 369 (ctor_initializer)
+    $default  reduce using rule 368 (ctor_initializer)
 
 
 state 319
 
-  370 mem_initializer_list: mem_initializer .
-  371                     | mem_initializer . ',' mem_initializer_list
+  369 mem_initializer_list: mem_initializer .
+  370                     | mem_initializer . ',' mem_initializer_list
 
     ','  shift, and go to state 473
 
-    $default  reduce using rule 370 (mem_initializer_list)
+    $default  reduce using rule 369 (mem_initializer_list)
 
 
 state 320
 
-  372 mem_initializer: mem_initializer_id . '(' expression_list_opt ')'
+  371 mem_initializer: mem_initializer_id . '(' expression_list_opt ')'
 
     '('  shift, and go to state 474
 
@@ -6603,8 +6596,8 @@ state 321
     '!'               shift, and go to state 268
     '{'               shift, and go to state 321
 
-    '}'       reduce using rule 468 (statement_seq_opt)
-    $default  reduce using rule 466 (expression_opt)
+    '}'       reduce using rule 467 (statement_seq_opt)
+    $default  reduce using rule 465 (expression_opt)
 
     typedef_name                go to state 47
     namespace_name              go to state 48
@@ -6752,9 +6745,9 @@ state 325
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    '('       [reduce using rule 482 (direct_abstract_declarator_opt)]
-    '['       reduce using rule 482 (direct_abstract_declarator_opt)
-    $default  reduce using rule 478 (abstract_declarator_opt)
+    '('       [reduce using rule 481 (direct_abstract_declarator_opt)]
+    '['       reduce using rule 481 (direct_abstract_declarator_opt)
+    $default  reduce using rule 477 (abstract_declarator_opt)
 
     typedef_name                    go to state 47
     namespace_name                  go to state 48
@@ -6870,9 +6863,9 @@ state 332
 
 state 333
 
-  477 constant_expression_opt: constant_expression .
+  476 constant_expression_opt: constant_expression .
 
-    $default  reduce using rule 477 (constant_expression_opt)
+    $default  reduce using rule 476 (constant_expression_opt)
 
 
 state 334
@@ -6884,23 +6877,23 @@ state 334
 
 state 335
 
-  363 access_specifier: PRIVATE .
+  362 access_specifier: PRIVATE .
 
-    $default  reduce using rule 363 (access_specifier)
+    $default  reduce using rule 362 (access_specifier)
 
 
 state 336
 
-  364 access_specifier: PROTECTED .
+  363 access_specifier: PROTECTED .
 
-    $default  reduce using rule 364 (access_specifier)
+    $default  reduce using rule 363 (access_specifier)
 
 
 state 337
 
-  365 access_specifier: PUBLIC .
+  364 access_specifier: PUBLIC .
 
-    $default  reduce using rule 365 (access_specifier)
+    $default  reduce using rule 364 (access_specifier)
 
 
 state 338
@@ -6935,7 +6928,7 @@ state 339
 state 340
 
    27 unqualified_id: identifier .
-  345 member_declarator: identifier . ':' constant_expression
+  344 member_declarator: identifier . ':' constant_expression
 
     ':'  shift, and go to state 512
 
@@ -7005,9 +6998,6 @@ state 342
     '&'             shift, and go to state 46
     ';'             shift, and go to state 514
 
-    ';'       [reduce using rule 341 (member_declarator)]
-    $default  reduce using rule 341 (member_declarator)
-
     typedef_name               go to state 47
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -7053,16 +7043,16 @@ state 344
 
   309 function_definition: declarator . ctor_initializer_opt function_body
   311                    | declarator . function_try_block
-  342 member_declarator: declarator .
-  343                  | declarator . pure_specifier
-  344                  | declarator . constant_initializer
+  341 member_declarator: declarator .
+  342                  | declarator . pure_specifier
+  343                  | declarator . constant_initializer
 
     TRY  shift, and go to state 189
     ':'  shift, and go to state 190
     '='  shift, and go to state 517
 
-    '{'       reduce using rule 484 (ctor_initializer_opt)
-    $default  reduce using rule 342 (member_declarator)
+    '{'       reduce using rule 483 (ctor_initializer_opt)
+    $default  reduce using rule 341 (member_declarator)
 
     pure_specifier        go to state 518
     constant_initializer  go to state 519
@@ -7077,17 +7067,17 @@ state 345
 
     ';'  shift, and go to state 520
 
-    ';'       [reduce using rule 490 (SEMICOLON_opt)]
-    $default  reduce using rule 490 (SEMICOLON_opt)
+    ';'       [reduce using rule 489 (SEMICOLON_opt)]
+    $default  reduce using rule 489 (SEMICOLON_opt)
 
     SEMICOLON_opt  go to state 521
 
 
 state 346
 
-  489 member_specification_opt: member_specification .
+  488 member_specification_opt: member_specification .
 
-    $default  reduce using rule 489 (member_specification_opt)
+    $default  reduce using rule 488 (member_specification_opt)
 
 
 state 347
@@ -7142,10 +7132,8 @@ state 347
     '&'             shift, and go to state 46
     ';'             shift, and go to state 339
 
-    TEMPLATE  reduce using rule 494 (EXPORT_opt)
-    ';'       [reduce using rule 341 (member_declarator)]
-    '}'       reduce using rule 488 (member_specification_opt)
-    $default  reduce using rule 341 (member_declarator)
+    TEMPLATE  reduce using rule 493 (EXPORT_opt)
+    $default  reduce using rule 487 (member_specification_opt)
 
     typedef_name               go to state 47
     namespace_name             go to state 48
@@ -7245,7 +7233,7 @@ state 354
 
 state 355
 
-  348 base_clause: ':' . base_specifier_list
+  347 base_clause: ':' . base_specifier_list
 
     NAMESPACE_NAME  shift, and go to state 3
     CLASS_NAME      shift, and go to state 4
@@ -7288,7 +7276,7 @@ state 357
 
 state 358
 
-  421 template_declaration: EXPORT_opt TEMPLATE '<' . template_parameter_list '>' declaration
+  420 template_declaration: EXPORT_opt TEMPLATE '<' . template_parameter_list '>' declaration
 
     TYPEDEF_NAME    shift, and go to state 2
     NAMESPACE_NAME  shift, and go to state 3
@@ -7385,11 +7373,11 @@ state 362
 state 363
 
   232 enumerator_list: enumerator_list . ',' enumerator_definition
-  473 enumerator_list_opt: enumerator_list .
+  472 enumerator_list_opt: enumerator_list .
 
     ','  shift, and go to state 544
 
-    $default  reduce using rule 473 (enumerator_list_opt)
+    $default  reduce using rule 472 (enumerator_list_opt)
 
 
 state 364
@@ -7491,16 +7479,16 @@ state 374
 
 state 375
 
-  382 operator: DELETE '[' ']' .
+  381 operator: DELETE '[' ']' .
 
-    $default  reduce using rule 382 (operator)
+    $default  reduce using rule 381 (operator)
 
 
 state 376
 
-  381 operator: NEW '[' ']' .
+  380 operator: NEW '[' ']' .
 
-    $default  reduce using rule 381 (operator)
+    $default  reduce using rule 380 (operator)
 
 
 state 377
@@ -7513,16 +7501,16 @@ state 377
 
 state 378
 
-  368 conversion_declarator: ptr_operator conversion_declarator_opt .
+  367 conversion_declarator: ptr_operator conversion_declarator_opt .
 
-    $default  reduce using rule 368 (conversion_declarator)
+    $default  reduce using rule 367 (conversion_declarator)
 
 
 state 379
 
-  439 explicit_specialization: TEMPLATE '<' '>' declaration .
+  438 explicit_specialization: TEMPLATE '<' '>' declaration .
 
-    $default  reduce using rule 439 (explicit_specialization)
+    $default  reduce using rule 438 (explicit_specialization)
 
 
 state 380
@@ -7683,8 +7671,8 @@ state 391
 
     '('  shift, and go to state 398
 
-    '('       [reduce using rule 460 (new_placement_opt)]
-    $default  reduce using rule 460 (new_placement_opt)
+    '('       [reduce using rule 459 (new_placement_opt)]
+    $default  reduce using rule 459 (new_placement_opt)
 
     new_placement      go to state 399
     new_placement_opt  go to state 563
@@ -7900,9 +7888,9 @@ state 398
 
 state 399
 
-  461 new_placement_opt: new_placement .
+  460 new_placement_opt: new_placement .
 
-    $default  reduce using rule 461 (new_placement_opt)
+    $default  reduce using rule 460 (new_placement_opt)
 
 
 state 400
@@ -8182,16 +8170,16 @@ state 404
 
 state 405
 
-  499 assignment_expression_opt: assignment_expression .
+  498 assignment_expression_opt: assignment_expression .
 
-    $default  reduce using rule 499 (assignment_expression_opt)
+    $default  reduce using rule 498 (assignment_expression_opt)
 
 
 state 406
 
-  448 throw_expression: THROW assignment_expression_opt .
+  447 throw_expression: THROW assignment_expression_opt .
 
-    $default  reduce using rule 448 (throw_expression)
+    $default  reduce using rule 447 (throw_expression)
 
 
 state 407
@@ -8424,7 +8412,7 @@ state 416
     '-'               shift, and go to state 267
     '!'               shift, and go to state 268
 
-    $default  reduce using rule 456 (expression_list_opt)
+    $default  reduce using rule 455 (expression_list_opt)
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -10147,8 +10135,8 @@ state 453
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    '('       [reduce using rule 482 (direct_abstract_declarator_opt)]
-    $default  reduce using rule 482 (direct_abstract_declarator_opt)
+    '('       [reduce using rule 481 (direct_abstract_declarator_opt)]
+    $default  reduce using rule 481 (direct_abstract_declarator_opt)
 
     namespace_name                  go to state 48
     original_namespace_name         go to state 49
@@ -10174,9 +10162,9 @@ state 454
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    '('       [reduce using rule 482 (direct_abstract_declarator_opt)]
-    '['       reduce using rule 482 (direct_abstract_declarator_opt)
-    $default  reduce using rule 478 (abstract_declarator_opt)
+    '('       [reduce using rule 481 (direct_abstract_declarator_opt)]
+    '['       reduce using rule 481 (direct_abstract_declarator_opt)
+    $default  reduce using rule 477 (abstract_declarator_opt)
 
     namespace_name                  go to state 48
     original_namespace_name         go to state 49
@@ -10193,18 +10181,18 @@ state 454
 
 state 455
 
-  479 abstract_declarator_opt: abstract_declarator .
+  478 abstract_declarator_opt: abstract_declarator .
 
-    $default  reduce using rule 479 (abstract_declarator_opt)
+    $default  reduce using rule 478 (abstract_declarator_opt)
 
 
 state 456
 
   291 abstract_declarator: direct_abstract_declarator .
-  483 direct_abstract_declarator_opt: direct_abstract_declarator .
+  482 direct_abstract_declarator_opt: direct_abstract_declarator .
 
-    '('       reduce using rule 483 (direct_abstract_declarator_opt)
-    '['       reduce using rule 483 (direct_abstract_declarator_opt)
+    '('       reduce using rule 482 (direct_abstract_declarator_opt)
+    '['       reduce using rule 482 (direct_abstract_declarator_opt)
     $default  reduce using rule 291 (abstract_declarator)
 
 
@@ -10229,14 +10217,14 @@ state 458
 
 state 459
 
-  432 template_id: template_name '<' template_argument_list '>' .
+  431 template_id: template_name '<' template_argument_list '>' .
 
-    $default  reduce using rule 432 (template_id)
+    $default  reduce using rule 431 (template_id)
 
 
 state 460
 
-  434 template_argument_list: template_argument_list ',' . template_argument
+  433 template_argument_list: template_argument_list ',' . template_argument
 
     IDENTIFIER        shift, and go to state 1
     INTEGER           shift, and go to state 244
@@ -10360,7 +10348,7 @@ state 462
     '('  shift, and go to state 307
     '='  shift, and go to state 308
 
-    $default  reduce using rule 474 (initializer_opt)
+    $default  reduce using rule 473 (initializer_opt)
 
     initializer      go to state 309
     initializer_opt  go to state 311
@@ -10487,7 +10475,7 @@ state 468
 
 state 469
 
-  441 function_try_block: TRY ctor_initializer_opt function_body . handler_seq
+  440 function_try_block: TRY ctor_initializer_opt function_body . handler_seq
 
     CATCH  shift, and go to state 620
 
@@ -10499,16 +10487,16 @@ state 470
 
    33 nested_name_specifier: class_name . COLONCOLON nested_name_specifier
    35                      | class_name . COLONCOLON
-  374 mem_initializer_id: COLONCOLON class_name .
+  373 mem_initializer_id: COLONCOLON class_name .
 
     COLONCOLON  shift, and go to state 174
 
-    $default  reduce using rule 374 (mem_initializer_id)
+    $default  reduce using rule 373 (mem_initializer_id)
 
 
 state 471
 
-  373 mem_initializer_id: COLONCOLON nested_name_specifier . class_name
+  372 mem_initializer_id: COLONCOLON nested_name_specifier . class_name
 
     CLASS_NAME     shift, and go to state 4
     TEMPLATE_NAME  shift, and go to state 6
@@ -10520,14 +10508,14 @@ state 471
 
 state 472
 
-  375 mem_initializer_id: nested_name_specifier class_name .
+  374 mem_initializer_id: nested_name_specifier class_name .
 
-    $default  reduce using rule 375 (mem_initializer_id)
+    $default  reduce using rule 374 (mem_initializer_id)
 
 
 state 473
 
-  371 mem_initializer_list: mem_initializer ',' . mem_initializer_list
+  370 mem_initializer_list: mem_initializer ',' . mem_initializer_list
 
     IDENTIFIER      shift, and go to state 1
     NAMESPACE_NAME  shift, and go to state 3
@@ -10549,7 +10537,7 @@ state 473
 
 state 474
 
-  372 mem_initializer: mem_initializer_id '(' . expression_list_opt ')'
+  371 mem_initializer: mem_initializer_id '(' . expression_list_opt ')'
 
     IDENTIFIER        shift, and go to state 1
     INTEGER           shift, and go to state 244
@@ -10583,7 +10571,7 @@ state 474
     '-'               shift, and go to state 267
     '!'               shift, and go to state 268
 
-    $default  reduce using rule 456 (expression_list_opt)
+    $default  reduce using rule 455 (expression_list_opt)
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -10807,7 +10795,7 @@ state 479
     '!'               shift, and go to state 268
     '{'               shift, and go to state 321
 
-    $default  reduce using rule 466 (expression_opt)
+    $default  reduce using rule 465 (expression_opt)
 
     typedef_name                go to state 47
     namespace_name              go to state 48
@@ -10951,7 +10939,7 @@ state 484
     '-'               shift, and go to state 267
     '!'               shift, and go to state 268
 
-    $default  reduce using rule 466 (expression_opt)
+    $default  reduce using rule 465 (expression_opt)
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -11005,7 +10993,7 @@ state 485
 
 state 486
 
-  440 try_block: TRY . compound_statement handler_seq
+  439 try_block: TRY . compound_statement handler_seq
 
     '{'  shift, and go to state 321
 
@@ -11032,11 +11020,11 @@ state 488
 state 489
 
   137 expression: expression . ',' assignment_expression
-  467 expression_opt: expression .
+  466 expression_opt: expression .
 
     ','  shift, and go to state 577
 
-    $default  reduce using rule 467 (expression_opt)
+    $default  reduce using rule 466 (expression_opt)
 
 
 state 490
@@ -11070,7 +11058,7 @@ state 493
 state 494
 
   153 statement_seq: statement_seq . statement
-  469 statement_seq_opt: statement_seq .
+  468 statement_seq_opt: statement_seq .
 
     IDENTIFIER        shift, and go to state 1
     INTEGER           shift, and go to state 244
@@ -11151,8 +11139,8 @@ state 494
     '!'               shift, and go to state 268
     '{'               shift, and go to state 321
 
-    '}'       reduce using rule 469 (statement_seq_opt)
-    $default  reduce using rule 466 (expression_opt)
+    '}'       reduce using rule 468 (statement_seq_opt)
+    $default  reduce using rule 465 (expression_opt)
 
     typedef_name                go to state 47
     namespace_name              go to state 48
@@ -11382,8 +11370,8 @@ state 504
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    '('       [reduce using rule 482 (direct_abstract_declarator_opt)]
-    $default  reduce using rule 482 (direct_abstract_declarator_opt)
+    '('       [reduce using rule 481 (direct_abstract_declarator_opt)]
+    $default  reduce using rule 481 (direct_abstract_declarator_opt)
 
     namespace_name                  go to state 48
     original_namespace_name         go to state 49
@@ -11432,9 +11420,9 @@ state 506
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    '('       [reduce using rule 482 (direct_abstract_declarator_opt)]
-    '['       reduce using rule 482 (direct_abstract_declarator_opt)
-    $default  reduce using rule 478 (abstract_declarator_opt)
+    '('       [reduce using rule 481 (direct_abstract_declarator_opt)]
+    '['       reduce using rule 481 (direct_abstract_declarator_opt)
+    $default  reduce using rule 477 (abstract_declarator_opt)
 
     namespace_name                  go to state 48
     original_namespace_name         go to state 49
@@ -11568,7 +11556,7 @@ state 511
 
 state 512
 
-  345 member_declarator: identifier ':' . constant_expression
+  344 member_declarator: identifier ':' . constant_expression
 
     IDENTIFIER        shift, and go to state 1
     INTEGER           shift, and go to state 244
@@ -11659,16 +11647,16 @@ state 515
 
   310 function_definition: decl_specifier_seq declarator . ctor_initializer_opt function_body
   312                    | decl_specifier_seq declarator . function_try_block
-  342 member_declarator: declarator .
-  343                  | declarator . pure_specifier
-  344                  | declarator . constant_initializer
+  341 member_declarator: declarator .
+  342                  | declarator . pure_specifier
+  343                  | declarator . constant_initializer
 
     TRY  shift, and go to state 189
     ':'  shift, and go to state 190
     '='  shift, and go to state 517
 
-    '{'       reduce using rule 484 (ctor_initializer_opt)
-    $default  reduce using rule 342 (member_declarator)
+    '{'       reduce using rule 483 (ctor_initializer_opt)
+    $default  reduce using rule 341 (member_declarator)
 
     pure_specifier        go to state 518
     constant_initializer  go to state 519
@@ -11688,8 +11676,8 @@ state 516
 
 state 517
 
-  346 pure_specifier: '=' . '0'
-  347 constant_initializer: '=' . constant_expression
+  345 pure_specifier: '=' . '0'
+  346 constant_initializer: '=' . constant_expression
 
     IDENTIFIER        shift, and go to state 1
     INTEGER           shift, and go to state 244
@@ -11765,23 +11753,23 @@ state 517
 
 state 518
 
-  343 member_declarator: declarator pure_specifier .
+  342 member_declarator: declarator pure_specifier .
 
-    $default  reduce using rule 343 (member_declarator)
+    $default  reduce using rule 342 (member_declarator)
 
 
 state 519
 
-  344 member_declarator: declarator constant_initializer .
+  343 member_declarator: declarator constant_initializer .
 
-    $default  reduce using rule 344 (member_declarator)
+    $default  reduce using rule 343 (member_declarator)
 
 
 state 520
 
-  491 SEMICOLON_opt: ';' .
+  490 SEMICOLON_opt: ';' .
 
-    $default  reduce using rule 491 (SEMICOLON_opt)
+    $default  reduce using rule 490 (SEMICOLON_opt)
 
 
 state 521
@@ -11812,8 +11800,6 @@ state 523
     '~'             shift, and go to state 44
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
-
-    $default  reduce using rule 341 (member_declarator)
 
     namespace_name           go to state 48
     original_namespace_name  go to state 49
@@ -11893,10 +11879,8 @@ state 525
     '&'             shift, and go to state 46
     ';'             shift, and go to state 339
 
-    TEMPLATE  reduce using rule 494 (EXPORT_opt)
-    ';'       [reduce using rule 341 (member_declarator)]
-    '}'       reduce using rule 488 (member_specification_opt)
-    $default  reduce using rule 341 (member_declarator)
+    TEMPLATE  reduce using rule 493 (EXPORT_opt)
+    $default  reduce using rule 487 (member_specification_opt)
 
     typedef_name               go to state 47
     namespace_name             go to state 48
@@ -11957,8 +11941,8 @@ state 527
 
 state 528
 
-  351 base_specifier: COLONCOLON . nested_name_specifier class_name
-  352               | COLONCOLON . class_name
+  350 base_specifier: COLONCOLON . nested_name_specifier class_name
+  351               | COLONCOLON . class_name
 
     NAMESPACE_NAME  shift, and go to state 3
     CLASS_NAME      shift, and go to state 4
@@ -11974,10 +11958,10 @@ state 528
 
 state 529
 
-  355 base_specifier: VIRTUAL . access_specifier COLONCOLON nested_name_specifier_opt class_name
-  356               | VIRTUAL . access_specifier nested_name_specifier_opt class_name
-  357               | VIRTUAL . COLONCOLON nested_name_specifier_opt class_name
-  358               | VIRTUAL . nested_name_specifier_opt class_name
+  354 base_specifier: VIRTUAL . access_specifier COLONCOLON nested_name_specifier_opt class_name
+  355               | VIRTUAL . access_specifier nested_name_specifier_opt class_name
+  356               | VIRTUAL . COLONCOLON nested_name_specifier_opt class_name
+  357               | VIRTUAL . nested_name_specifier_opt class_name
 
     NAMESPACE_NAME  shift, and go to state 3
     CLASS_NAME      shift, and go to state 4
@@ -11987,8 +11971,8 @@ state 529
     PROTECTED       shift, and go to state 336
     PUBLIC          shift, and go to state 337
 
-    CLASS_NAME     [reduce using rule 454 (nested_name_specifier_opt)]
-    TEMPLATE_NAME  [reduce using rule 454 (nested_name_specifier_opt)]
+    CLASS_NAME     [reduce using rule 453 (nested_name_specifier_opt)]
+    TEMPLATE_NAME  [reduce using rule 453 (nested_name_specifier_opt)]
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -12004,16 +11988,16 @@ state 530
 
    33 nested_name_specifier: class_name . COLONCOLON nested_name_specifier
    35                      | class_name . COLONCOLON
-  354 base_specifier: class_name .
+  353 base_specifier: class_name .
 
     COLONCOLON  shift, and go to state 174
 
-    $default  reduce using rule 354 (base_specifier)
+    $default  reduce using rule 353 (base_specifier)
 
 
 state 531
 
-  353 base_specifier: nested_name_specifier . class_name
+  352 base_specifier: nested_name_specifier . class_name
 
     CLASS_NAME     shift, and go to state 4
     TEMPLATE_NAME  shift, and go to state 6
@@ -12025,27 +12009,27 @@ state 531
 
 state 532
 
-  348 base_clause: ':' base_specifier_list .
-  350 base_specifier_list: base_specifier_list . ',' base_specifier
+  347 base_clause: ':' base_specifier_list .
+  349 base_specifier_list: base_specifier_list . ',' base_specifier
 
     ','  shift, and go to state 663
 
-    $default  reduce using rule 348 (base_clause)
+    $default  reduce using rule 347 (base_clause)
 
 
 state 533
 
-  349 base_specifier_list: base_specifier .
+  348 base_specifier_list: base_specifier .
 
-    $default  reduce using rule 349 (base_specifier_list)
+    $default  reduce using rule 348 (base_specifier_list)
 
 
 state 534
 
-  359 base_specifier: access_specifier . VIRTUAL COLONCOLON nested_name_specifier_opt class_name
-  360               | access_specifier . VIRTUAL nested_name_specifier_opt class_name
-  361               | access_specifier . COLONCOLON nested_name_specifier_opt class_name
-  362               | access_specifier . nested_name_specifier_opt class_name
+  358 base_specifier: access_specifier . VIRTUAL COLONCOLON nested_name_specifier_opt class_name
+  359               | access_specifier . VIRTUAL nested_name_specifier_opt class_name
+  360               | access_specifier . COLONCOLON nested_name_specifier_opt class_name
+  361               | access_specifier . nested_name_specifier_opt class_name
 
     NAMESPACE_NAME  shift, and go to state 3
     CLASS_NAME      shift, and go to state 4
@@ -12053,8 +12037,8 @@ state 534
     COLONCOLON      shift, and go to state 664
     VIRTUAL         shift, and go to state 665
 
-    CLASS_NAME     [reduce using rule 454 (nested_name_specifier_opt)]
-    TEMPLATE_NAME  [reduce using rule 454 (nested_name_specifier_opt)]
+    CLASS_NAME     [reduce using rule 453 (nested_name_specifier_opt)]
+    TEMPLATE_NAME  [reduce using rule 453 (nested_name_specifier_opt)]
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -12075,8 +12059,8 @@ state 535
 state 536
 
   326 class_key: CLASS .
-  426 type_parameter: CLASS . identifier
-  427               | CLASS . identifier '=' type_id
+  425 type_parameter: CLASS . identifier
+  426               | CLASS . identifier '=' type_id
 
     IDENTIFIER  shift, and go to state 1
 
@@ -12088,8 +12072,8 @@ state 536
 
 state 537
 
-  430 type_parameter: TEMPLATE . '<' template_parameter_list '>' CLASS identifier
-  431               | TEMPLATE . '<' template_parameter_list '>' CLASS identifier '=' template_name
+  429 type_parameter: TEMPLATE . '<' template_parameter_list '>' CLASS identifier
+  430               | TEMPLATE . '<' template_parameter_list '>' CLASS identifier '=' template_name
 
     '<'  shift, and go to state 668
 
@@ -12098,13 +12082,13 @@ state 538
 
   228 elaborated_type_specifier: TYPENAME . COLONCOLON_opt nested_name_specifier identifier
   229                          | TYPENAME . COLONCOLON_opt nested_name_specifier identifier '<' template_argument_list '>'
-  428 type_parameter: TYPENAME . identifier
-  429               | TYPENAME . identifier '=' type_id
+  427 type_parameter: TYPENAME . identifier
+  428               | TYPENAME . identifier '=' type_id
 
     IDENTIFIER  shift, and go to state 1
     COLONCOLON  shift, and go to state 161
 
-    $default  reduce using rule 458 (COLONCOLON_opt)
+    $default  reduce using rule 457 (COLONCOLON_opt)
 
     identifier      go to state 669
     COLONCOLON_opt  go to state 162
@@ -12112,15 +12096,15 @@ state 538
 
 state 539
 
-  425 template_parameter: parameter_declaration .
+  424 template_parameter: parameter_declaration .
 
-    $default  reduce using rule 425 (template_parameter)
+    $default  reduce using rule 424 (template_parameter)
 
 
 state 540
 
-  421 template_declaration: EXPORT_opt TEMPLATE '<' template_parameter_list . '>' declaration
-  423 template_parameter_list: template_parameter_list . ',' template_parameter
+  420 template_declaration: EXPORT_opt TEMPLATE '<' template_parameter_list . '>' declaration
+  422 template_parameter_list: template_parameter_list . ',' template_parameter
 
     '>'  shift, and go to state 670
     ','  shift, and go to state 671
@@ -12128,16 +12112,16 @@ state 540
 
 state 541
 
-  422 template_parameter_list: template_parameter .
+  421 template_parameter_list: template_parameter .
 
-    $default  reduce using rule 422 (template_parameter_list)
+    $default  reduce using rule 421 (template_parameter_list)
 
 
 state 542
 
-  424 template_parameter: type_parameter .
+  423 template_parameter: type_parameter .
 
-    $default  reduce using rule 424 (template_parameter)
+    $default  reduce using rule 423 (template_parameter)
 
 
 state 543
@@ -12660,7 +12644,7 @@ state 569
 
     '('  shift, and go to state 686
 
-    $default  reduce using rule 462 (new_initializer_opt)
+    $default  reduce using rule 461 (new_initializer_opt)
 
     new_initializer      go to state 687
     new_initializer_opt  go to state 688
@@ -12678,9 +12662,9 @@ state 570
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    '*'       [reduce using rule 464 (new_declarator_opt)]
-    '&'       [reduce using rule 464 (new_declarator_opt)]
-    $default  reduce using rule 464 (new_declarator_opt)
+    '*'       [reduce using rule 463 (new_declarator_opt)]
+    '&'       [reduce using rule 463 (new_declarator_opt)]
+    $default  reduce using rule 463 (new_declarator_opt)
 
     namespace_name           go to state 48
     original_namespace_name  go to state 49
@@ -12939,11 +12923,11 @@ state 581
 state 582
 
    57 expression_list: expression_list . ',' assignment_expression
-  457 expression_list_opt: expression_list .
+  456 expression_list_opt: expression_list .
 
     ','  shift, and go to state 616
 
-    $default  reduce using rule 457 (expression_list_opt)
+    $default  reduce using rule 456 (expression_list_opt)
 
 
 state 583
@@ -13394,7 +13378,7 @@ state 613
     '-'               shift, and go to state 267
     '!'               shift, and go to state 268
 
-    $default  reduce using rule 476 (constant_expression_opt)
+    $default  reduce using rule 475 (constant_expression_opt)
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -13439,9 +13423,9 @@ state 613
 
 state 614
 
-  434 template_argument_list: template_argument_list ',' template_argument .
+  433 template_argument_list: template_argument_list ',' template_argument .
 
-    $default  reduce using rule 434 (template_argument_list)
+    $default  reduce using rule 433 (template_argument_list)
 
 
 state 615
@@ -13549,32 +13533,32 @@ state 619
 
     ','  shift, and go to state 714
 
-    $default  reduce using rule 486 (COMMA_opt)
+    $default  reduce using rule 485 (COMMA_opt)
 
     COMMA_opt  go to state 715
 
 
 state 620
 
-  443 handler: CATCH . '(' exception_declaration ')' compound_statement
+  442 handler: CATCH . '(' exception_declaration ')' compound_statement
 
     '('  shift, and go to state 716
 
 
 state 621
 
-  441 function_try_block: TRY ctor_initializer_opt function_body handler_seq .
+  440 function_try_block: TRY ctor_initializer_opt function_body handler_seq .
 
-    $default  reduce using rule 441 (function_try_block)
+    $default  reduce using rule 440 (function_try_block)
 
 
 state 622
 
-  442 handler_seq: handler . handler_seq_opt
+  441 handler_seq: handler . handler_seq_opt
 
     CATCH  shift, and go to state 620
 
-    $default  reduce using rule 496 (handler_seq_opt)
+    $default  reduce using rule 495 (handler_seq_opt)
 
     handler_seq      go to state 717
     handler          go to state 622
@@ -13583,21 +13567,21 @@ state 622
 
 state 623
 
-  373 mem_initializer_id: COLONCOLON nested_name_specifier class_name .
+  372 mem_initializer_id: COLONCOLON nested_name_specifier class_name .
 
-    $default  reduce using rule 373 (mem_initializer_id)
+    $default  reduce using rule 372 (mem_initializer_id)
 
 
 state 624
 
-  371 mem_initializer_list: mem_initializer ',' mem_initializer_list .
+  370 mem_initializer_list: mem_initializer ',' mem_initializer_list .
 
-    $default  reduce using rule 371 (mem_initializer_list)
+    $default  reduce using rule 370 (mem_initializer_list)
 
 
 state 625
 
-  372 mem_initializer: mem_initializer_id '(' expression_list_opt . ')'
+  371 mem_initializer: mem_initializer_id '(' expression_list_opt . ')'
 
     ')'  shift, and go to state 719
 
@@ -13706,7 +13690,7 @@ state 629
     '!'               shift, and go to state 268
     '{'               shift, and go to state 321
 
-    $default  reduce using rule 466 (expression_opt)
+    $default  reduce using rule 465 (expression_opt)
 
     typedef_name                go to state 47
     namespace_name              go to state 48
@@ -13855,7 +13839,7 @@ state 631
     '-'               shift, and go to state 267
     '!'               shift, and go to state 268
 
-    $default  reduce using rule 466 (expression_opt)
+    $default  reduce using rule 465 (expression_opt)
 
     typedef_name               go to state 47
     namespace_name             go to state 48
@@ -14166,7 +14150,7 @@ state 636
 
 state 637
 
-  440 try_block: TRY compound_statement . handler_seq
+  439 try_block: TRY compound_statement . handler_seq
 
     CATCH  shift, and go to state 620
 
@@ -14369,7 +14353,7 @@ state 639
     '!'               shift, and go to state 268
     '{'               shift, and go to state 321
 
-    $default  reduce using rule 466 (expression_opt)
+    $default  reduce using rule 465 (expression_opt)
 
     typedef_name                go to state 47
     namespace_name              go to state 48
@@ -14621,7 +14605,7 @@ state 644
 
 state 645
 
-  449 exception_specification: THROW . '(' type_id_list_opt ')'
+  448 exception_specification: THROW . '(' type_id_list_opt ')'
 
     '('  shift, and go to state 737
 
@@ -14661,9 +14645,9 @@ state 649
 
 state 650
 
-  345 member_declarator: identifier ':' constant_expression .
+  344 member_declarator: identifier ':' constant_expression .
 
-    $default  reduce using rule 345 (member_declarator)
+    $default  reduce using rule 344 (member_declarator)
 
 
 state 651
@@ -14675,27 +14659,27 @@ state 651
 
 state 652
 
-  346 pure_specifier: '=' '0' .
+  345 pure_specifier: '=' '0' .
 
-    $default  reduce using rule 346 (pure_specifier)
+    $default  reduce using rule 345 (pure_specifier)
 
 
 state 653
 
-  347 constant_initializer: '=' constant_expression .
+  346 constant_initializer: '=' constant_expression .
 
-    $default  reduce using rule 347 (constant_initializer)
+    $default  reduce using rule 346 (constant_initializer)
 
 
 state 654
 
-  342 member_declarator: declarator .
-  343                  | declarator . pure_specifier
-  344                  | declarator . constant_initializer
+  341 member_declarator: declarator .
+  342                  | declarator . pure_specifier
+  343                  | declarator . constant_initializer
 
     '='  shift, and go to state 517
 
-    $default  reduce using rule 342 (member_declarator)
+    $default  reduce using rule 341 (member_declarator)
 
     pure_specifier        go to state 518
     constant_initializer  go to state 519
@@ -14719,16 +14703,16 @@ state 657
 
    33 nested_name_specifier: class_name . COLONCOLON nested_name_specifier
    35                      | class_name . COLONCOLON
-  352 base_specifier: COLONCOLON class_name .
+  351 base_specifier: COLONCOLON class_name .
 
     COLONCOLON  shift, and go to state 174
 
-    $default  reduce using rule 352 (base_specifier)
+    $default  reduce using rule 351 (base_specifier)
 
 
 state 658
 
-  351 base_specifier: COLONCOLON nested_name_specifier . class_name
+  350 base_specifier: COLONCOLON nested_name_specifier . class_name
 
     CLASS_NAME     shift, and go to state 4
     TEMPLATE_NAME  shift, and go to state 6
@@ -14740,14 +14724,14 @@ state 658
 
 state 659
 
-  357 base_specifier: VIRTUAL COLONCOLON . nested_name_specifier_opt class_name
+  356 base_specifier: VIRTUAL COLONCOLON . nested_name_specifier_opt class_name
 
     NAMESPACE_NAME  shift, and go to state 3
     CLASS_NAME      shift, and go to state 4
     TEMPLATE_NAME   shift, and go to state 6
 
-    CLASS_NAME     [reduce using rule 454 (nested_name_specifier_opt)]
-    TEMPLATE_NAME  [reduce using rule 454 (nested_name_specifier_opt)]
+    CLASS_NAME     [reduce using rule 453 (nested_name_specifier_opt)]
+    TEMPLATE_NAME  [reduce using rule 453 (nested_name_specifier_opt)]
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -14760,16 +14744,16 @@ state 659
 
 state 660
 
-  355 base_specifier: VIRTUAL access_specifier . COLONCOLON nested_name_specifier_opt class_name
-  356               | VIRTUAL access_specifier . nested_name_specifier_opt class_name
+  354 base_specifier: VIRTUAL access_specifier . COLONCOLON nested_name_specifier_opt class_name
+  355               | VIRTUAL access_specifier . nested_name_specifier_opt class_name
 
     NAMESPACE_NAME  shift, and go to state 3
     CLASS_NAME      shift, and go to state 4
     TEMPLATE_NAME   shift, and go to state 6
     COLONCOLON      shift, and go to state 741
 
-    CLASS_NAME     [reduce using rule 454 (nested_name_specifier_opt)]
-    TEMPLATE_NAME  [reduce using rule 454 (nested_name_specifier_opt)]
+    CLASS_NAME     [reduce using rule 453 (nested_name_specifier_opt)]
+    TEMPLATE_NAME  [reduce using rule 453 (nested_name_specifier_opt)]
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -14782,7 +14766,7 @@ state 660
 
 state 661
 
-  358 base_specifier: VIRTUAL nested_name_specifier_opt . class_name
+  357 base_specifier: VIRTUAL nested_name_specifier_opt . class_name
 
     CLASS_NAME     shift, and go to state 4
     TEMPLATE_NAME  shift, and go to state 6
@@ -14794,14 +14778,14 @@ state 661
 
 state 662
 
-  353 base_specifier: nested_name_specifier class_name .
+  352 base_specifier: nested_name_specifier class_name .
 
-    $default  reduce using rule 353 (base_specifier)
+    $default  reduce using rule 352 (base_specifier)
 
 
 state 663
 
-  350 base_specifier_list: base_specifier_list ',' . base_specifier
+  349 base_specifier_list: base_specifier_list ',' . base_specifier
 
     NAMESPACE_NAME  shift, and go to state 3
     CLASS_NAME      shift, and go to state 4
@@ -14824,14 +14808,14 @@ state 663
 
 state 664
 
-  361 base_specifier: access_specifier COLONCOLON . nested_name_specifier_opt class_name
+  360 base_specifier: access_specifier COLONCOLON . nested_name_specifier_opt class_name
 
     NAMESPACE_NAME  shift, and go to state 3
     CLASS_NAME      shift, and go to state 4
     TEMPLATE_NAME   shift, and go to state 6
 
-    CLASS_NAME     [reduce using rule 454 (nested_name_specifier_opt)]
-    TEMPLATE_NAME  [reduce using rule 454 (nested_name_specifier_opt)]
+    CLASS_NAME     [reduce using rule 453 (nested_name_specifier_opt)]
+    TEMPLATE_NAME  [reduce using rule 453 (nested_name_specifier_opt)]
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -14844,16 +14828,16 @@ state 664
 
 state 665
 
-  359 base_specifier: access_specifier VIRTUAL . COLONCOLON nested_name_specifier_opt class_name
-  360               | access_specifier VIRTUAL . nested_name_specifier_opt class_name
+  358 base_specifier: access_specifier VIRTUAL . COLONCOLON nested_name_specifier_opt class_name
+  359               | access_specifier VIRTUAL . nested_name_specifier_opt class_name
 
     NAMESPACE_NAME  shift, and go to state 3
     CLASS_NAME      shift, and go to state 4
     TEMPLATE_NAME   shift, and go to state 6
     COLONCOLON      shift, and go to state 746
 
-    CLASS_NAME     [reduce using rule 454 (nested_name_specifier_opt)]
-    TEMPLATE_NAME  [reduce using rule 454 (nested_name_specifier_opt)]
+    CLASS_NAME     [reduce using rule 453 (nested_name_specifier_opt)]
+    TEMPLATE_NAME  [reduce using rule 453 (nested_name_specifier_opt)]
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -14866,7 +14850,7 @@ state 665
 
 state 666
 
-  362 base_specifier: access_specifier nested_name_specifier_opt . class_name
+  361 base_specifier: access_specifier nested_name_specifier_opt . class_name
 
     CLASS_NAME     shift, and go to state 4
     TEMPLATE_NAME  shift, and go to state 6
@@ -14878,18 +14862,18 @@ state 666
 
 state 667
 
-  426 type_parameter: CLASS identifier .
-  427               | CLASS identifier . '=' type_id
+  425 type_parameter: CLASS identifier .
+  426               | CLASS identifier . '=' type_id
 
     '='  shift, and go to state 749
 
-    $default  reduce using rule 426 (type_parameter)
+    $default  reduce using rule 425 (type_parameter)
 
 
 state 668
 
-  430 type_parameter: TEMPLATE '<' . template_parameter_list '>' CLASS identifier
-  431               | TEMPLATE '<' . template_parameter_list '>' CLASS identifier '=' template_name
+  429 type_parameter: TEMPLATE '<' . template_parameter_list '>' CLASS identifier
+  430               | TEMPLATE '<' . template_parameter_list '>' CLASS identifier '=' template_name
 
     TYPEDEF_NAME    shift, and go to state 2
     NAMESPACE_NAME  shift, and go to state 3
@@ -14957,17 +14941,17 @@ state 668
 
 state 669
 
-  428 type_parameter: TYPENAME identifier .
-  429               | TYPENAME identifier . '=' type_id
+  427 type_parameter: TYPENAME identifier .
+  428               | TYPENAME identifier . '=' type_id
 
     '='  shift, and go to state 751
 
-    $default  reduce using rule 428 (type_parameter)
+    $default  reduce using rule 427 (type_parameter)
 
 
 state 670
 
-  421 template_declaration: EXPORT_opt TEMPLATE '<' template_parameter_list '>' . declaration
+  420 template_declaration: EXPORT_opt TEMPLATE '<' template_parameter_list '>' . declaration
 
     IDENTIFIER      shift, and go to state 1
     TYPEDEF_NAME    shift, and go to state 2
@@ -15016,7 +15000,7 @@ state 670
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    TEMPLATE  [reduce using rule 494 (EXPORT_opt)]
+    TEMPLATE  [reduce using rule 493 (EXPORT_opt)]
 
     typedef_name                    go to state 47
     namespace_name                  go to state 48
@@ -15071,7 +15055,7 @@ state 670
 
 state 671
 
-  423 template_parameter_list: template_parameter_list ',' . template_parameter
+  422 template_parameter_list: template_parameter_list ',' . template_parameter
 
     TYPEDEF_NAME    shift, and go to state 2
     NAMESPACE_NAME  shift, and go to state 3
@@ -15160,7 +15144,7 @@ state 674
 state 675
 
   229 elaborated_type_specifier: TYPENAME COLONCOLON_opt nested_name_specifier identifier '<' template_argument_list . '>'
-  434 template_argument_list: template_argument_list . ',' template_argument
+  433 template_argument_list: template_argument_list . ',' template_argument
 
     '>'  shift, and go to state 754
     ','  shift, and go to state 460
@@ -15299,7 +15283,7 @@ state 680
 
     '('  shift, and go to state 686
 
-    $default  reduce using rule 462 (new_initializer_opt)
+    $default  reduce using rule 461 (new_initializer_opt)
 
     new_initializer      go to state 687
     new_initializer_opt  go to state 757
@@ -15376,7 +15360,7 @@ state 686
     '-'               shift, and go to state 267
     '!'               shift, and go to state 268
 
-    $default  reduce using rule 456 (expression_list_opt)
+    $default  reduce using rule 455 (expression_list_opt)
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -15423,9 +15407,9 @@ state 686
 
 state 687
 
-  463 new_initializer_opt: new_initializer .
+  462 new_initializer_opt: new_initializer .
 
-    $default  reduce using rule 463 (new_initializer_opt)
+    $default  reduce using rule 462 (new_initializer_opt)
 
 
 state 688
@@ -15515,9 +15499,9 @@ state 689
 
 state 690
 
-  465 new_declarator_opt: new_declarator .
+  464 new_declarator_opt: new_declarator .
 
-    $default  reduce using rule 465 (new_declarator_opt)
+    $default  reduce using rule 464 (new_declarator_opt)
 
 
 state 691
@@ -15542,9 +15526,9 @@ state 692
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    '*'       [reduce using rule 464 (new_declarator_opt)]
-    '&'       [reduce using rule 464 (new_declarator_opt)]
-    $default  reduce using rule 464 (new_declarator_opt)
+    '*'       [reduce using rule 463 (new_declarator_opt)]
+    '&'       [reduce using rule 463 (new_declarator_opt)]
+    $default  reduce using rule 463 (new_declarator_opt)
 
     namespace_name           go to state 48
     original_namespace_name  go to state 49
@@ -15817,7 +15801,7 @@ state 713
 state 714
 
   320 initializer_list: initializer_list ',' . initializer_clause
-  487 COMMA_opt: ',' .
+  486 COMMA_opt: ',' .
 
     IDENTIFIER        shift, and go to state 1
     INTEGER           shift, and go to state 244
@@ -15852,7 +15836,7 @@ state 714
     '!'               shift, and go to state 268
     '{'               shift, and go to state 465
 
-    $default  reduce using rule 487 (COMMA_opt)
+    $default  reduce using rule 486 (COMMA_opt)
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -15905,7 +15889,7 @@ state 715
 
 state 716
 
-  443 handler: CATCH '(' . exception_declaration ')' compound_statement
+  442 handler: CATCH '(' . exception_declaration ')' compound_statement
 
     TYPEDEF_NAME    shift, and go to state 2
     NAMESPACE_NAME  shift, and go to state 3
@@ -15957,23 +15941,23 @@ state 716
 
 state 717
 
-  497 handler_seq_opt: handler_seq .
+  496 handler_seq_opt: handler_seq .
 
-    $default  reduce using rule 497 (handler_seq_opt)
+    $default  reduce using rule 496 (handler_seq_opt)
 
 
 state 718
 
-  442 handler_seq: handler handler_seq_opt .
+  441 handler_seq: handler handler_seq_opt .
 
-    $default  reduce using rule 442 (handler_seq)
+    $default  reduce using rule 441 (handler_seq)
 
 
 state 719
 
-  372 mem_initializer: mem_initializer_id '(' expression_list_opt ')' .
+  371 mem_initializer: mem_initializer_id '(' expression_list_opt ')' .
 
-    $default  reduce using rule 372 (mem_initializer)
+    $default  reduce using rule 371 (mem_initializer)
 
 
 state 720
@@ -16059,7 +16043,7 @@ state 720
     '!'               shift, and go to state 268
     '{'               shift, and go to state 321
 
-    $default  reduce using rule 466 (expression_opt)
+    $default  reduce using rule 465 (expression_opt)
 
     typedef_name                go to state 47
     namespace_name              go to state 48
@@ -16212,7 +16196,7 @@ state 724
     '-'               shift, and go to state 267
     '!'               shift, and go to state 268
 
-    $default  reduce using rule 470 (condition_opt)
+    $default  reduce using rule 469 (condition_opt)
 
     typedef_name               go to state 47
     namespace_name             go to state 48
@@ -16351,9 +16335,9 @@ state 731
 
 state 732
 
-  440 try_block: TRY compound_statement handler_seq .
+  439 try_block: TRY compound_statement handler_seq .
 
-    $default  reduce using rule 440 (try_block)
+    $default  reduce using rule 439 (try_block)
 
 
 state 733
@@ -16386,7 +16370,7 @@ state 736
 
 state 737
 
-  449 exception_specification: THROW '(' . type_id_list_opt ')'
+  448 exception_specification: THROW '(' . type_id_list_opt ')'
 
     TYPEDEF_NAME    shift, and go to state 2
     NAMESPACE_NAME  shift, and go to state 3
@@ -16414,7 +16398,7 @@ state 737
     WCHAR_T         shift, and go to state 41
     STR_TYPE        shift, and go to state 42
 
-    $default  reduce using rule 500 (type_id_list_opt)
+    $default  reduce using rule 499 (type_id_list_opt)
 
     typedef_name               go to state 47
     namespace_name             go to state 48
@@ -16448,14 +16432,14 @@ state 738
 
 state 739
 
-  351 base_specifier: COLONCOLON nested_name_specifier class_name .
+  350 base_specifier: COLONCOLON nested_name_specifier class_name .
 
-    $default  reduce using rule 351 (base_specifier)
+    $default  reduce using rule 350 (base_specifier)
 
 
 state 740
 
-  357 base_specifier: VIRTUAL COLONCOLON nested_name_specifier_opt . class_name
+  356 base_specifier: VIRTUAL COLONCOLON nested_name_specifier_opt . class_name
 
     CLASS_NAME     shift, and go to state 4
     TEMPLATE_NAME  shift, and go to state 6
@@ -16467,14 +16451,14 @@ state 740
 
 state 741
 
-  355 base_specifier: VIRTUAL access_specifier COLONCOLON . nested_name_specifier_opt class_name
+  354 base_specifier: VIRTUAL access_specifier COLONCOLON . nested_name_specifier_opt class_name
 
     NAMESPACE_NAME  shift, and go to state 3
     CLASS_NAME      shift, and go to state 4
     TEMPLATE_NAME   shift, and go to state 6
 
-    CLASS_NAME     [reduce using rule 454 (nested_name_specifier_opt)]
-    TEMPLATE_NAME  [reduce using rule 454 (nested_name_specifier_opt)]
+    CLASS_NAME     [reduce using rule 453 (nested_name_specifier_opt)]
+    TEMPLATE_NAME  [reduce using rule 453 (nested_name_specifier_opt)]
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -16487,7 +16471,7 @@ state 741
 
 state 742
 
-  356 base_specifier: VIRTUAL access_specifier nested_name_specifier_opt . class_name
+  355 base_specifier: VIRTUAL access_specifier nested_name_specifier_opt . class_name
 
     CLASS_NAME     shift, and go to state 4
     TEMPLATE_NAME  shift, and go to state 6
@@ -16499,21 +16483,21 @@ state 742
 
 state 743
 
-  358 base_specifier: VIRTUAL nested_name_specifier_opt class_name .
+  357 base_specifier: VIRTUAL nested_name_specifier_opt class_name .
 
-    $default  reduce using rule 358 (base_specifier)
+    $default  reduce using rule 357 (base_specifier)
 
 
 state 744
 
-  350 base_specifier_list: base_specifier_list ',' base_specifier .
+  349 base_specifier_list: base_specifier_list ',' base_specifier .
 
-    $default  reduce using rule 350 (base_specifier_list)
+    $default  reduce using rule 349 (base_specifier_list)
 
 
 state 745
 
-  361 base_specifier: access_specifier COLONCOLON nested_name_specifier_opt . class_name
+  360 base_specifier: access_specifier COLONCOLON nested_name_specifier_opt . class_name
 
     CLASS_NAME     shift, and go to state 4
     TEMPLATE_NAME  shift, and go to state 6
@@ -16525,14 +16509,14 @@ state 745
 
 state 746
 
-  359 base_specifier: access_specifier VIRTUAL COLONCOLON . nested_name_specifier_opt class_name
+  358 base_specifier: access_specifier VIRTUAL COLONCOLON . nested_name_specifier_opt class_name
 
     NAMESPACE_NAME  shift, and go to state 3
     CLASS_NAME      shift, and go to state 4
     TEMPLATE_NAME   shift, and go to state 6
 
-    CLASS_NAME     [reduce using rule 454 (nested_name_specifier_opt)]
-    TEMPLATE_NAME  [reduce using rule 454 (nested_name_specifier_opt)]
+    CLASS_NAME     [reduce using rule 453 (nested_name_specifier_opt)]
+    TEMPLATE_NAME  [reduce using rule 453 (nested_name_specifier_opt)]
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -16545,7 +16529,7 @@ state 746
 
 state 747
 
-  360 base_specifier: access_specifier VIRTUAL nested_name_specifier_opt . class_name
+  359 base_specifier: access_specifier VIRTUAL nested_name_specifier_opt . class_name
 
     CLASS_NAME     shift, and go to state 4
     TEMPLATE_NAME  shift, and go to state 6
@@ -16557,14 +16541,14 @@ state 747
 
 state 748
 
-  362 base_specifier: access_specifier nested_name_specifier_opt class_name .
+  361 base_specifier: access_specifier nested_name_specifier_opt class_name .
 
-    $default  reduce using rule 362 (base_specifier)
+    $default  reduce using rule 361 (base_specifier)
 
 
 state 749
 
-  427 type_parameter: CLASS identifier '=' . type_id
+  426 type_parameter: CLASS identifier '=' . type_id
 
     TYPEDEF_NAME    shift, and go to state 2
     NAMESPACE_NAME  shift, and go to state 3
@@ -16615,9 +16599,9 @@ state 749
 
 state 750
 
-  423 template_parameter_list: template_parameter_list . ',' template_parameter
-  430 type_parameter: TEMPLATE '<' template_parameter_list . '>' CLASS identifier
-  431               | TEMPLATE '<' template_parameter_list . '>' CLASS identifier '=' template_name
+  422 template_parameter_list: template_parameter_list . ',' template_parameter
+  429 type_parameter: TEMPLATE '<' template_parameter_list . '>' CLASS identifier
+  430               | TEMPLATE '<' template_parameter_list . '>' CLASS identifier '=' template_name
 
     '>'  shift, and go to state 795
     ','  shift, and go to state 671
@@ -16625,7 +16609,7 @@ state 750
 
 state 751
 
-  429 type_parameter: TYPENAME identifier '=' . type_id
+  428 type_parameter: TYPENAME identifier '=' . type_id
 
     TYPEDEF_NAME    shift, and go to state 2
     NAMESPACE_NAME  shift, and go to state 3
@@ -16676,16 +16660,16 @@ state 751
 
 state 752
 
-  421 template_declaration: EXPORT_opt TEMPLATE '<' template_parameter_list '>' declaration .
+  420 template_declaration: EXPORT_opt TEMPLATE '<' template_parameter_list '>' declaration .
 
-    $default  reduce using rule 421 (template_declaration)
+    $default  reduce using rule 420 (template_declaration)
 
 
 state 753
 
-  423 template_parameter_list: template_parameter_list ',' template_parameter .
+  422 template_parameter_list: template_parameter_list ',' template_parameter .
 
-    $default  reduce using rule 423 (template_parameter_list)
+    $default  reduce using rule 422 (template_parameter_list)
 
 
 state 754
@@ -16878,7 +16862,7 @@ state 760
 
     '('  shift, and go to state 686
 
-    $default  reduce using rule 462 (new_initializer_opt)
+    $default  reduce using rule 461 (new_initializer_opt)
 
     new_initializer      go to state 687
     new_initializer_opt  go to state 800
@@ -17200,16 +17184,16 @@ state 773
 
 state 774
 
-  447 exception_declaration: ELLIPSIS .
+  446 exception_declaration: ELLIPSIS .
 
-    $default  reduce using rule 447 (exception_declaration)
+    $default  reduce using rule 446 (exception_declaration)
 
 
 state 775
 
-  444 exception_declaration: type_specifier_seq . declarator
-  445                      | type_specifier_seq . abstract_declarator
-  446                      | type_specifier_seq .
+  443 exception_declaration: type_specifier_seq . declarator
+  444                      | type_specifier_seq . abstract_declarator
+  445                      | type_specifier_seq .
 
     IDENTIFIER      shift, and go to state 1
     NAMESPACE_NAME  shift, and go to state 3
@@ -17222,9 +17206,9 @@ state 775
     '*'             shift, and go to state 45
     '&'             shift, and go to state 46
 
-    '('       [reduce using rule 482 (direct_abstract_declarator_opt)]
-    '['       reduce using rule 482 (direct_abstract_declarator_opt)
-    $default  reduce using rule 446 (exception_declaration)
+    '('       [reduce using rule 481 (direct_abstract_declarator_opt)]
+    '['       reduce using rule 481 (direct_abstract_declarator_opt)
+    $default  reduce using rule 445 (exception_declaration)
 
     namespace_name                  go to state 48
     original_namespace_name         go to state 49
@@ -17249,7 +17233,7 @@ state 775
 
 state 776
 
-  443 handler: CATCH '(' exception_declaration . ')' compound_statement
+  442 handler: CATCH '(' exception_declaration . ')' compound_statement
 
     ')'  shift, and go to state 810
 
@@ -17341,9 +17325,9 @@ state 778
 
 state 779
 
-  471 condition_opt: condition .
+  470 condition_opt: condition .
 
-    $default  reduce using rule 471 (condition_opt)
+    $default  reduce using rule 470 (condition_opt)
 
 
 state 780
@@ -17437,7 +17421,7 @@ state 781
     '!'               shift, and go to state 268
     '{'               shift, and go to state 321
 
-    $default  reduce using rule 466 (expression_opt)
+    $default  reduce using rule 465 (expression_opt)
 
     typedef_name                go to state 47
     namespace_name              go to state 48
@@ -17602,7 +17586,7 @@ state 783
     '!'               shift, and go to state 268
     '{'               shift, and go to state 321
 
-    $default  reduce using rule 466 (expression_opt)
+    $default  reduce using rule 465 (expression_opt)
 
     typedef_name                go to state 47
     namespace_name              go to state 48
@@ -17760,7 +17744,7 @@ state 784
     '!'               shift, and go to state 268
     '{'               shift, and go to state 321
 
-    $default  reduce using rule 466 (expression_opt)
+    $default  reduce using rule 465 (expression_opt)
 
     typedef_name                go to state 47
     namespace_name              go to state 48
@@ -17837,38 +17821,38 @@ state 784
 
 state 785
 
-  450 type_id_list: type_id .
+  449 type_id_list: type_id .
 
-    $default  reduce using rule 450 (type_id_list)
+    $default  reduce using rule 449 (type_id_list)
 
 
 state 786
 
-  451 type_id_list: type_id_list . ',' type_id
-  501 type_id_list_opt: type_id_list .
+  450 type_id_list: type_id_list . ',' type_id
+  500 type_id_list_opt: type_id_list .
 
     ','  shift, and go to state 817
 
-    $default  reduce using rule 501 (type_id_list_opt)
+    $default  reduce using rule 500 (type_id_list_opt)
 
 
 state 787
 
-  449 exception_specification: THROW '(' type_id_list_opt . ')'
+  448 exception_specification: THROW '(' type_id_list_opt . ')'
 
     ')'  shift, and go to state 818
 
 
 state 788
 
-  357 base_specifier: VIRTUAL COLONCOLON nested_name_specifier_opt class_name .
+  356 base_specifier: VIRTUAL COLONCOLON nested_name_specifier_opt class_name .
 
-    $default  reduce using rule 357 (base_specifier)
+    $default  reduce using rule 356 (base_specifier)
 
 
 state 789
 
-  355 base_specifier: VIRTUAL access_specifier COLONCOLON nested_name_specifier_opt . class_name
+  354 base_specifier: VIRTUAL access_specifier COLONCOLON nested_name_specifier_opt . class_name
 
     CLASS_NAME     shift, and go to state 4
     TEMPLATE_NAME  shift, and go to state 6
@@ -17880,21 +17864,21 @@ state 789
 
 state 790
 
-  356 base_specifier: VIRTUAL access_specifier nested_name_specifier_opt class_name .
+  355 base_specifier: VIRTUAL access_specifier nested_name_specifier_opt class_name .
 
-    $default  reduce using rule 356 (base_specifier)
+    $default  reduce using rule 355 (base_specifier)
 
 
 state 791
 
-  361 base_specifier: access_specifier COLONCOLON nested_name_specifier_opt class_name .
+  360 base_specifier: access_specifier COLONCOLON nested_name_specifier_opt class_name .
 
-    $default  reduce using rule 361 (base_specifier)
+    $default  reduce using rule 360 (base_specifier)
 
 
 state 792
 
-  359 base_specifier: access_specifier VIRTUAL COLONCOLON nested_name_specifier_opt . class_name
+  358 base_specifier: access_specifier VIRTUAL COLONCOLON nested_name_specifier_opt . class_name
 
     CLASS_NAME     shift, and go to state 4
     TEMPLATE_NAME  shift, and go to state 6
@@ -17906,31 +17890,31 @@ state 792
 
 state 793
 
-  360 base_specifier: access_specifier VIRTUAL nested_name_specifier_opt class_name .
+  359 base_specifier: access_specifier VIRTUAL nested_name_specifier_opt class_name .
 
-    $default  reduce using rule 360 (base_specifier)
+    $default  reduce using rule 359 (base_specifier)
 
 
 state 794
 
-  427 type_parameter: CLASS identifier '=' type_id .
+  426 type_parameter: CLASS identifier '=' type_id .
 
-    $default  reduce using rule 427 (type_parameter)
+    $default  reduce using rule 426 (type_parameter)
 
 
 state 795
 
-  430 type_parameter: TEMPLATE '<' template_parameter_list '>' . CLASS identifier
-  431               | TEMPLATE '<' template_parameter_list '>' . CLASS identifier '=' template_name
+  429 type_parameter: TEMPLATE '<' template_parameter_list '>' . CLASS identifier
+  430               | TEMPLATE '<' template_parameter_list '>' . CLASS identifier '=' template_name
 
     CLASS  shift, and go to state 821
 
 
 state 796
 
-  429 type_parameter: TYPENAME identifier '=' type_id .
+  428 type_parameter: TYPENAME identifier '=' type_id .
 
-    $default  reduce using rule 429 (type_parameter)
+    $default  reduce using rule 428 (type_parameter)
 
 
 state 797
@@ -17939,7 +17923,7 @@ state 797
 
     '('  shift, and go to state 686
 
-    $default  reduce using rule 462 (new_initializer_opt)
+    $default  reduce using rule 461 (new_initializer_opt)
 
     new_initializer      go to state 687
     new_initializer_opt  go to state 822
@@ -18030,21 +18014,21 @@ state 807
 
 state 808
 
-  444 exception_declaration: type_specifier_seq declarator .
+  443 exception_declaration: type_specifier_seq declarator .
 
-    $default  reduce using rule 444 (exception_declaration)
+    $default  reduce using rule 443 (exception_declaration)
 
 
 state 809
 
-  445 exception_declaration: type_specifier_seq abstract_declarator .
+  444 exception_declaration: type_specifier_seq abstract_declarator .
 
-    $default  reduce using rule 445 (exception_declaration)
+    $default  reduce using rule 444 (exception_declaration)
 
 
 state 810
 
-  443 handler: CATCH '(' exception_declaration ')' . compound_statement
+  442 handler: CATCH '(' exception_declaration ')' . compound_statement
 
     '{'  shift, and go to state 321
 
@@ -18096,7 +18080,7 @@ state 812
     '-'               shift, and go to state 267
     '!'               shift, and go to state 268
 
-    $default  reduce using rule 466 (expression_opt)
+    $default  reduce using rule 465 (expression_opt)
 
     namespace_name             go to state 48
     original_namespace_name    go to state 49
@@ -18245,7 +18229,7 @@ state 816
 
 state 817
 
-  451 type_id_list: type_id_list ',' . type_id
+  450 type_id_list: type_id_list ',' . type_id
 
     TYPEDEF_NAME    shift, and go to state 2
     NAMESPACE_NAME  shift, and go to state 3
@@ -18296,29 +18280,29 @@ state 817
 
 state 818
 
-  449 exception_specification: THROW '(' type_id_list_opt ')' .
+  448 exception_specification: THROW '(' type_id_list_opt ')' .
 
-    $default  reduce using rule 449 (exception_specification)
+    $default  reduce using rule 448 (exception_specification)
 
 
 state 819
 
-  355 base_specifier: VIRTUAL access_specifier COLONCOLON nested_name_specifier_opt class_name .
+  354 base_specifier: VIRTUAL access_specifier COLONCOLON nested_name_specifier_opt class_name .
 
-    $default  reduce using rule 355 (base_specifier)
+    $default  reduce using rule 354 (base_specifier)
 
 
 state 820
 
-  359 base_specifier: access_specifier VIRTUAL COLONCOLON nested_name_specifier_opt class_name .
+  358 base_specifier: access_specifier VIRTUAL COLONCOLON nested_name_specifier_opt class_name .
 
-    $default  reduce using rule 359 (base_specifier)
+    $default  reduce using rule 358 (base_specifier)
 
 
 state 821
 
-  430 type_parameter: TEMPLATE '<' template_parameter_list '>' CLASS . identifier
-  431               | TEMPLATE '<' template_parameter_list '>' CLASS . identifier '=' template_name
+  429 type_parameter: TEMPLATE '<' template_parameter_list '>' CLASS . identifier
+  430               | TEMPLATE '<' template_parameter_list '>' CLASS . identifier '=' template_name
 
     IDENTIFIER  shift, and go to state 1
 
@@ -18376,9 +18360,9 @@ state 828
 
 state 829
 
-  443 handler: CATCH '(' exception_declaration ')' compound_statement .
+  442 handler: CATCH '(' exception_declaration ')' compound_statement .
 
-    $default  reduce using rule 443 (handler)
+    $default  reduce using rule 442 (handler)
 
 
 state 830
@@ -18478,7 +18462,7 @@ state 832
     '!'               shift, and go to state 268
     '{'               shift, and go to state 321
 
-    $default  reduce using rule 466 (expression_opt)
+    $default  reduce using rule 465 (expression_opt)
 
     typedef_name                go to state 47
     namespace_name              go to state 48
@@ -18562,19 +18546,19 @@ state 833
 
 state 834
 
-  451 type_id_list: type_id_list ',' type_id .
+  450 type_id_list: type_id_list ',' type_id .
 
-    $default  reduce using rule 451 (type_id_list)
+    $default  reduce using rule 450 (type_id_list)
 
 
 state 835
 
-  430 type_parameter: TEMPLATE '<' template_parameter_list '>' CLASS identifier .
-  431               | TEMPLATE '<' template_parameter_list '>' CLASS identifier . '=' template_name
+  429 type_parameter: TEMPLATE '<' template_parameter_list '>' CLASS identifier .
+  430               | TEMPLATE '<' template_parameter_list '>' CLASS identifier . '=' template_name
 
     '='  shift, and go to state 839
 
-    $default  reduce using rule 430 (type_parameter)
+    $default  reduce using rule 429 (type_parameter)
 
 
 state 836
@@ -18667,7 +18651,7 @@ state 837
     '!'               shift, and go to state 268
     '{'               shift, and go to state 321
 
-    $default  reduce using rule 466 (expression_opt)
+    $default  reduce using rule 465 (expression_opt)
 
     typedef_name                go to state 47
     namespace_name              go to state 48
@@ -18751,7 +18735,7 @@ state 838
 
 state 839
 
-  431 type_parameter: TEMPLATE '<' template_parameter_list '>' CLASS identifier '=' . template_name
+  430 type_parameter: TEMPLATE '<' template_parameter_list '>' CLASS identifier '=' . template_name
 
     TEMPLATE_NAME  shift, and go to state 6
 
@@ -18767,6 +18751,6 @@ state 840
 
 state 841
 
-  431 type_parameter: TEMPLATE '<' template_parameter_list '>' CLASS identifier '=' template_name .
+  430 type_parameter: TEMPLATE '<' template_parameter_list '>' CLASS identifier '=' template_name .
 
-    $default  reduce using rule 431 (type_parameter)
+    $default  reduce using rule 430 (type_parameter)
