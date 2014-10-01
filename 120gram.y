@@ -109,7 +109,7 @@ ErrorMessage *e_message;
 %type <n> type_name elaborated_type_specifier enum_specifier enumerator_list enumerator_definition
 %type <n> enumerator namespace_definition named_namespace_definition original_namespace_definition
 %type <n> extension_namespace_definition unnamed_namespace_definition namespace_body namespace_alias_definition
-%type <n> qualified_namespace_specifier using_declaration using_directive asm_definition linkage_specification /*
+%type <n> qualified_namespace_specifier using_declaration using_directive asm_definition linkage_specification 
 %type <n> init_declarator_list init_declarator declarator direct_declarator ptr_operator cv_qualifier_seq
 %type <n> cv_qualifier declarator_id type_id type_specifier_seq abstract_declarator direct_abstract_declarator
 %type <n> parameter_declaration_clause parameter_declaration_list parameter_declaration function_definition
@@ -127,7 +127,7 @@ ErrorMessage *e_message;
 %type <n> constant_expression_opt abstract_declarator_opt type_specifier_seq_opt direct_abstract_declarator_opt
 %type <n> ctor_initializer_opt COMMA_opt member_specification_opt SEMICOLON_opt conversion_declarator_opt
 %type <n> EXPORT_opt handler_seq_opt assignment_expression_opt type_id_list_opt
-*/
+
 %start translation_unit
 
 %%
@@ -231,7 +231,7 @@ unqualified_id:
 	identifier															{ $$ = alacnary(PRIMARY_EXPRESSIONr1, 1, $1); }
 	| operator_function_id											{ $$ = alacnary(PRIMARY_EXPRESSIONr2, 1, $1); }
 	| conversion_function_id										{ $$ = alacnary(PRIMARY_EXPRESSIONr3, 1, $1); }
-	| '~' class_name													{ $$ = alacnary(PRIMARY_EXPRESSIONr4, 2, $1, $2); }
+	| '~' class_name													{ $$ = alacnary(PRIMARY_EXPRESSIONr4, 1, $2); }
 	;
 
 qualified_id:
@@ -241,7 +241,7 @@ qualified_id:
 
 nested_name_specifier:
 	class_name COLONCOLON nested_name_specifier				{ $$ = alacnary(NESTED_NAME_SPECIFIERr1, 3, $1, $2, $3); }
-	namespace_name COLONCOLON nested_name_specifier			{ $$ = alacnary(NESTED_NAME_SPECIFIERr2, 3, $1, $2, $3); }
+	| namespace_name COLONCOLON nested_name_specifier		{ $$ = alacnary(NESTED_NAME_SPECIFIERr2, 3, $1, $2, $3); }
 	| class_name COLONCOLON											{ $$ = alacnary(NESTED_NAME_SPECIFIERr3, 2, $1, $2); }
 	| namespace_name COLONCOLON									{ $$ = alacnary(NESTED_NAME_SPECIFIERr4, 2, $1, $2); }
 	;
@@ -467,7 +467,7 @@ expression_statement:
 	;
 
 compound_statement:
-	'{' statement_seq_opt '}'										{ $$ = alacnary(COMPOUND_STATEMENTr1, 1, $1); }
+	'{' statement_seq_opt '}'										{ $$ = alacnary(COMPOUND_STATEMENTr1, 1, $2); }
 	;
 
 statement_seq:
@@ -1081,7 +1081,7 @@ type_parameter:
 	| TEMPLATE '<' template_parameter_list '>' CLASS identifier
 																		{ $$ = alacnary(TYPE_PARAMETERr5, 4, $1, $3, $5, $6); }
 	| TEMPLATE '<' template_parameter_list '>' CLASS identifier '=' template_name
-																		{ $$ = alacnary(TYPE_PARAMETERr6, 4, $1, $3, $5, $7); }
+																		{ $$ = alacnary(TYPE_PARAMETERr6, 5, $1, $3, $5, $6, $8); }
 	;
 
 template_id:
@@ -1254,7 +1254,7 @@ SEMICOLON_opt:
 
 conversion_declarator_opt:
 	/* epsilon */													{ $$ = alacnary(CONVERSION_DECLARATOR_OPTr1, 0); }
-	| conversion_declarator										{ $$ = alacnary(CONVERSION_DECLARATOR_OPTr2, 1, $2); }
+	| conversion_declarator										{ $$ = alacnary(CONVERSION_DECLARATOR_OPTr2, 1, $1); }
 	;
 
 EXPORT_opt:
@@ -1372,6 +1372,10 @@ struct TreeNode * alacnary(int prodRule, int children,...){
 	}
 	va_end(mylist);
 	return nd;
+}
+
+TreeNode *alacnary(int rule, int children, ...){
+	TreeNode tn = treenode();
 }
 
 int main(int argc, char **argv){
