@@ -49,9 +49,10 @@ struct FileStack {
 	FileStack *next;
 };
 
+
+
 FileStack *topFile = NULL;
 int lineno;
-Token *yytoken;
 TreeNode *n;
 FILE *saved_yyin;
 
@@ -62,7 +63,7 @@ void popFileStack();
 static void skip_until_eol(void);
 static void skip_comment(void);
 static int check_identifier(char *);
-static void alac(Token *);
+static int alac(Token *);
 void lexerr(char *);
 
 int included_iostream = 0;
@@ -102,14 +103,11 @@ stringtext				([^"])|(\\.)
 ")"											{ return ')'; }
 ";"											{ return ';'; }
 ":"											{ return ':'; }
-"..."											{ alac((Token *)createToken(ELLIPSIS));
-													return ELLIPSIS; }
+"..."											{ return alac((Token *)createToken(ELLIPSIS)); }
 "?"											{ return '?'; }
-"::"											{ alac((Token *)createToken(COLONCOLON));
-													return COLONCOLON; }
+"::"											{ return alac((Token *)createToken(COLONCOLON)); }
 "."											{ return '.'; }
-".*"											{ alac((Token *)createToken(DOTSTAR));
-													return DOTSTAR; }
+".*"											{ return alac((Token *)createToken(DOTSTAR)); }
 "+"											{ return '+'; }
 "-"											{ return '-'; }
 "*"											{ return '*'; }
@@ -128,190 +126,99 @@ stringtext				([^"])|(\\.)
 "="											{ return '='; }
 "<"											{ return '<'; }
 ">"											{ return '>'; }
-"+="											{ alac((Token *)createToken(ADDEQ));
-													return ADDEQ; }
-"-="											{ alac((Token *)createToken(SUBEQ));
-													return SUBEQ; }
-"*="											{ alac((Token *)createToken(MULEQ));
-													return MULEQ; }
-"/="											{ alac((Token *)createToken(DIVEQ));
-													return DIVEQ; }
-"%="											{ alac((Token *)createToken(MODEQ));
-													return MODEQ; }
-"^="											{ alac((Token *)createToken(XOREQ));
-													return XOREQ; }
-"xor_eq"										{ alac((Token *)createToken(XOREQ));
-													return XOREQ; }
-"&="											{ alac((Token *)createToken(ANDEQ));
-													return ANDEQ; }
-"and_eq"										{ alac((Token *)createToken(ANDEQ));
-													return ANDEQ; }
-"|="											{ alac((Token *)createToken(OREQ));
-													return OREQ; }
-"or_eq"										{ alac((Token *)createToken(OREQ));
-													return OREQ; }
-"<<"											{ alac((Token *)createToken(SL));
-													return SL; }
-">>"											{ alac((Token *)createToken(SR));
-													return SR; }
-"<<="											{ alac((Token *)createToken(SLEQ));
-													return SLEQ; }
-">>="											{ alac((Token *)createToken(SREQ));
-													return SREQ; }
-"=="											{ alac((Token *)createToken(EQ));
-													return EQ; }
-"!="											{ alac((Token *)createToken(NOTEQ));
-													return NOTEQ; }
-"not_eq"										{ alac((Token *)createToken(NOTEQ));
-													return NOTEQ; }
-"<="											{ alac((Token *)createToken(LTEQ));
-													return LTEQ; }
-">="											{ alac((Token *)createToken(GTEQ));
-													return GTEQ; }
-"&&"											{ alac((Token *)createToken(ANDAND));
-													return ANDAND; }
-"and"											{ alac((Token *)createToken(ANDAND));
-													return ANDAND; }
-"||"											{ alac((Token *)createToken(OROR));
-													return OROR; }
-"or"											{ alac((Token *)createToken(OROR));
-													return OROR; }
-"++"											{ alac((Token *)createToken(PLUSPLUS));
-													return PLUSPLUS; }
-"--"											{ alac((Token *)createToken(MINUSMINUS));
-													return MINUSMINUS; }
+"+="											{ return alac((Token *)createToken(ADDEQ)); }
+"-="											{ return alac((Token *)createToken(SUBEQ)); }
+"*="											{ return alac((Token *)createToken(MULEQ)); }
+"/="											{ return alac((Token *)createToken(DIVEQ)); }
+"%="											{ return alac((Token *)createToken(MODEQ)); }
+"^="											{ return alac((Token *)createToken(XOREQ)); }
+"xor_eq"										{ return alac((Token *)createToken(XOREQ)); }
+"&="											{ return alac((Token *)createToken(ANDEQ)); }
+"and_eq"										{ return alac((Token *)createToken(ANDEQ)); }
+"|="											{ return alac((Token *)createToken(OREQ)); }
+"or_eq"										{ return alac((Token *)createToken(OREQ)); }
+"<<"											{ return alac((Token *)createToken(SL)); }
+">>"											{ return alac((Token *)createToken(SR)); }
+"<<="											{ return alac((Token *)createToken(SLEQ)); }
+">>="											{ return alac((Token *)createToken(SREQ)); }
+"=="											{ return alac((Token *)createToken(EQ)); }
+"!="											{ return alac((Token *)createToken(NOTEQ)); }
+"not_eq"										{ return alac((Token *)createToken(NOTEQ)); }
+"<="											{ return alac((Token *)createToken(LTEQ)); }
+">="											{ return alac((Token *)createToken(GTEQ)); }
+"&&"											{ return alac((Token *)createToken(ANDAND)); }
+"and"											{ return alac((Token *)createToken(ANDAND)); }
+"||"											{ return alac((Token *)createToken(OROR)); }
+"or"											{ return alac((Token *)createToken(OROR)); }
+"++"											{ return alac((Token *)createToken(PLUSPLUS)); }
+"--"											{ return alac((Token *)createToken(MINUSMINUS)); }
 ","											{ return ','; }
-"->*"											{ alac((Token *)createToken(ARROWSTAR));
-													return ARROWSTAR; }
-"->"											{ alac((Token *)createToken(ARROW));
-													return ARROW; }
+"->*"											{ return alac((Token *)createToken(ARROWSTAR)); }
+"->"											{ return alac((Token *)createToken(ARROW)); }
 
-"asm"											{ alac((Token *)createToken(ASM));
-													return ASM; }
-"auto"										{ alac((Token *)createToken(AUTO));
-													return AUTO; }
-"bool"										{ alac((Token *)createToken(BOOL));
-													return BOOL; }
-"break"										{ alac((Token *)createToken(BREAK));
-													return BREAK; }
-"case"										{ alac((Token *)createToken(CASE));
-													return CASE; }
-"catch"										{ alac((Token *)createToken(CATCH));
-													return CATCH; }
-"char"										{ alac((Token *)createToken(CHAR));
-													return CHAR; }
-"class"										{ alac((Token *)createToken(CLASS));
-													return CLASS; }
-"const"										{ alac((Token *)createToken(CONST));
-													return CONST; }
-"const_cast"								{ alac((Token *)createToken(CONST_CAST));
-													return CONST_CAST; }
-"continue"									{ alac((Token *)createToken(CONTINUE));
-													return CONTINUE; }
-"default"									{ alac((Token *)createToken(DEFAULT));
-													return DEFAULT; }
-"delete"										{ alac((Token *)createToken(DELETE));
-													return DELETE; }
-"do"											{ alac((Token *)createToken(DO));
-													return DO; }
-"double"										{ alac((Token *)createToken(DOUBLE));
-													return DOUBLE; }
-"dynamic_cast"								{ alac((Token *)createToken(DYNAMIC_CAST));
-													return DYNAMIC_CAST; }
-"else"										{ alac((Token *)createToken(ELSE));
-													return ELSE; }
-"enum"										{ alac((Token *)createToken(ENUM));
-													return ENUM; }
-"explicit"									{ alac((Token *)createToken(EXPLICIT));
-													return EXPLICIT; }
-"export"										{ alac((Token *)createToken(EXPORT));
-													return EXPORT; }
-"extern"										{ alac((Token *)createToken(EXTERN));
-													return EXTERN; }
-"false"										{ alac((Token *)createToken(FALSE));
-													return FALSE; }
-"float"										{ alac((Token *)createToken(FLOAT));
-													return FLOAT; }
-"for"											{ alac((Token *)createToken(FOR));
-													return FOR; }
-"friend"										{ alac((Token *)createToken(FRIEND));
-													return FRIEND; }
-"goto"										{ alac((Token *)createToken(GOTO));
-													return GOTO; }
-"if"											{ alac((Token *)createToken(IF));
-													return IF; }
-"inline"										{ alac((Token *)createToken(INLINE));
-													return INLINE; }
-"int"											{ alac((Token *)createToken(INT));
-													return INT; }
-"long"										{ alac((Token *)createToken(LONG));
-													return LONG; }
-"mutable"									{ alac((Token *)createToken(MUTABLE));
-													return MUTABLE; }
-"namespace"									{ alac((Token *)createToken(NAMESPACE));
-													return NAMESPACE; }
-"new"											{ alac((Token *)createToken(NEW));
-													return NEW; }
-"operator"									{ alac((Token *)createToken(OPERATOR));
-													return OPERATOR; }
-"private"									{ alac((Token *)createToken(PRIVATE));
-													return PRIVATE; }
-"protected"									{ alac((Token *)createToken(PROTECTED));
-													return PROTECTED; }
-"public"										{ alac((Token *)createToken(PUBLIC));
-													return PUBLIC; }
-"register"									{ alac((Token *)createToken(REGISTER));
-													return REGISTER; }
-"reinterpret_cast"						{ alac((Token *)createToken(REINTERPRET_CAST));
-													return REINTERPRET_CAST; }
-"return"										{ alac((Token *)createToken(RETURN));
-													return RETURN; }
-"short"										{ alac((Token *)createToken(SHORT));
-													return SHORT; }
-"signed"										{ alac((Token *)createToken(SIGNED));
-													return SIGNED; }
-"sizeof"										{ alac((Token *)createToken(SIZEOF));
-													return SIZEOF; }
-"static"										{ alac((Token *)createToken(STATIC));
-													return STATIC; }
-"static_cast"								{ alac((Token *)createToken(STATIC_CAST));
-													return STATIC_CAST; }
-"struct"										{ alac((Token *)createToken(STRUCT));
-													return STRUCT; }
-"switch"										{ alac((Token *)createToken(SWITCH));
-													return SWITCH; }
-"template"									{ alac((Token *)createToken(TEMPLATE));
-													return TEMPLATE; }
-"this"										{ alac((Token *)createToken(THIS));
-													return THIS; }
-"throw"										{ alac((Token *)createToken(THROW));
-													return THROW; }
-"true"										{ alac((Token *)createToken(TRUE));
-													return TRUE; }
-"try"											{ alac((Token *)createToken(TRY));
-													return TRY; }
-"typedef"									{ alac((Token *)createToken(TYPEDEF));
-													return TYPEDEF; }
-"typeid"										{ alac((Token *)createToken(TYPEID));
-													return TYPEID; }
-"typename"									{ alac((Token *)createToken(TYPENAME));
-													return TYPENAME; }
-"union"										{ alac((Token *)createToken(UNION));
-													return UNION; }
-"unsigned"									{ alac((Token *)createToken(UNSIGNED));
-													return UNSIGNED; }
-"using"										{ alac((Token *)createToken(USING));
-													return USING; }
-"virtual"									{ alac((Token *)createToken(VIRTUAL));
-													return VIRTUAL; }
-"void"										{ alac((Token *)createToken(VOID));
-													return VOID; }
-"volatile"									{ alac((Token *)createToken(VOLATILE));
-													return VOLATILE; }
-"wchar_t"									{ alac((Token *)createToken(WCHAR_T));
-													return WCHAR_T; }
-"while"										{ alac((Token *)createToken(WHILE));
-													return WHILE; }
+"asm"											{ return alac((Token *)createToken(ASM)); }
+"auto"										{ return alac((Token *)createToken(AUTO)); }
+"bool"										{ return alac((Token *)createToken(BOOL)); }
+"break"										{ return alac((Token *)createToken(BREAK)); }
+"case"										{ return alac((Token *)createToken(CASE)); }
+"catch"										{ return alac((Token *)createToken(CATCH)); }
+"char"										{ return alac((Token *)createToken(CHAR)); }
+"class"										{ return alac((Token *)createToken(CLASS)); }
+"const"										{ return alac((Token *)createToken(CONST)); }
+"const_cast"								{ return alac((Token *)createToken(CONST_CAST)); }
+"continue"									{ return alac((Token *)createToken(CONTINUE)); }
+"default"									{ return alac((Token *)createToken(DEFAULT)); }
+"delete"										{ return alac((Token *)createToken(DELETE)); }
+"do"											{ return alac((Token *)createToken(DO)); }
+"double"										{ return alac((Token *)createToken(DOUBLE)); }
+"dynamic_cast"								{ return alac((Token *)createToken(DYNAMIC_CAST)); }
+"else"										{ return alac((Token *)createToken(ELSE)); }
+"enum"										{ return alac((Token *)createToken(ENUM)); }
+"explicit"									{ return alac((Token *)createToken(EXPLICIT)); }
+"export"										{ return alac((Token *)createToken(EXPORT)); }
+"extern"										{ return alac((Token *)createToken(EXTERN)); }
+"false"										{ return alac((Token *)createToken(FALSE)); }
+"float"										{ return alac((Token *)createToken(FLOAT)); }
+"for"											{ return alac((Token *)createToken(FOR)); }
+"friend"										{ return alac((Token *)createToken(FRIEND)); }
+"goto"										{ return alac((Token *)createToken(GOTO)); }
+"if"											{ return alac((Token *)createToken(IF)); }
+"inline"										{ return alac((Token *)createToken(INLINE)); }
+"int"											{ return alac((Token *)createToken(INT)); }
+"long"										{ return alac((Token *)createToken(LONG)); }
+"mutable"									{ return alac((Token *)createToken(MUTABLE)); }
+"namespace"									{ return alac((Token *)createToken(NAMESPACE)); }
+"new"											{ return alac((Token *)createToken(NEW)); }
+"operator"									{ return alac((Token *)createToken(OPERATOR)); }
+"private"									{ return alac((Token *)createToken(PRIVATE)); }
+"protected"									{ return alac((Token *)createToken(PROTECTED)); }
+"public"										{ return alac((Token *)createToken(PUBLIC)); }
+"register"									{ return alac((Token *)createToken(REGISTER)); }
+"reinterpret_cast"						{ return alac((Token *)createToken(REINTERPRET_CAST)); }
+"return"										{ return alac((Token *)createToken(RETURN)); }
+"short"										{ return alac((Token *)createToken(SHORT)); }
+"signed"										{ return alac((Token *)createToken(SIGNED)); }
+"sizeof"										{ return alac((Token *)createToken(SIZEOF)); }
+"static"										{ return alac((Token *)createToken(STATIC)); }
+"static_cast"								{ return alac((Token *)createToken(STATIC_CAST)); }
+"struct"										{ return alac((Token *)createToken(STRUCT)); }
+"switch"										{ return alac((Token *)createToken(SWITCH)); }
+"template"									{ return alac((Token *)createToken(TEMPLATE)); }
+"this"										{ return alac((Token *)createToken(THIS)); }
+"throw"										{ return alac((Token *)createToken(THROW)); }
+"true"										{ return alac((Token *)createToken(TRUE)); }
+"try"											{ return alac((Token *)createToken(TRY)); }
+"typedef"									{ return alac((Token *)createToken(TYPEDEF)); }
+"typeid"										{ return alac((Token *)createToken(TYPEID)); }
+"typename"									{ return alac((Token *)createToken(TYPENAME)); }
+"union"										{ return alac((Token *)createToken(UNION)); }
+"unsigned"									{ return alac((Token *)createToken(UNSIGNED)); }
+"using"										{ return alac((Token *)createToken(USING)); }
+"virtual"									{ return alac((Token *)createToken(VIRTUAL)); }
+"void"										{ return alac((Token *)createToken(VOID)); }
+"volatile"									{ return alac((Token *)createToken(VOLATILE)); }
+"wchar_t"									{ return alac((Token *)createToken(WCHAR_T)); }
+"while"										{ return alac((Token *)createToken(WHILE)); }
 													
 "#include"[ ]*\"[^\\"]+\"  			{ handle_include(); }
 
@@ -326,30 +233,19 @@ stringtext				([^"])|(\\.)
 
 [a-zA-Z_][a-zA-Z_0-9]*					{ return check_identifier(yytext); }
 
-"0"[xX][0-9a-fA-F]+{intsuffix}?		{ alac((Token *)createToken(INTEGER));
-													return INTEGER; }
-"0"[0-7]+{intsuffix}?					{ alac((Token *)createToken(INTEGER));
-													return INTEGER; }
-[0-9]+{intsuffix}?						{ alac((Token *)createToken(INTEGER));
-													return INTEGER; }
+"0"[xX][0-9a-fA-F]+{intsuffix}?		{ return alac((Token *)createToken(INTEGER)); }
+"0"[0-7]+{intsuffix}?					{ return alac((Token *)createToken(INTEGER)); }
+[0-9]+{intsuffix}?						{ return alac((Token *)createToken(INTEGER)); }
 
-{fracconst}{exppart}?{floatsuffix}?	{ alac((Token *)createToken(FLOATING));
-													return FLOATING; }
-[0-9]+{exppart}{floatsuffix}?			{ alac((Token *)createToken(FLOATING));
-													return FLOATING; }
+{fracconst}{exppart}?{floatsuffix}?	{ return alac((Token *)createToken(FLOATING)); }
+[0-9]+{exppart}{floatsuffix}?			{ return alac((Token *)createToken(FLOATING)); }
 
-"'"{chartext}*"'"							{ alac((Token *)createToken(CHARACTER));
-													return CHARACTER; }
-"L'"{chartext}*"'"						{ alac((Token *)createToken(CHARACTER));
-													return CHARACTER; }
-"'"{chartext}*								{ getErrorMessage(ER_MALF_CHAR);
-                                       lexerr(yytext); }
-"L'"{chartext}*							{ getErrorMessage(ER_MALF_CHAR);
-                                       lexerr(yytext); }
-"\""{stringtext}*"\""					{ alac((Token *)createToken(STRING));
-													return STRING; }
-"L\""{stringtext}*"\""					{ alac((Token *)createToken(STRING));
-													return STRING; }
+"'"{chartext}*"'"							{ return alac((Token *)createToken(CHARACTER)); }
+"L'"{chartext}*"'"						{ return alac((Token *)createToken(CHARACTER)); }
+"'"{chartext}*								{ getErrorMessage(ER_MALF_CHAR); }
+"L'"{chartext}*							{ getErrorMessage(ER_MALF_CHAR); }
+"\""{stringtext}*"\""					{ return alac((Token *)createToken(STRING)); }
+"L\""{stringtext}*"\""					{ return alac((Token *)createToken(STRING)); }
 "\""{stringtext}*							{ getErrorMessage(ER_STRING_CLOSE);
 													lexerr(NULL); }
 "L\""{stringtext}*						{ getErrorMessage(ER_STRING_CLOSE);
@@ -496,11 +392,12 @@ check_identifier(char *s)
 	return typenametable_lookup(s);
 }
 
-void alac(Token *token)
+static int alac(Token *token)
 {
 	yylval.n = (TreeNode *)calloc(1, sizeof(TreeNode)); 
-	yylval.n->symbol = (int)token->category;
+	yylval.n->symbol = token->category;
 	yylval.n->u.t.token = token;
+	return token->category;
 }
 
 void lexerr(char *s)

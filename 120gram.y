@@ -62,7 +62,7 @@
 #include "parsedef.h"
 
 extern int lineno;
-extern Token *yytoken;
+//extern Token *yytoken;
 int yydebug=1;
 FILE *yyin;
 char *fname;
@@ -72,29 +72,26 @@ TreeNode *root;
 
 TreeNode *alacnary(int, int,...);
 
-//static void yyerror(char *s);
 %}
 
 %union{
-	Token *t;
-	struct TreeNode *n;
+	TreeNode *n;
 }
 
-%token <t> IDENTIFIER INTEGER FLOATING CHARACTER STRING
-%token <t> TYPEDEF_NAME NAMESPACE_NAME CLASS_NAME ENUM_NAME TEMPLATE_NAME
+%token <n> IDENTIFIER INTEGER FLOATING CHARACTER STRING
+%token <n> TYPEDEF_NAME NAMESPACE_NAME CLASS_NAME ENUM_NAME TEMPLATE_NAME
 
-%token <t> ELLIPSIS COLONCOLON DOTSTAR ADDEQ SUBEQ MULEQ DIVEQ MODEQ
-%token <t> XOREQ ANDEQ OREQ SL SR SREQ SLEQ EQ NOTEQ LTEQ GTEQ ANDAND OROR
-%token <t> PLUSPLUS MINUSMINUS ARROWSTAR ARROW
+%token <n> ELLIPSIS COLONCOLON DOTSTAR ADDEQ SUBEQ MULEQ DIVEQ MODEQ
+%token <n> XOREQ ANDEQ OREQ SL SR SREQ SLEQ EQ NOTEQ LTEQ GTEQ ANDAND OROR
+%token <n> PLUSPLUS MINUSMINUS ARROWSTAR ARROW
 
-%token <t> ASM AUTO BOOL BREAK CASE CATCH CHAR CLASS CONST CONST_CAST CONTINUE
-%token <t> DEFAULT DELETE DO DOUBLE DYNAMIC_CAST ELSE ENUM EXPLICIT EXPORT EXTERN
-%token <t> FALSE FLOAT FOR FRIEND GOTO IF INLINE INT LONG MUTABLE NAMESPACE NEW
-%token <t> OPERATOR PRIVATE PROTECTED PUBLIC REGISTER REINTERPRET_CAST RETURN
-%token <t> SHORT SIGNED SIZEOF STATIC STATIC_CAST STRUCT SWITCH TEMPLATE THIS
-%token <t> THROW TRUE TRY TYPEDEF TYPEID TYPENAME UNION UNSIGNED USING VIRTUAL
-%token <t> VOID VOLATILE WCHAR_T WHILE STR_TYPE
-
+%token <n> ASM AUTO BOOL BREAK CASE CATCH CHAR CLASS CONST CONST_CAST CONTINUE
+%token <n> DEFAULT DELETE DO DOUBLE DYNAMIC_CAST ELSE ENUM EXPLICIT EXPORT EXTERN
+%token <n> FALSE FLOAT FOR FRIEND GOTO IF INLINE INT LONG MUTABLE NAMESPACE NEW
+%token <n> OPERATOR PRIVATE PROTECTED PUBLIC REGISTER REINTERPRET_CAST RETURN
+%token <n> SHORT SIGNED SIZEOF STATIC STATIC_CAST STRUCT SWITCH TEMPLATE THIS
+%token <n> THROW TRUE TRY TYPEDEF TYPEID TYPENAME UNION UNSIGNED USING VIRTUAL
+%token <n> VOID VOLATILE WCHAR_T WHILE STR_TYPE
 
 %type <n> typedef_name namespace_name original_namespace_name class_name enum_name template_name
 %type <n> identifier literal integer_literal character_literal floating_literal string_literal
@@ -1366,7 +1363,7 @@ TreeNode *alacnary(int prodRule, int children,...){
 	TreeNode *nd = (TreeNode *)calloc(1, sizeof(TreeNode));
 	if(!nd)memoryError();
 	
-	nd->u.n.rule = (int)(prodRule / 100) * 100;
+	nd->symbol = (int)(prodRule / 100) * 100;
 	nd->u.n.rule = prodRule;
 	nd->u.n.children = children;
 	int c = 0;
@@ -1387,13 +1384,14 @@ char *humanreadable(int){
 void printTree(struct TreeNode *t, int depth)
 {
 	int i;
-
-	printf("%*s %d: %d\n", depth*2, " ", t->u.n.rule, t->u.n.children);
-
-	if(t->u.n.children > 0)
-		for(i=0; i<t->u.n.children; i++)
-			printTree(t->u.n.child[i], depth+1);
-
+	if(t->symbol >= 1000){
+		printf("%*s %d: %d\n", depth*2, " ", t->u.n.rule, t->u.n.children);
+		if(t->u.n.children > 0)
+			for(i=0; i<t->u.n.children; i++)
+				printTree(t->u.n.child[i], depth+1);
+	} else {
+		printf("%*s %d\n", depth*2, " ", t->symbol);
+	}
 }
 
 int main(int argc, char **argv){
@@ -1411,12 +1409,11 @@ int main(int argc, char **argv){
 				exit(1);
 			}
 			rv = yyparse();
-			//treeprint(yyroot);
+			printTree(root, 0);
 		}
 	} else { //no files in arguments
 		printf("Missing file name.\n");
 		exit(1);
 	}
-	printTree(root, 0);
    return 0;
 }

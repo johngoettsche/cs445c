@@ -15,13 +15,11 @@ struct TreeNode {
    union {
       struct leaf {
 			Token *token;
-         //char *lexeme;  /* saved copy of yytext */
-         //int val;       /* saved copy of val */
       } t;
       struct nonleaf {
          int rule;
 			int children;
-         struct TreeNode *child[1]; /* 9 not big enough for some grammars */
+         struct TreeNode *child[9]; /* 9 not big enough for some grammars */
       } n;
    } u;
 };

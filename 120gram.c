@@ -6876,6 +6876,7 @@ TreeNode *alacnary(int prodRule, int children,...){
 	TreeNode *nd = (TreeNode *)calloc(1, sizeof(TreeNode));
 	if(!nd)memoryError();
 	
+	nd->u.n.rule = (int)(prodRule / 100) * 100;
 	nd->u.n.rule = prodRule;
 	nd->u.n.children = children;
 	int c = 0;
@@ -6895,13 +6896,14 @@ char *humanreadable(int){
 
 void printTree(struct TreeNode *t, int depth)
 {
-  int i;
-
-  printf("%*s %d: %d\n", depth*2, " ", t->u.n.rule, t->u.n.children);
-  
-  for(i=0; i<t->u.n.children; i++)
-    printTree(t->u.n.child[i], depth+1);
-
+	int i;
+	//printf("%*s %d: %d\n", depth*2, " ", t->symbol, t->u.n.children);
+	if(t->symbol >= 1000){
+		printf("%*s %d: %d\n", depth*2, " ", t->symbol, t->u.n.children);
+		if(t->u.n.children > 0)
+			for(i=0; i<t->u.n.children; i++)
+				printTree(t->u.n.child[i], depth+1);
+	} else printf("%*s %d: %d\n", depth*2, " ", t->symbol, 0);
 }
 
 int main(int argc, char **argv){
