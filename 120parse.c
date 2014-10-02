@@ -1,4 +1,3 @@
-//#include "120parse.h"
 
 TreeNode *treenode(int symbol)
 {
@@ -31,4 +30,3 @@ TokenStackNode *popTokenStack(TokenStackNode *top){
 TokenStackNode *topTokenStack(TokenStackNode *top){
 	return top;
 }
-

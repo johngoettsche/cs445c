@@ -71,6 +71,7 @@ ErrorMessage *e_message;
 TreeNode *root;
 
 TreeNode *alacnary(int, int,...);
+char *humanreadable(int);
 
 %}
 
@@ -1376,13 +1377,10 @@ TreeNode *alacnary(int prodRule, int children,...){
 	va_end(mylist);
 	return nd;
 }
-/*
-char *humanreadable(int){
-	
-}*/
 
 void printTree(struct TreeNode *t, int depth)
 {
+	char *text;
 	int i;
 	if(t->symbol >= 1000){
 		printf("%*s %d: %d\n", depth*2, " ", t->u.n.rule, t->u.n.children);
@@ -1390,9 +1388,154 @@ void printTree(struct TreeNode *t, int depth)
 			for(i=0; i<t->u.n.children; i++)
 				printTree(t->u.n.child[i], depth+1);
 	} else {
-		printf("%*s %d\n", depth*2, " ", t->symbol);
+		printf("%d\n", t->symbol);
+		printf("%*s %d\n", depth*2, " ", humanreadable(t->symbol));
 	}
 }
+
+char *humanreadable(int ncode){
+	printf("%d\n", ncode);
+	switch (ncode) {
+		case IDENTIFIER: printf("IDENTIFIER\n"); return "IDENTIFIER";
+		case INTEGER: return "INTEGER";
+		case FLOATING: return "FLOATING";
+		case CHARACTER: return "CHARACTER";
+		case STRING: return "STRING";
+		case TYPEDEF_NAME: return "TYPEDEF_NAME";
+		case NAMESPACE_NAME: return "NAMESPACE_NAME";
+		case CLASS_NAME: return "CLASS_NAME";
+		case ENUM_NAME: return "ENUM_NAME";
+		case TEMPLATE_NAME: return "TEMPLATE_NAME";
+		case ELLIPSIS: return "ELLIPSIS";
+		case COLONCOLON: return "COLONCOLON"; 
+		case DOTSTAR: return "DOTSTAR"; 
+		case ADDEQ: return "ADDEQ"; 
+		case SUBEQ: return "SUBEQ"; 
+		case MULEQ: return "MULEQ"; 
+		case DIVEQ: return "DIVEQ"; 
+		case MODEQ: return "MODEQ";
+		case XOREQ: return "XOREQ"; 
+		case ANDEQ: return "ANDEQ";  
+		case OREQ: return "OREQ"; 
+		case SL: return "SL"; 
+		case SR: return "SR"; 
+		case SREQ: return "SLEQ"; 
+		case SLEQ: return "SLEQ";
+		case EQ: return "EQ";
+		case NOTEQ  : return "NOTEQ";
+		case LTEQ  : return "LTEQ";
+		case GTEQ  : return "GTEQ";
+		case ANDAND  : return "ANDAND";
+		case OROR : return "OROR" ;
+		case PLUSPLUS  : return "PLUSPLUS";
+		case MINUSMINUS  : return "MINUSMINUS"  ;
+		case ARROWSTAR  : return "ARROWSTAR"  ;
+		case ARROW : return "ARROW" ;
+		case ASM  : return "ASM"  ;
+		case AUTO  : return "AUTO"  ;
+		case BOOL  : return "BOOL"  ;
+		case BREAK  : return "BREAK"  ;
+		case CASE  : return "CASE"  ;
+		case CATCH  : return "CATCH"  ;
+		case CHAR  : return "CHAR"  ;
+		case CLASS  : return "CLASS"  ;
+		case CONST  : return "CONST"  ;
+		case CONST_CAST  : return "CONST_CAST"  ;
+		case CONTINUE : return "CONTINUE" ;
+		case DEFAULT  : return "DEFAULT"  ;
+		case DELETE  : return "DELETE"  ;
+		case DO  : return "DO"  ;
+		case DOUBLE  : return "DOUBLE"  ;
+		case DYNAMIC_CAST  : return "DYNAMIC_CAST"  ;
+		case ELSE  : return "ELSE"  ;
+		case ENUM  : return "ENUM"  ;
+		case EXPLICIT  : return "EXPLICIT"  ;
+		case EXPORT  : return "EXPORT"  ;
+		case EXTERN : return "EXTERN" ;
+		case FALSE : return "FALSE" ;
+		case FLOAT  : return "FLOAT"  ;
+		case FOR  : return "FOR"  ;
+		case FRIEND  : return "FRIEND"  ;
+		case GOTO  : return "GOTO"  ;
+		case IF  : return "IF"  ;
+		case INLINE  : return "INLINE"  ;
+		case INT  : return "INT"  ;
+		case LONG  : return "LONG"  ;
+		case MUTABLE  : return "MUTABLE"  ;
+		case NAMESPACE  : return "NAMESPACE"  ;
+		case NEW : return "NEW" ;
+		case OPERATOR  : return "OPERATOR"  ;
+		case PRIVATE  : return "PRIVATE"  ;
+		case PROTECTED  : return "PROTECTED"  ;
+		case PUBLIC  : return "PUBLIC"  ;
+		case REGISTER  : return "REGISTER"  ;
+		case REINTERPRET_CAST  : return "REINTERPRET_CAST"  ;
+		case RETURN : return "RETURN" ;
+		case SHORT  : return "SHORT"  ;
+		case SIGNED  : return "SIGNED"  ;
+		case SIZEOF  : return "SIZEOF"  ;
+		case STATIC  : return "STATIC"  ;
+		case STATIC_CAST  : return "STATIC_CAST"  ;
+		case STRUCT  : return "STRUCT"  ;
+		case SWITCH  : return "SWITCH"  ;
+		case TEMPLATE  : return "TEMPLATE"  ;
+		case THIS : return "THIS" ;
+		case THROW  : return "THROW"  ;
+		case TRUE : return "TRUE" ;
+		case TRY  : return "TRY"  ;
+		case TYPEDEF  : return "TYPEDEF"  ;
+		case TYPEID  : return "TYPEID"  ;
+		case TYPENAME  : return "TYPENAME"  ;
+		case UNION  : return "UNION"  ;
+		case UNSIGNED  : return "UNSIGNED"  ;
+		case USING  : return "USING"  ;
+		case VIRTUAL : return "VIRTUAL" ;
+		case VOID  : return "VOID"  ;
+		case VOLATILE  : return "VOLATILE"  ;
+		case WCHAR_T  : return "WCHAR_T"  ;
+		case WHILE  : return "WHILE"  ;
+		case STR_TYPE : return "STR_TYPE" ;
+
+/*
+%type <n> typedef_name namespace_name original_namespace_name class_name enum_name template_name
+%type <n> identifier literal integer_literal character_literal floating_literal string_literal
+%type <n> boolean_literal translation_unit primary_expression id_expression unqualified_id qualified_id
+%type <n> nested_name_specifier postfix_expression expression_list unary_expression unary_operator
+%type <n> new_expression new_placement new_type_id new_declarator direct_new_declarator new_initializer
+%type <n> delete_expression cast_expression pm_expression multiplicative_expression additive_expression
+%type <n> shift_expression relational_expression equality_expression and_expression exclusive_or_expression
+%type <n> inclusive_or_expression logical_and_expression logical_or_expression conditional_expression
+%type <n> assignment_expression assignment_operator expression constant_expression statement
+%type <n> labeled_statement expression_statement compound_statement statement_seq selection_statement
+%type <n> condition iteration_statement for_init_statement jump_statement declaration_statement
+%type <n> declaration_seq declaration block_declaration simple_declaration decl_specifier
+%type <n> decl_specifier_seq storage_class_specifier function_specifier type_specifier simple_type_specifier
+%type <n> type_name elaborated_type_specifier enum_specifier enumerator_list enumerator_definition
+%type <n> enumerator namespace_definition named_namespace_definition original_namespace_definition
+%type <n> extension_namespace_definition unnamed_namespace_definition namespace_body namespace_alias_definition
+%type <n> qualified_namespace_specifier using_declaration using_directive asm_definition linkage_specification 
+%type <n> init_declarator_list init_declarator declarator direct_declarator ptr_operator cv_qualifier_seq
+%type <n> cv_qualifier declarator_id type_id type_specifier_seq abstract_declarator direct_abstract_declarator
+%type <n> parameter_declaration_clause parameter_declaration_list parameter_declaration function_definition
+%type <n> function_body initializer initializer_clause initializer_list class_specifier class_head
+%type <n> class_key member_specification member_declaration member_declarator_list member_declarator
+%type <n> pure_specifier constant_initializer base_clause base_specifier_list base_specifier
+%type <n> access_specifier conversion_function_id conversion_type_id conversion_declarator 
+%type <n> ctor_initializer mem_initializer_list mem_initializer mem_initializer_id operator_function_id
+%type <n> operator template_declaration template_parameter_list template_parameter type_parameter
+%type <n> template_id template_argument_list template_argument explicit_instantiation explicit_specialization
+%type <n> try_block function_try_block handler_seq handler exception_declaration throw_expression
+%type <n> exception_specification type_id_list declaration_seq_opt nested_name_specifier_opt 
+%type <n> expression_list_opt COLONCOLON_opt new_placement_opt new_initializer_opt new_declarator_opt
+%type <n> expression_opt statement_seq_opt condition_opt enumerator_list_opt initializer_opt
+%type <n> constant_expression_opt abstract_declarator_opt type_specifier_seq_opt direct_abstract_declarator_opt
+%type <n> ctor_initializer_opt COMMA_opt member_specification_opt SEMICOLON_opt conversion_declarator_opt
+%type <n> EXPORT_opt handler_seq_opt assignment_expression_opt type_id_list_opt
+*/
+	}
+}
+
+
 
 int main(int argc, char **argv){
 	int rv;

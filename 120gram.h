@@ -250,13 +250,12 @@ typedef union YYSTYPE
 /* Line 1685 of yacc.c  */
 #line 78 "120gram.y"
 
-	Token *t;
-	struct TreeNode *n;
+	TreeNode *n;
 
 
 
 /* Line 1685 of yacc.c  */
-#line 260 "y.tab.h"
+#line 259 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
