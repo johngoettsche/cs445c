@@ -1327,7 +1327,7 @@ void yyerror(char *s)
 /*
  * creates a token with its attributes
  */
- 
+
 Token *createToken(int tcode){
 	Token *token = (Token *)calloc(1, sizeof(Token));
 	if(token == NULL)memoryError();
@@ -1383,20 +1383,19 @@ void printTree(struct TreeNode *t, int depth)
 	char *text;
 	int i;
 	if(t->symbol >= 1000){
-		printf("%*s %d: %d\n", depth*2, " ", t->u.n.rule, t->u.n.children);
+		printf("%*s%s: %d\n", depth*2, " ", humanreadable(t->u.n.rule), t->u.n.children);
 		if(t->u.n.children > 0)
 			for(i=0; i<t->u.n.children; i++)
 				printTree(t->u.n.child[i], depth+1);
 	} else {
-		printf("%d\n", t->symbol);
-		printf("%*s %d\n", depth*2, " ", humanreadable(t->symbol));
+		printf("%*s%s: %s\n", depth*2, " ", humanreadable(t->symbol), t->u.t.token->text);
 	}
 }
 
 char *humanreadable(int ncode){
-	printf("%d\n", ncode);
+	if(ncode >= 1000)ncode = (int)(ncode / 100) * 100;
 	switch (ncode) {
-		case IDENTIFIER: printf("IDENTIFIER\n"); return "IDENTIFIER";
+		case IDENTIFIER: return "IDENTIFIER";
 		case INTEGER: return "INTEGER";
 		case FLOATING: return "FLOATING";
 		case CHARACTER: return "CHARACTER";
@@ -1495,43 +1494,179 @@ char *humanreadable(int ncode){
 		case WCHAR_T  : return "WCHAR_T"  ;
 		case WHILE  : return "WHILE"  ;
 		case STR_TYPE : return "STR_TYPE" ;
+		case typedef_name  : return "typedef_name"  ;
+		case namespace_name  : return "namespace_name"  ;
+		case original_namespace_name  : return "original_namespace_name"  ;
+		case class_name  : return "class_name"  ;
+		case enum_name  : return "enum_name"  ;
+		case template_name : return "template_name" ;
+		case identifier  : return "identifier"  ;
+		case literal  : return "literal"  ;
+		case integer_literal  : return "integer_literal"  ;
+		case character_literal  : return "character_literal"  ;
+		case floating_literal  : return "floating_literal"  ;
+		case string_literal : return "string_literal" ;
+		case boolean_literal  : return "boolean_literal"  ;
+		case translation_unit : return "program" ;
+		case primary_expression  : return "primary_expression"  ;
+		case id_expression  : return "id_expression"  ;
+		case unqualified_id  : return "unqualified_id"  ;
+		case qualified_id : return "qualified_id" ;
+		case nested_name_specifier  : return "nested_name_specifier"  ;
+		case postfix_expression  : return "postfix_expression"  ;
+		case expression_list  : return "expression_list"  ;
+		case unary_expression  : return "unary_expression"  ;
+		case unary_operator : return "unary_operator" ;
+		case new_expression  : return "new_expression"  ;
+		case new_placement  : return "new_placement"  ;
+		case new_type_id  : return "new_type_id"  ;
+		case new_declarator  : return "new_declarator"  ;
+		case direct_new_declarator  : return "direct_new_declarator"  ;
+		case new_initializer : return "new_initializer" ;
+		case delete_expression  : return "delete_expression"  ;
+		case cast_expression  : return "cast_expression"  ;
+		case pm_expression  : return "pm_expression"  ;
+		case multiplicative_expression  : return "multiplicative_expression"  ;
+		case additive_expression : return "additive_expression" ;
+		case shift_expression  : return "shift_expression"  ;
+		case relational_expression  : return "relational_expression"  ;
+		case equality_expression  : return "equality_expression"  ;
+		case and_expression  : return "and_expression"  ;
+		case exclusive_or_expression : return "exclusive_or_expression" ;
+		case inclusive_or_expression  : return "inclusive_or_expression"  ;
+		case logical_and_expression  : return "logical_and_expression"  ;
+		case logical_or_expression  : return "logical_or_expression"  ;
+		case conditional_expression : return "conditional_expression" ;
+		case assignment_expression  : return "assignment_expression"  ;
+		case assignment_operator  : return "assignment_operator"  ;
+		case expression  : return "expression"  ;
+		case constant_expression  : return "constant_expression"  ;
+		case statement : return "statement" ;
+		case labeled_statement  : return "labeled_statement"  ;
+		case expression_statement  : return "expression_statement"  ;
+		case compound_statement  : return "compound_statement"  ;
+		case statement_seq  : return "statement_seq"  ;
+		case selection_statement : return "selection_statement" ;
+		case condition  : return "condition"  ;
+		case iteration_statement  : return "iteration_statement"  ;
+		case for_init_statement  : return "for_init_statement"  ;
+		case jump_statement  : return "jump_statement"  ;
+		case declaration_statement : return "declaration_statement" ;
+		case declaration_seq  : return "declaration_seq"  ;
+		case declaration  : return "declaration"  ;
+		case block_declaration  : return "block_declaration"  ;
+		case simple_declaration  : return "simple_declaration"  ;
+		case decl_specifier : return "decl_specifier" ;
+		case decl_specifier_seq  : return "decl_specifier_seq"  ;
+		case storage_class_specifier  : return "storage_class_specifier"  ;
+		case function_specifier  : return "function_specifier"  ;
+		case type_specifier  : return "type_specifier"  ;
+		case simple_type_specifier : return "simple_type_specifier" ;
+		case type_name  : return "type_name"  ;
+		case elaborated_type_specifier  : return "elaborated_type_specifier"  ;
+		case enum_specifier  : return "enum_specifier"  ;
+		case enumerator_list  : return "enumerator_list"  ;
+		case enumerator_definition : return "enumerator_definition" ;
+		case enumerator  : return "enumerator"  ;
+		case namespace_definition  : return "namespace_definition"  ;
+		case named_namespace_definition  : return "named_namespace_definition"  ;
+		case original_namespace_definition : return "original_namespace_definition" ;
+		case extension_namespace_definition  : return "extension_namespace_definition"  ;
+		case unnamed_namespace_definition  : return "unnamed_namespace_definition"  ;
+		case namespace_body  : return "namespace_body"  ;
+		case namespace_alias_definition : return "namespace_alias_definition" ;
+		case qualified_namespace_specifier  : return "qualified_namespace_specifier"  ;
+		case using_declaration  : return "using_declaration"  ;
+		case using_directive  : return "using_directive"  ;
+		case asm_definition  : return "asm_definition"  ;
+		case linkage_specification  : return "linkage_specification"  ;
+		case init_declarator_list  : return "init_declarator_list"  ;
+		case init_declarator  : return "init_declarator"  ;
+		case declarator  : return "declarator"  ;
+		case direct_declarator  : return "direct_declarator"  ;
+		case ptr_operator  : return "ptr_operator"  ;
+		case cv_qualifier_seq : return "cv_qualifier_seq" ;
+		case cv_qualifier  : return "cv_qualifier"  ;
+		case declarator_id  : return "declarator_id"  ;
+		case type_id  : return "type_id"  ;
+		case type_specifier_seq  : return "type_specifier_seq"  ;
+		case abstract_declarator  : return "abstract_declarator"  ;
+		case direct_abstract_declarator : return "direct_abstract_declarator" ;
+		case parameter_declaration_clause  : return "parameter_declaration_clause"  ;
+		case parameter_declaration_list  : return "parameter_declaration_list"  ;
+		case parameter_declaration  : return "parameter_declaration"  ;
+		case function_definition : return "function_definition" ;
+		case function_body  : return "function_body"  ;
+		case initializer  : return "initializer"  ;
+		case initializer_clause  : return "initializer_clause"  ;
+		case initializer_list  : return "initializer_list"  ;
+		case class_specifier  : return "class_specifier"  ;
+		case class_head : return "class_head" ;
+		case class_key  : return "class_key"  ;
+		case member_specification  : return "member_specification"  ;
+		case member_declaration  : return "member_declaration"  ;
+		case member_declarator_list  : return "member_declarator_list"  ;
+		case member_declarator : return "member_declarator" ;
+		case pure_specifier  : return "pure_specifier"  ;
+		case constant_initializer  : return "constant_initializer"  ;
+		case base_clause  : return "base_clause"  ;
+		case base_specifier_list  : return "base_specifier_list"  ;
+		case base_specifier : return "base_specifier" ;
+		case access_specifier  : return "access_specifier"  ;
+		case conversion_function_id  : return "conversion_function_id"  ;
+		case conversion_type_id  : return "conversion_type_id"  ;
+		case conversion_declarator  : return "conversion_declarator"  ;
+		case ctor_initializer  : return "ctor_initializer"  ;
+		case mem_initializer_list  : return "mem_initializer_list"  ;
+		case mem_initializer  : return "mem_initializer"  ;
+		case mem_initializer_id  : return "mem_initializer_id"  ;
+		case operator_function_id : return "operator_function_id" ;
+		case operator  : return "operator"  ;
+		case template_declaration  : return "template_declaration"  ;
+		case template_parameter_list  : return "template_parameter_list"  ;
+		case template_parameter  : return "template_parameter"  ;
+		case type_parameter : return "type_parameter" ;
+		case template_id  : return "template_id"  ;
+		case template_argument_list  : return "template_argument_list"  ;
+		case template_argument  : return "template_argument"  ;
+		case explicit_instantiation  : return "explicit_instantiation"  ;
+		case explicit_specialization : return "explicit_specialization" ;
+		case try_block  : return "try_block"  ;
+		case function_try_block  : return "function_try_block"  ;
+		case handler_seq : return "handler_seq"  ;
+		case handler : return "handler"  ;
+		case exception_declaration  : return "exception_declaration"  ;
+		case throw_expression : return "throw_expression" ;
+		case exception_specification  : return "exception_specification"  ;
+		case type_id_list  : return "type_id_list"  ;
+		case declaration_seq_opt  : return "declaration_seq_opt"  ;
+		case nested_name_specifier_opt  : return "nested_name_specifier_opt"  ;
+		case expression_list_opt  : return "expression_list_opt"  ;
+		case COLONCOLON_opt  : return "COLONCOLON_opt"  ;
+		case new_placement_opt  : return "new_placement_opt"  ;
+		case new_initializer_opt  : return "new_initializer_opt"  ;
+		case new_declarator_opt : return "new_declarator_opt" ;
+		case expression_opt  : return "expression_opt"  ;
+		case statement_seq_opt  : return "statement_seq_opt"  ;
+		case condition_opt  : return "condition_opt"  ;
+		case enumerator_list_opt  : return "enumerator_list_opt"  ;
+		case initializer_opt : return "initializer_opt" ;
+		case constant_expression_opt  : return "constant_expression_opt"  ;
+		case abstract_declarator_opt  : return "abstract_declarator_opt"  ;
+		case type_specifier_seq_opt  : return "type_specifier_seq_opt"  ;
+		case direct_abstract_declarator_opt : return "direct_abstract_declarator_opt" ;
+		case ctor_initializer_opt  : return "ctor_initializer_opt"  ;
+		case COMMA_opt  : return "COMMA_opt"  ;
+		case member_specification_opt  : return "member_specification_opt"  ;
+		case SEMICOLON_opt  : return "SEMICOLON_opt"  ;
+		case conversion_declarator_opt : return "conversion_declarator_opt" ;
+		case EXPORT_opt  : return "EXPORT_opt"  ;
+		case handler_seq_opt  : return "handler_seq_opt"  ;
+		case assignment_expression_opt  : return "assignment_expression_opt"  ;
+		case type_id_list_opt : return "type_id_list_opt" ;
 
-/*
-%type <n> typedef_name namespace_name original_namespace_name class_name enum_name template_name
-%type <n> identifier literal integer_literal character_literal floating_literal string_literal
-%type <n> boolean_literal translation_unit primary_expression id_expression unqualified_id qualified_id
-%type <n> nested_name_specifier postfix_expression expression_list unary_expression unary_operator
-%type <n> new_expression new_placement new_type_id new_declarator direct_new_declarator new_initializer
-%type <n> delete_expression cast_expression pm_expression multiplicative_expression additive_expression
-%type <n> shift_expression relational_expression equality_expression and_expression exclusive_or_expression
-%type <n> inclusive_or_expression logical_and_expression logical_or_expression conditional_expression
-%type <n> assignment_expression assignment_operator expression constant_expression statement
-%type <n> labeled_statement expression_statement compound_statement statement_seq selection_statement
-%type <n> condition iteration_statement for_init_statement jump_statement declaration_statement
-%type <n> declaration_seq declaration block_declaration simple_declaration decl_specifier
-%type <n> decl_specifier_seq storage_class_specifier function_specifier type_specifier simple_type_specifier
-%type <n> type_name elaborated_type_specifier enum_specifier enumerator_list enumerator_definition
-%type <n> enumerator namespace_definition named_namespace_definition original_namespace_definition
-%type <n> extension_namespace_definition unnamed_namespace_definition namespace_body namespace_alias_definition
-%type <n> qualified_namespace_specifier using_declaration using_directive asm_definition linkage_specification 
-%type <n> init_declarator_list init_declarator declarator direct_declarator ptr_operator cv_qualifier_seq
-%type <n> cv_qualifier declarator_id type_id type_specifier_seq abstract_declarator direct_abstract_declarator
-%type <n> parameter_declaration_clause parameter_declaration_list parameter_declaration function_definition
-%type <n> function_body initializer initializer_clause initializer_list class_specifier class_head
-%type <n> class_key member_specification member_declaration member_declarator_list member_declarator
-%type <n> pure_specifier constant_initializer base_clause base_specifier_list base_specifier
-%type <n> access_specifier conversion_function_id conversion_type_id conversion_declarator 
-%type <n> ctor_initializer mem_initializer_list mem_initializer mem_initializer_id operator_function_id
-%type <n> operator template_declaration template_parameter_list template_parameter type_parameter
-%type <n> template_id template_argument_list template_argument explicit_instantiation explicit_specialization
-%type <n> try_block function_try_block handler_seq handler exception_declaration throw_expression
-%type <n> exception_specification type_id_list declaration_seq_opt nested_name_specifier_opt 
-%type <n> expression_list_opt COLONCOLON_opt new_placement_opt new_initializer_opt new_declarator_opt
-%type <n> expression_opt statement_seq_opt condition_opt enumerator_list_opt initializer_opt
-%type <n> constant_expression_opt abstract_declarator_opt type_specifier_seq_opt direct_abstract_declarator_opt
-%type <n> ctor_initializer_opt COMMA_opt member_specification_opt SEMICOLON_opt conversion_declarator_opt
-%type <n> EXPORT_opt handler_seq_opt assignment_expression_opt type_id_list_opt
-*/
+		default : return "Not Found";
+
 	}
 }
 
