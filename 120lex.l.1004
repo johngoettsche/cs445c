@@ -1,10 +1,3 @@
-/*
- *  John Goettsche
- *  CS445
- *  Homework #2
- *  revised lexer by Sandro Sigala.
- */
-
 /*	$Id: lexer.l,v 1.2 1997/11/19 15:13:15 sandro Exp $	*/
 
 /*
@@ -48,7 +41,6 @@
 #include "token.h"
 #include "120parse.h"
 #include "120gram.h"
-//#include "typedef.h"
 
 typedef struct FileStack FileStack;
 struct FileStack {
@@ -57,24 +49,13 @@ struct FileStack {
 	FileStack *next;
 };
 
-typedef struct TypeStack TypeStack;
-struct TypeStack{
-	int tcode;
-	TypeStack *next;
-};
-
 FileStack *topFile = NULL;
-TypeStack *topType = NULL;
 int lineno;
 TreeNode *n;
-FILE *yyin;
 FILE *saved_yyin;
-int exitStatus = 0;
 
 static int yywrap(void);
 void handle_include();
-void pushTypeStack(int);
-void popTypeStack();
 void pushFileStack();
 void popFileStack();
 static void skip_until_eol(void);
@@ -108,11 +89,7 @@ stringtext				([^"])|(\\.)
 "/*"											{ skip_comment(); }
 "//"											{ skip_until_eol(); }
 
-"{"											{ /* struct{typename elementname}; currently not supported 
-													* in the grammar but supported in C++
-													if(topType->tcode == STRUCT)popTypeStack;
-													if(topType->tcode == UNION)popTypeStack;*/
-													return '{'; }
+"{"											{ return '{'; }
 "<%"											{ return '{'; }
 "}"											{ return '}'; }
 "%>"											{ return '}'; }
@@ -184,8 +161,7 @@ stringtext				([^"])|(\\.)
 "case"										{ return alac((Token *)createToken(CASE)); }
 "catch"										{ return alac((Token *)createToken(CATCH)); }
 "char"										{ return alac((Token *)createToken(CHAR)); }
-"class"										{ pushTypeStack(CLASS);
-													return alac((Token *)createToken(CLASS)); }
+"class"										{ return alac((Token *)createToken(CLASS)); }
 "const"										{ return alac((Token *)createToken(CONST)); }
 "const_cast"								{ return alac((Token *)createToken(CONST_CAST)); }
 "continue"									{ return alac((Token *)createToken(CONTINUE)); }
@@ -195,8 +171,7 @@ stringtext				([^"])|(\\.)
 "double"										{ return alac((Token *)createToken(DOUBLE)); }
 "dynamic_cast"								{ return alac((Token *)createToken(DYNAMIC_CAST)); }
 "else"										{ return alac((Token *)createToken(ELSE)); }
-"enum"										{ pushTypeStack(ENUM);
-													return alac((Token *)createToken(ENUM)); }
+"enum"										{ return alac((Token *)createToken(ENUM)); }
 "explicit"									{ return alac((Token *)createToken(EXPLICIT)); }
 "export"										{ return alac((Token *)createToken(EXPORT)); }
 "extern"										{ return alac((Token *)createToken(EXTERN)); }
@@ -210,8 +185,7 @@ stringtext				([^"])|(\\.)
 "int"											{ return alac((Token *)createToken(INT)); }
 "long"										{ return alac((Token *)createToken(LONG)); }
 "mutable"									{ return alac((Token *)createToken(MUTABLE)); }
-"namespace"									{ pushTypeStack(NAMESPACE);
-													return alac((Token *)createToken(NAMESPACE)); }
+"namespace"									{ return alac((Token *)createToken(NAMESPACE)); }
 "new"											{ return alac((Token *)createToken(NEW)); }
 "operator"									{ return alac((Token *)createToken(OPERATOR)); }
 "private"									{ return alac((Token *)createToken(PRIVATE)); }
@@ -225,24 +199,17 @@ stringtext				([^"])|(\\.)
 "sizeof"										{ return alac((Token *)createToken(SIZEOF)); }
 "static"										{ return alac((Token *)createToken(STATIC)); }
 "static_cast"								{ return alac((Token *)createToken(STATIC_CAST)); }
-"struct"										{ pushTypeStack(STRUCT);
-													return alac((Token *)createToken(STRUCT)); }
+"struct"										{ return alac((Token *)createToken(STRUCT)); }
 "switch"										{ return alac((Token *)createToken(SWITCH)); }
-"template"									{ exitStatus = 3;
-													getErrorMessage(ER_NOT_SUPPORTED);
-													lexerr(yytext);
-													/*pushTypeStack(TEMPLATE);
-													return alac((Token *)createToken(TEMPLATE));*/ }
+"template"									{ return alac((Token *)createToken(TEMPLATE)); }
 "this"										{ return alac((Token *)createToken(THIS)); }
 "throw"										{ return alac((Token *)createToken(THROW)); }
 "true"										{ return alac((Token *)createToken(TRUE)); }
 "try"											{ return alac((Token *)createToken(TRY)); }
-"typedef"									{ pushTypeStack(TYPEDEF);
-													return alac((Token *)createToken(TYPEDEF)); }
+"typedef"									{ return alac((Token *)createToken(TYPEDEF)); }
 "typeid"										{ return alac((Token *)createToken(TYPEID)); }
 "typename"									{ return alac((Token *)createToken(TYPENAME)); }
-"union"										{ pushTypeStack(UNION);
-													return alac((Token *)createToken(UNION)); }
+"union"										{ return alac((Token *)createToken(UNION)); }
 "unsigned"									{ return alac((Token *)createToken(UNSIGNED)); }
 "using"										{ return alac((Token *)createToken(USING)); }
 "virtual"									{ return alac((Token *)createToken(VIRTUAL)); }
@@ -273,23 +240,16 @@ stringtext				([^"])|(\\.)
 
 "'"{chartext}*"'"							{ return alac((Token *)createToken(CHARACTER)); }
 "L'"{chartext}*"'"						{ return alac((Token *)createToken(CHARACTER)); }
-"'"{chartext}*								{ exitStatus =1;
-													getErrorMessage(ER_MALF_CHAR); 
-													lexerr(NULL); }
-"L'"{chartext}*							{ exitStatus =1;
-													getErrorMessage(ER_MALF_CHAR); 
-													lexerr(NULL); }
+"'"{chartext}*								{ getErrorMessage(ER_MALF_CHAR); }
+"L'"{chartext}*							{ getErrorMessage(ER_MALF_CHAR); }
 "\""{stringtext}*"\""					{ return alac((Token *)createToken(STRING)); }
 "L\""{stringtext}*"\""					{ return alac((Token *)createToken(STRING)); }
-"\""{stringtext}*							{ exitStatus =1;
-													getErrorMessage(ER_STRING_CLOSE);
+"\""{stringtext}*							{ getErrorMessage(ER_STRING_CLOSE);
 													lexerr(NULL); }
-"L\""{stringtext}*						{ exitStatus =1;
-													getErrorMessage(ER_STRING_CLOSE);
+"L\""{stringtext}*						{ getErrorMessage(ER_STRING_CLOSE);
 													lexerr(NULL); }
 													
-.												{ exitStatus =1;
-													getErrorMessage(ER_UNREC_TOKEN);
+.												{ getErrorMessage(ER_UNREC_TOKEN);
 													lexerr(NULL); }
 
 <<EOF>>                 				{ popFileStack();
@@ -304,25 +264,6 @@ static int
 yywrap(void)
 {
 	return 1;
-}
-
-void pushTypeStack(int tcode){
-	TypeStack *typeStack = (TypeStack *)calloc(1, sizeof(TypeStack));
-	if(typeStack == NULL) memoryError();
-	typeStack->tcode = tcode;
-	if(topType == NULL){
-		topType = typeStack;
-		topType->next = NULL;
-	} else {
-		typeStack->next = topType;
-		topType = typeStack;
-	}
-}
-
-void popTypeStack(){
-	if(topType != NULL){
-		topType = topType->next;
-	}
 }
 
 void pushFileStack(){
@@ -416,43 +357,9 @@ int typenametable_lookup(char *s)
       if (!strcmp(s, tmp->name)) return tmp->category;
       tmp = tmp->next;
    }	
-	
 	if(strcmp(s, "string") == 0){
 		typenametable_insert(s, STR_TYPE);
 		return STR_TYPE;
-	}
-	
-	if(topType!=NULL){
-		switch(topType->tcode){
-			case CLASS : 
-				popTypeStack();
-				typenametable_insert(s, CLASS_NAME);
-				return CLASS_NAME;
-			case TYPEDEF : 
-				popTypeStack();
-				typenametable_insert(s, TYPEDEF_NAME);
-				return TYPEDEF_NAME;
-			case ENUM : 
-				popTypeStack();
-				typenametable_insert(s, ENUM_NAME);
-				return ENUM_NAME;
-			case NAMESPACE : 
-				popTypeStack();
-				typenametable_insert(s, NAMESPACE_NAME);
-				return NAMESPACE_NAME;
-			case TEMPLATE : 
-				popTypeStack();
-				typenametable_insert(s, TEMPLATE_NAME);
-				return TEMPLATE_NAME;
-			case STRUCT : 
-				popTypeStack();
-				typenametable_insert(s, CLASS_NAME);
-				return CLASS_NAME;
-			case UNION : 
-				popTypeStack();
-				typenametable_insert(s, CLASS_NAME);
-				return CLASS_NAME;
-		}
 	}
    return IDENTIFIER;
 }
@@ -498,7 +405,5 @@ void lexerr(char *s)
    fprintf(stderr, "\nLexical Error #%d: %s, line: %d ", errors, fname, lineno);
 	if(s != NULL) fprintf(stderr, "%s\t\'%s\' %s\n",e_message->errorType, s, e_message->message);
 	else fprintf(stderr, "%s\t%s\n",e_message->errorType, e_message->message);
-	e_message = NULL;
-	free(e_message);
 	fflush(stderr);
 }

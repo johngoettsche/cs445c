@@ -8,7 +8,7 @@ all: 120
 	$(CC) -c $<
 
 120: 120gram.o 120lex.o
-	$(CC) -o 120 120gram.o 120lex.o
+	$(CC) -o 120++ 120gram.o 120lex.o
 
 120gram.c 120gram.h: 120gram.y
 	$(YACC) -dt --verbose 120gram.y

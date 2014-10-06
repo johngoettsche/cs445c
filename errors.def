@@ -13,3 +13,12 @@ contains more than one character.
 50010
 Memory Allocation Error
 unable to allocate memory.
+50020
+Token Not Supported
+is not supported in 120++
+50021
+Template Error
+Templates are not supported in 120++
+50022
+Syntax Error
+Improper Syntax

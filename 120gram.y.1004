@@ -69,7 +69,6 @@ char *fname;
 int errors;
 ErrorMessage *e_message;
 TreeNode *root;
-extern int exitStatus;
 
 TreeNode *alacnary(int, int,...);
 char *humanreadable(int);
@@ -155,11 +154,7 @@ original_namespace_name:
 class_name:
 	/* identifier */
 	CLASS_NAME															{ $$ = (TreeNode *)alacnary(CLASS_NAMEr1, 1, $1); }
-	| template_id														{ exitStatus = 3;
-																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
-																				$$ = NULL;
-																				/*$$ = (TreeNode *)alacnary(CLASS_NAMEr2, 1, $1); */}
+	| template_id														{ $$ = (TreeNode *)alacnary(CLASS_NAMEr2, 1, $1); }
 	;
 
 enum_name:
@@ -169,11 +164,7 @@ enum_name:
 
 template_name:
 	/* identifier */
-	TEMPLATE_NAME														{ exitStatus = 3;
-																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
-																				$$ = NULL; 
-																				/*(TreeNode *)alacnary(TEMPLATE_NAMEr1, 1, $1);*/ }
+	TEMPLATE_NAME														{ $$ = (TreeNode *)alacnary(TEMPLATE_NAMEr1, 1, $1); }
 	;
 
 /*----------------------------------------------------------------------
@@ -339,7 +330,7 @@ new_initializer:
 	;
 
 delete_expression:
-	DELETE cast_expression											{ $$ = (TreeNode *)alacnary(DELETE_EXPRESSIONr1, 2, $1, $2); }
+	  DELETE cast_expression										{ $$ = (TreeNode *)alacnary(DELETE_EXPRESSIONr1, 2, $1, $2); }
 	| COLONCOLON DELETE cast_expression							{ $$ = (TreeNode *)alacnary(DELETE_EXPRESSIONr2, 3, $1, $2, $3); }
 	| DELETE '[' ']' cast_expression								{ $$ = (TreeNode *)alacnary(DELETE_EXPRESSIONr3, 2, $1, $4); }
 	| COLONCOLON DELETE '[' ']' cast_expression				{ $$ = (TreeNode *)alacnary(DELETE_EXPRESSIONr4, 3, $1, $2, $5); }
@@ -532,11 +523,7 @@ declaration_seq:
 declaration:
 	block_declaration													{ $$ = alacnary(DECLARATIONr1, 1, $1); }
 	| function_definition											{ $$ = alacnary(DECLARATIONr2, 1, $1); }
-	| template_declaration											{ exitStatus = 3;
-																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
-																				$$ = NULL;
-																				/*$$ = alacnary(DECLARATIONr3, 1, $1); */}
+	| template_declaration											{ $$ = alacnary(DECLARATIONr3, 1, $1); }
 	| explicit_instantiation										{ $$ = alacnary(DECLARATIONr4, 1, $1); }
 	| explicit_specialization										{ $$ = alacnary(DECLARATIONr5, 1, $1); }
 	| linkage_specification											{ $$ = alacnary(DECLARATIONr6, 1, $1); }
@@ -624,11 +611,7 @@ elaborated_type_specifier:
 	| TYPENAME COLONCOLON_opt nested_name_specifier identifier
 																			{ $$ = alacnary(ELABORATED_TYPE_SPECIFIERr6, 4, $1, $2, $3, $4); }
 	| TYPENAME COLONCOLON_opt nested_name_specifier identifier '<' template_argument_list '>'
-																			{ exitStatus = 3;
-																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
-																				$$ = NULL;
-																				/*$$ = alacnary(ELABORATED_TYPE_SPECIFIERr7, 5, $1, $2, $3, $4, $6); */}
+																			{ $$ = alacnary(ELABORATED_TYPE_SPECIFIERr7, 5, $1, $2, $3, $4, $6); }
 	;
 
 /*
@@ -759,9 +742,6 @@ declarator:
 	;
 
 direct_declarator:
-
-
-
 	declarator_id														{ $$ = alacnary(DIRECT_DECLARATORr1, 1, $1); }
 	| direct_declarator '('parameter_declaration_clause ')' cv_qualifier_seq exception_specification
 																			{ $$ = alacnary(DIRECT_DECLARATORr2, 4, $1, $3, $5, $6); }
@@ -771,13 +751,8 @@ direct_declarator:
 																			{ $$ = alacnary(DIRECT_DECLARATORr4, 3, $1, $3, $5); }
 	| direct_declarator '('parameter_declaration_clause ')'
 																			{ $$ = alacnary(DIRECT_DECLARATORr5, 2, $1, $3); }
-	| CLASS_NAME '('parameter_declaration_clause ')'		{ $$ = alacnary(DIRECT_DECLARATORr6, 2, $1, $3); }
-	| CLASS_NAME COLONCOLON declarator_id '('parameter_declaration_clause ')'
-																			{ $$ = alacnary(DIRECT_DECLARATORr7, 4, $1, $2, $3, $5); }
-	| CLASS_NAME COLONCOLON CLASS_NAME '('parameter_declaration_clause ')'
-																			{ $$ = alacnary(DIRECT_DECLARATORr8, 4, $1, $2, $3, $5); }
-	| direct_declarator '[' constant_expression_opt ']'	{ $$ = alacnary(DIRECT_DECLARATORr9, 2, $1, $3); }
-	| '(' declarator ')'												{ $$ = alacnary(DIRECT_DECLARATORr10, 1, $2); }
+	| direct_declarator '[' constant_expression_opt ']'	{ $$ = alacnary(DIRECT_DECLARATORr6, 2, $1, $3); }
+	| '(' declarator ')'												{ $$ = alacnary(DIRECT_DECLARATORr7, 1, $2); }
 	;
 
 ptr_operator:
@@ -895,10 +870,10 @@ class_specifier:
 	;
 
 class_head:
-	class_key class_name												{ $$ = alacnary(CLASS_HEADr1, 2, $1, $2); }
-	| class_key class_name base_clause							{ $$ = alacnary(CLASS_HEADr2, 3, $1, $2, $3); }
-	| class_key nested_name_specifier class_name				{ $$ = alacnary(CLASS_HEADr3, 3, $1, $2, $3); }
-	| class_key nested_name_specifier class_name base_clause
+	class_key identifier												{ $$ = alacnary(CLASS_HEADr1, 2, $1, $2); }
+	| class_key identifier base_clause							{ $$ = alacnary(CLASS_HEADr2, 3, $1, $2, $3); }
+	| class_key nested_name_specifier identifier				{ $$ = alacnary(CLASS_HEADr3, 3, $1, $2, $3); }
+	| class_key nested_name_specifier identifier base_clause
 																			{ $$ = alacnary(CLASS_HEADr4, 4, $1, $2, $3, $4); }
 	;
 
@@ -921,11 +896,7 @@ member_declaration:
 	| function_definition SEMICOLON_opt							{ $$ = alacnary(MEMBER_DECLARATIONr5, 2, $1, $2); }
 	| qualified_id ';'												{ $$ = alacnary(MEMBER_DECLARATIONr6, 1, $1); }
 	| using_declaration												{ $$ = alacnary(MEMBER_DECLARATIONr7, 1, $1); }
-	| template_declaration											{ exitStatus = 3;
-																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
-																				$$ = NULL;
-																				/*$$ = alacnary(MEMBER_DECLARATIONr8, 1, $1); */}
+	| template_declaration											{ $$ = alacnary(MEMBER_DECLARATIONr8, 1, $1); }
 	;
 
 member_declarator_list:
@@ -1090,124 +1061,51 @@ operator:
 
 template_declaration:
 	EXPORT_opt TEMPLATE '<' template_parameter_list '>' declaration
-																		{ exitStatus = 3;
-																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
-																			$$ = NULL; 
-																			/*alacnary(TEMPLATE_DECLARATIONr1, 4, $1, $2, $4, $6); */}
+																		{ $$ = alacnary(TEMPLATE_DECLARATIONr1, 4, $1, $2, $4, $6); }
 	;
 
 template_parameter_list:
-	template_parameter											{ exitStatus = 3;
-																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
-																			$$ = NULL; 
-																			/*$$ = alacnary(TEMPLATE_PARAMETER_LISTr1, 1, $1); */}
-	| template_parameter_list ',' template_parameter	{ exitStatus = 3;
-																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
-																			$$ = NULL; 
-																			/*$$ = alacnary(TEMPLATE_PARAMETER_LISTr2, 2, $1, $3);*/ }
+	template_parameter											{ $$ = alacnary(TEMPLATE_PARAMETER_LISTr1, 1, $1); }
+	| template_parameter_list ',' template_parameter	{ $$ = alacnary(TEMPLATE_PARAMETER_LISTr2, 2, $1, $3); }
 	;
 
 template_parameter:
-	type_parameter													{ exitStatus = 3;
-																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
-																			$$ = NULL; 
-																			/*$$ = alacnary(TEMPLATE_PARAMETERr1, 1, $1); */}
-	| parameter_declaration										{ exitStatus = 3;
-																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
-																			$$ = NULL; 
-																			/* $$ = alacnary(TEMPLATE_PARAMETERr2, 1, $1); */}
+	type_parameter													{ $$ = alacnary(TEMPLATE_PARAMETERr1, 1, $1); }
+	| parameter_declaration										{ $$ = alacnary(TEMPLATE_PARAMETERr2, 1, $1); }
 	;
 
 type_parameter:
-	CLASS identifier												{ exitStatus = 3;
-																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
-																			$$ = NULL;
-																			/*$$ = alacnary(TYPE_PARAMETERr1, 2, $1, $2);*/ }
-	| CLASS identifier '=' type_id							{ exitStatus = 3;
-																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
-																			$$ = NULL;
-																			/*$$ = alacnary(TYPE_PARAMETERr2, 3, $1, $2, $4); */}
-	| TYPENAME identifier										{ exitStatus = 3;
-																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
-																			$$ = NULL;
-																			/*$$ = alacnary(TYPE_PARAMETERr3, 2, $1, $2);*/ }
-	| TYPENAME identifier '=' type_id						{ exitStatus = 3;
-																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
-																			$$ = NULL;
-																			/*$$ = alacnary(TYPE_PARAMETERr4, 3, $1, $2, $4); */}
+	CLASS identifier												{ $$ = alacnary(TYPE_PARAMETERr1, 2, $1, $2); }
+	| CLASS identifier '=' type_id							{ $$ = alacnary(TYPE_PARAMETERr2, 3, $1, $2, $4); }
+	| TYPENAME identifier										{ $$ = alacnary(TYPE_PARAMETERr3, 2, $1, $2); }
+	| TYPENAME identifier '=' type_id						{ $$ = alacnary(TYPE_PARAMETERr4, 3, $1, $2, $4); }
 	| TEMPLATE '<' template_parameter_list '>' CLASS identifier
-																		{ exitStatus = 3;
-																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
-																			$$ = NULL; /*alacnary(TYPE_PARAMETERr5, 4, $1, $3, $5, $6);*/ }
+																		{ $$ = alacnary(TYPE_PARAMETERr5, 4, $1, $3, $5, $6); }
 	| TEMPLATE '<' template_parameter_list '>' CLASS identifier '=' template_name
-																		{ exitStatus = 3;
-																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
-																			$$ = NULL; /*alacnary(TYPE_PARAMETERr6, 5, $1, $3, $5, $6, $8);*/ }
+																		{ $$ = alacnary(TYPE_PARAMETERr6, 5, $1, $3, $5, $6, $8); }
 	;
 
 template_id:
-	template_name '<' template_argument_list '>'			{ exitStatus = 3;
-																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
-																			$$ = NULL; /*alacnary(TEMPLATE_IDr1, 2, $1, $3);*/ }
+	template_name '<' template_argument_list '>'			{ $$ = alacnary(TEMPLATE_IDr1, 2, $1, $3); }
 	;
 
 template_argument_list:
-	template_argument												{ exitStatus = 3;
-																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
-																			$$ = NULL;
-																			/*$$ = alacnary(TEMPLATE_ARGUMENT_LISTr1, 1, $1); */}
-	| template_argument_list ',' template_argument		{ exitStatus = 3;
-																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
-																			$$ = NULL;
-																			/*$$ = alacnary(TEMPLATE_ARGUMENT_LISTr2, 2, $1, $3);*/}
+	template_argument												{ $$ = alacnary(TEMPLATE_ARGUMENT_LISTr1, 1, $1); }
+	| template_argument_list ',' template_argument		{ $$ = alacnary(TEMPLATE_ARGUMENT_LISTr2, 2, $1, $3); }
 	;
 
 template_argument:
-	assignment_expression										{ exitStatus = 3;
-																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
-																			$$ = NULL;
-																			/*$$ = alacnary(TEMPLATE_ARGUMENTr1, 1, $1);*/ }
-	| type_id														{ exitStatus = 3;
-																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
-																			$$ = NULL;
-																			/*$$ = alacnary(TEMPLATE_ARGUMENTr2, 1, $1);*/ }
-	| template_name												{ exitStatus = 3;
-																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
-																			$$ = NULL;
-																			/*$$ = alacnary(TEMPLATE_ARGUMENTr3, 1, $1);*/ }
+	assignment_expression										{ $$ = alacnary(TEMPLATE_ARGUMENTr1, 1, $1); }
+	| type_id														{ $$ = alacnary(TEMPLATE_ARGUMENTr2, 1, $1); }
+	| template_name												{ $$ = alacnary(TEMPLATE_ARGUMENTr3, 1, $1); }
 	;
 
 explicit_instantiation:
-	TEMPLATE declaration											{ exitStatus = 3;
-																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
-																			$$ = NULL; 
-																			/*alacnary(EXPLICIT_INSTANTIATIONr1, 2, $1, $2);*/ }
+	TEMPLATE declaration											{ $$ = alacnary(EXPLICIT_INSTANTIATIONr1, 2, $1, $2); }
 	;
 
 explicit_specialization:
-	TEMPLATE '<' '>' declaration								{ exitStatus = 3;
-																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
-																			$$ = NULL; 
-																			/*alacnary(EXPLICIT_SPECIALIZATIONr1, 2, $1, $4);*/ }
+	TEMPLATE '<' '>' declaration								{ $$ = alacnary(EXPLICIT_SPECIALIZATIONr1, 2, $1, $4); }
 	;
 
 /*----------------------------------------------------------------------
@@ -1383,14 +1281,13 @@ type_id_list_opt:
 %%
 
 void memoryError(){
-	exitStatus = 4;
 	getErrorMessage(ER_MALLOC_E);
 	yyerror(NULL);
-	exit(exitStatus);
+	exit(1);
 }
 
 void getErrorMessage(int ecode){
-   int size = 128;
+   int size = 1024;
    int code;
 	char *line = (char *)calloc(size, sizeof(char));
 	char *ertype = (char *)calloc(size, sizeof(char));
@@ -1416,6 +1313,17 @@ void getErrorMessage(int ecode){
 	close(ef);
 }
 
+void yyerror(char *s)
+{
+   errors++;
+   fprintf(stderr, "\nError #%d: %s, line: %d ", errors, fname, lineno);
+	if(e_message){
+		if(s != NULL) fprintf(stderr, "%s\t\'%s\' %s\n",e_message->errorType, s, e_message->message);
+		else fprintf(stderr, "%s\t%s\n",e_message->errorType, e_message->message);
+	} else {fprintf(stderr, "\n");}
+	fflush(stderr);
+}
+
 /*
  * creates a token with its attributes
  */
@@ -1438,6 +1346,7 @@ Token *createToken(int tcode){
    token->filename =filename;
 	
 	if(tcode == INTEGER) token->ival = atoi(token->text);
+//	else token->ival = NULL;
    if(tcode == STRING){
       token->ival = length;
       int *st = (int *)calloc(length, sizeof(int));
@@ -1761,6 +1670,8 @@ char *humanreadable(int ncode){
 	}
 }
 
+
+
 int main(int argc, char **argv){
 	int rv;
    if(argc > 1) { 
@@ -1770,40 +1681,17 @@ int main(int argc, char **argv){
 			fname = argv[f];
 			FILE *infile = fopen(fname, "r");
 			yyin = infile;
-			lineno = 1;
+			lineno = 0;
 			if(!yyin){
 				printf("Error reading file %s\n", argv[f]);
 				exit(1);
 			}
 			rv = yyparse();
-			switch(rv){
-				case 0 :
-					printTree(root, 0);
-					break;
-				case 1 :
-					if(exitStatus < 2) exitStatus = 2;
-					break;
-			}
+			printTree(root, 0);
 		}
 	} else { //no files in arguments
 		printf("Missing file name.\n");
-		exit(4);
+		exit(1);
 	}
-	//printf("\n%d\n", exitStatus);
-   return exitStatus;
-}
-
-void yyerror(char *s)
-{
-   errors++;
-   fprintf(stderr, "\nError #%d: %s, line: %d ", errors, fname, lineno);
-	if(!e_message) {
-		s = NULL;
-		getErrorMessage(ER_SYNTAX);
-	}
-	if(s != NULL) fprintf(stderr, "%s\t\'%s\' %s\n",e_message->errorType, s, e_message->message);
-	else fprintf(stderr, "%s\t%s\n",e_message->errorType, e_message->message);
-	e_message = NULL;
-	free(e_message);
-	fflush(stderr);
+   return 0;
 }
