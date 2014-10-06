@@ -176,7 +176,6 @@ stringtext				([^"])|(\\.)
 ","											{ return ','; }
 "->*"											{ return alac((Token *)createToken(ARROWSTAR)); }
 "->"											{ return alac((Token *)createToken(ARROW)); }
-
 "asm"											{ return alac((Token *)createToken(ASM)); }
 "auto"										{ return alac((Token *)createToken(AUTO)); }
 "bool"										{ return alac((Token *)createToken(BOOL)); }
