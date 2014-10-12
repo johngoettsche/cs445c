@@ -51,18 +51,17 @@
  */
 
 %{
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
 
-#include "errors.h"
-#include "token.h"
-#include "120parse.h"
+#include "sdef.h"
 #include "parsedef.h"
+#include "errors.h"
 
 extern int lineno;
-//extern Token *yytoken;
 int yydebug=1;
 FILE *yyin;
 char *fname;
@@ -71,13 +70,10 @@ ErrorMessage *e_message;
 TreeNode *root;
 extern int exitStatus;
 
-TreeNode *alacnary(int, int,...);
-char *humanreadable(int);
-
 %}
 
 %union{
-	TreeNode *n;
+	struct TreeNode *n;
 }
 
 %token <n> IDENTIFIER INTEGER FLOATING CHARACTER STRING
@@ -390,65 +386,65 @@ equality_expression:
 	;
 
 and_expression:
-	equality_expression												{ $$ = alacnary(AND_EXPRESSIONr1, 1, $1); }
-	| and_expression '&' equality_expression					{ $$ = alacnary(AND_EXPRESSIONr2, 2, $1, $3); }
+	equality_expression												{ $$ = (TreeNode *)alacnary(AND_EXPRESSIONr1, 1, $1); }
+	| and_expression '&' equality_expression					{ $$ = (TreeNode *)alacnary(AND_EXPRESSIONr2, 2, $1, $3); }
 	;
 
 exclusive_or_expression:
-	and_expression														{ $$ = alacnary(EXCLUSIVE_OR_EXPRESSIONr1, 1, $1); }
-	| exclusive_or_expression '^' and_expression				{ $$ = alacnary(EXCLUSIVE_OR_EXPRESSIONr2, 2, $1, $3); }
+	and_expression														{ $$ = (TreeNode *)alacnary(EXCLUSIVE_OR_EXPRESSIONr1, 1, $1); }
+	| exclusive_or_expression '^' and_expression				{ $$ = (TreeNode *)alacnary(EXCLUSIVE_OR_EXPRESSIONr2, 2, $1, $3); }
 	;
 
 inclusive_or_expression:
-	exclusive_or_expression											{ $$ = alacnary(INCLUSIVE_OR_EXPRESSIONr1, 1, $1); }
-	| inclusive_or_expression '|' exclusive_or_expression	{ $$ = alacnary(INCLUSIVE_OR_EXPRESSIONr2, 2, $1, $3); }
+	exclusive_or_expression											{ $$ = (TreeNode *)alacnary(INCLUSIVE_OR_EXPRESSIONr1, 1, $1); }
+	| inclusive_or_expression '|' exclusive_or_expression	{ $$ = (TreeNode *)alacnary(INCLUSIVE_OR_EXPRESSIONr2, 2, $1, $3); }
 	;
 
 logical_and_expression:
-	inclusive_or_expression											{ $$ = alacnary(LOGICAL_AND_EXPRESSIONr1, 1, $1); }
+	inclusive_or_expression											{ $$ = (TreeNode *)alacnary(LOGICAL_AND_EXPRESSIONr1, 1, $1); }
 	| logical_and_expression ANDAND inclusive_or_expression
-																			{ $$ = alacnary(LOGICAL_AND_EXPRESSIONr1, 3, $1, $2, $3); }
+																			{ $$ = (TreeNode *)alacnary(LOGICAL_AND_EXPRESSIONr1, 3, $1, $2, $3); }
 	;
 
 logical_or_expression:
-	logical_and_expression											{ $$ = alacnary(LOGICAL_OR_EXPRESSIONr1, 1, $1); }
-	| logical_or_expression OROR logical_and_expression	{ $$ = alacnary(LOGICAL_OR_EXPRESSIONr2, 3, $1, $2, $3); }
+	logical_and_expression											{ $$ = (TreeNode *)alacnary(LOGICAL_OR_EXPRESSIONr1, 1, $1); }
+	| logical_or_expression OROR logical_and_expression	{ $$ = (TreeNode *)alacnary(LOGICAL_OR_EXPRESSIONr2, 3, $1, $2, $3); }
 	;
 
 conditional_expression:
-	logical_or_expression											{ $$ = alacnary(CONDITIONAL_EXPRESSIONr1, 1, $1); }
+	logical_or_expression											{ $$ = (TreeNode *)alacnary(CONDITIONAL_EXPRESSIONr1, 1, $1); }
 	| logical_or_expression  '?' expression ':' assignment_expression
-																			{ $$ = alacnary(CONDITIONAL_EXPRESSIONr2, 3, $1, $3, $5); }
+																			{ $$ = (TreeNode *)alacnary(CONDITIONAL_EXPRESSIONr2, 3, $1, $3, $5); }
 	;
 
 assignment_expression:
-	conditional_expression											{ $$ = alacnary(ASSIGNMENT_EXPRESSIONr1, 1, $1); }
+	conditional_expression											{ $$ = (TreeNode *)alacnary(ASSIGNMENT_EXPRESSIONr1, 1, $1); }
 	| logical_or_expression assignment_operator assignment_expression
-																			{ $$ = alacnary(ASSIGNMENT_EXPRESSIONr2, 3, $1, $2, $3); }
-	| throw_expression												{ $$ = alacnary(ASSIGNMENT_EXPRESSIONr3, 1, $1); }
+																			{ $$ = (TreeNode *)alacnary(ASSIGNMENT_EXPRESSIONr2, 3, $1, $2, $3); }
+	| throw_expression												{ $$ = (TreeNode *)alacnary(ASSIGNMENT_EXPRESSIONr3, 1, $1); }
 	;
 
 assignment_operator:
-	'='																	{ $$ = alacnary(ASSIGNMENT_OPERATORr1, 0); }
-	| MULEQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr2, 1, $1); }
-	| DIVEQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr3, 1, $1); }
-	| MODEQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr4, 1, $1); }
-	| ADDEQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr5, 1, $1); }
-	| SUBEQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr6, 1, $1); }
-	| SREQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr7, 1, $1); }
-	| SLEQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr8, 1, $1); }
-	| ANDEQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr9, 1, $1); }
-	| XOREQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr10, 1, $1); }
-	| OREQ																{ $$ = alacnary(ASSIGNMENT_OPERATORr11, 1, $1); }
+	'='																	{ $$ = (TreeNode *)alacnary(ASSIGNMENT_OPERATORr1, 0); }
+	| MULEQ																{ $$ = (TreeNode *)alacnary(ASSIGNMENT_OPERATORr2, 1, $1); }
+	| DIVEQ																{ $$ = (TreeNode *)alacnary(ASSIGNMENT_OPERATORr3, 1, $1); }
+	| MODEQ																{ $$ = (TreeNode *)alacnary(ASSIGNMENT_OPERATORr4, 1, $1); }
+	| ADDEQ																{ $$ = (TreeNode *)alacnary(ASSIGNMENT_OPERATORr5, 1, $1); }
+	| SUBEQ																{ $$ = (TreeNode *)alacnary(ASSIGNMENT_OPERATORr6, 1, $1); }
+	| SREQ																{ $$ = (TreeNode *)alacnary(ASSIGNMENT_OPERATORr7, 1, $1); }
+	| SLEQ																{ $$ = (TreeNode *)alacnary(ASSIGNMENT_OPERATORr8, 1, $1); }
+	| ANDEQ																{ $$ = (TreeNode *)alacnary(ASSIGNMENT_OPERATORr9, 1, $1); }
+	| XOREQ																{ $$ = (TreeNode *)alacnary(ASSIGNMENT_OPERATORr10, 1, $1); }
+	| OREQ																{ $$ = (TreeNode *)alacnary(ASSIGNMENT_OPERATORr11, 1, $1); }
 	;
 
 expression:
-	assignment_expression											{ $$ = alacnary(EXPRESSIONr1, 1, $1); }
-	| expression ',' assignment_expression						{ $$ = alacnary(EXPRESSIONr2, 2, $1, $3); }
+	assignment_expression											{ $$ = (TreeNode *)alacnary(EXPRESSIONr1, 1, $1); }
+	| expression ',' assignment_expression						{ $$ = (TreeNode *)alacnary(EXPRESSIONr2, 2, $1, $3); }
 	;
 
 constant_expression:
-	conditional_expression											{ $$ = alacnary(CONSTANT_EXPRESSIONr1, 1, $1); }
+	conditional_expression											{ $$ = (TreeNode *)alacnary(CONSTANT_EXPRESSIONr1, 1, $1); }
 	;
 
 /*----------------------------------------------------------------------
@@ -456,68 +452,68 @@ constant_expression:
  *----------------------------------------------------------------------*/
 
 statement:
-	labeled_statement													{ $$ = alacnary(STATEMENTr1, 1, $1); }
-	| expression_statement											{ $$ = alacnary(STATEMENTr2, 1, $1); }
-	| compound_statement												{ $$ = alacnary(STATEMENTr3, 1, $1); }
-	| selection_statement											{ $$ = alacnary(STATEMENTr4, 1, $1); }
-	| iteration_statement											{ $$ = alacnary(STATEMENTr5, 1, $1); }
-	| jump_statement													{ $$ = alacnary(STATEMENTr6, 1, $1); }
-	| declaration_statement											{ $$ = alacnary(STATEMENTr7, 1, $1); }
-	| try_block															{ $$ = alacnary(STATEMENTr8, 1, $1); }
+	labeled_statement													{ $$ = (TreeNode *)alacnary(STATEMENTr1, 1, $1); }
+	| expression_statement											{ $$ = (TreeNode *)alacnary(STATEMENTr2, 1, $1); }
+	| compound_statement												{ $$ = (TreeNode *)alacnary(STATEMENTr3, 1, $1); }
+	| selection_statement											{ $$ = (TreeNode *)alacnary(STATEMENTr4, 1, $1); }
+	| iteration_statement											{ $$ = (TreeNode *)alacnary(STATEMENTr5, 1, $1); }
+	| jump_statement													{ $$ = (TreeNode *)alacnary(STATEMENTr6, 1, $1); }
+	| declaration_statement											{ $$ = (TreeNode *)alacnary(STATEMENTr7, 1, $1); }
+	| try_block															{ $$ = (TreeNode *)alacnary(STATEMENTr8, 1, $1); }
 	;
 
 labeled_statement:
-	identifier ':' statement										{ $$ = alacnary(LABELED_STATEMENTr1, 2, $1, $3); }
-	| CASE constant_expression ':' statement					{ $$ = alacnary(LABELED_STATEMENTr2, 3, $1, $2, $4); }
-	| DEFAULT ':' statement											{ $$ = alacnary(LABELED_STATEMENTr3, 2, $1, $3); }
+	identifier ':' statement										{ $$ = (TreeNode *)alacnary(LABELED_STATEMENTr1, 2, $1, $3); }
+	| CASE constant_expression ':' statement					{ $$ = (TreeNode *)alacnary(LABELED_STATEMENTr2, 3, $1, $2, $4); }
+	| DEFAULT ':' statement											{ $$ = (TreeNode *)alacnary(LABELED_STATEMENTr3, 2, $1, $3); }
 	;
 
 expression_statement:
-	expression_opt ';'												{ $$ = alacnary(EXPRESSION_STATEMENTr1, 1, $1); }
+	expression_opt ';'												{ $$ = (TreeNode *)alacnary(EXPRESSION_STATEMENTr1, 1, $1); }
 	;
 
 compound_statement:
-	'{' statement_seq_opt '}'										{ $$ = alacnary(COMPOUND_STATEMENTr1, 1, $2); }
+	'{' statement_seq_opt '}'										{ $$ = (TreeNode *)alacnary(COMPOUND_STATEMENTr1, 1, $2); }
 	;
 
 statement_seq:
-	statement															{ $$ = alacnary(STATEMENT_SEQr1, 1, $1); }
-	| statement_seq statement										{ $$ = alacnary(STATEMENT_SEQr2, 2, $1, $2); }
+	statement															{ $$ = (TreeNode *)alacnary(STATEMENT_SEQr1, 1, $1); }
+	| statement_seq statement										{ $$ = (TreeNode *)alacnary(STATEMENT_SEQr2, 2, $1, $2); }
 	;
 
 selection_statement:
-	IF '(' condition ')' statement								{ $$ = alacnary(SELECTION_STATEMENTr1, 3, $1, $3, $5); }
-	| IF '(' condition ')' statement ELSE statement			{ $$ = alacnary(SELECTION_STATEMENTr2, 5, $1, $3, $5, $6, $7); }
-	| SWITCH '(' condition ')' statement						{ $$ = alacnary(SELECTION_STATEMENTr3, 3, $1, $3, $5); }
+	IF '(' condition ')' statement								{ $$ = (TreeNode *)alacnary(SELECTION_STATEMENTr1, 3, $1, $3, $5); }
+	| IF '(' condition ')' statement ELSE statement			{ $$ = (TreeNode *)alacnary(SELECTION_STATEMENTr2, 5, $1, $3, $5, $6, $7); }
+	| SWITCH '(' condition ')' statement						{ $$ = (TreeNode *)alacnary(SELECTION_STATEMENTr3, 3, $1, $3, $5); }
 	;
 
 condition:
-	expression															{ $$ = alacnary(CONDITIONr1, 1, $1); }
+	expression															{ $$ = (TreeNode *)alacnary(CONDITIONr1, 1, $1); }
 	| type_specifier_seq declarator '=' assignment_expression
-																			{ $$ = alacnary(CONDITIONr2, 3, $1, $2, $4); }
+																			{ $$ = (TreeNode *)alacnary(CONDITIONr2, 3, $1, $2, $4); }
 	;
 
 iteration_statement:
-	WHILE '(' condition ')' statement							{ $$ = alacnary(ITERATION_STATEMENTr1, 3, $1, $3, $5); }
-	| DO statement WHILE '(' expression ')' ';'				{ $$ = alacnary(ITERATION_STATEMENTr2, 4, $1, $2, $3, $5); }
+	WHILE '(' condition ')' statement							{ $$ = (TreeNode *)alacnary(ITERATION_STATEMENTr1, 3, $1, $3, $5); }
+	| DO statement WHILE '(' expression ')' ';'				{ $$ = (TreeNode *)alacnary(ITERATION_STATEMENTr2, 4, $1, $2, $3, $5); }
 	| FOR '(' for_init_statement condition_opt ';' expression_opt ')' statement
-																			{ $$ = alacnary(ITERATION_STATEMENTr3, 5, $1, $3, $4, $6, $8); }
+																			{ $$ = (TreeNode *)alacnary(ITERATION_STATEMENTr3, 5, $1, $3, $4, $6, $8); }
 	;
 
 for_init_statement:
-	expression_statement												{ $$ = alacnary(FOR_INIT_STATEMENTr1, 1, $1); }
-	| simple_declaration												{ $$ = alacnary(FOR_INIT_STATEMENTr2, 1, $1); }
+	expression_statement												{ $$ = (TreeNode *)alacnary(FOR_INIT_STATEMENTr1, 1, $1); }
+	| simple_declaration												{ $$ = (TreeNode *)alacnary(FOR_INIT_STATEMENTr2, 1, $1); }
 	;
 
 jump_statement:
-	BREAK ';'															{ $$ = alacnary(JUMP_STATEMENTr1, 1, $1); }
-	| CONTINUE ';'														{ $$ = alacnary(JUMP_STATEMENTr2, 1, $1); }
-	| RETURN expression_opt ';'									{ $$ = alacnary(JUMP_STATEMENTr3, 2, $1, $2); }
-	| GOTO identifier ';'											{ $$ = alacnary(JUMP_STATEMENTr4, 2, $1, $2); }
+	BREAK ';'															{ $$ = (TreeNode *)alacnary(JUMP_STATEMENTr1, 1, $1); }
+	| CONTINUE ';'														{ $$ = (TreeNode *)alacnary(JUMP_STATEMENTr2, 1, $1); }
+	| RETURN expression_opt ';'									{ $$ = (TreeNode *)alacnary(JUMP_STATEMENTr3, 2, $1, $2); }
+	| GOTO identifier ';'											{ $$ = (TreeNode *)alacnary(JUMP_STATEMENTr4, 2, $1, $2); }
 	;
 
 declaration_statement:
-	block_declaration													{ $$ = alacnary(DECLARATION_STATEMENTr1, 1, $1); }
+	block_declaration													{ $$ = (TreeNode *)alacnary(DECLARATION_STATEMENTr1, 1, $1); }
 	;
 
 /*----------------------------------------------------------------------
@@ -525,104 +521,104 @@ declaration_statement:
  *----------------------------------------------------------------------*/
 
 declaration_seq:
-	declaration															{ $$ = alacnary(DECLARATION_SEQr1, 1, $1); }
-	| declaration_seq declaration									{ $$ = alacnary(DECLARATION_SEQr2, 2, $1, $2); }
+	declaration															{ $$ = (TreeNode *)alacnary(DECLARATION_SEQr1, 1, $1); }
+	| declaration_seq declaration									{ $$ = (TreeNode *)alacnary(DECLARATION_SEQr2, 2, $1, $2); }
 	;
 
 declaration:
-	block_declaration													{ $$ = alacnary(DECLARATIONr1, 1, $1); }
-	| function_definition											{ $$ = alacnary(DECLARATIONr2, 1, $1); }
+	block_declaration													{ $$ = (TreeNode *)alacnary(DECLARATIONr1, 1, $1); }
+	| function_definition											{ $$ = (TreeNode *)alacnary(DECLARATIONr2, 1, $1); }
 	| template_declaration											{ exitStatus = 3;
 																				getErrorMessage(ER_TEMPLATE);
 																				yyerror(NULL);
 																				$$ = NULL;
 																				/*$$ = alacnary(DECLARATIONr3, 1, $1); */}
-	| explicit_instantiation										{ $$ = alacnary(DECLARATIONr4, 1, $1); }
-	| explicit_specialization										{ $$ = alacnary(DECLARATIONr5, 1, $1); }
-	| linkage_specification											{ $$ = alacnary(DECLARATIONr6, 1, $1); }
-	| namespace_definition											{ $$ = alacnary(DECLARATIONr7, 1, $1); }
+	| explicit_instantiation										{ $$ = (TreeNode *)alacnary(DECLARATIONr4, 1, $1); }
+	| explicit_specialization										{ $$ = (TreeNode *)alacnary(DECLARATIONr5, 1, $1); }
+	| linkage_specification											{ $$ = (TreeNode *)alacnary(DECLARATIONr6, 1, $1); }
+	| namespace_definition											{ $$ = (TreeNode *)alacnary(DECLARATIONr7, 1, $1); }
 	;
 
 block_declaration:
-	simple_declaration												{ $$ = alacnary(BLOCK_DECLARATIONr1, 1, $1); }
-	| asm_definition													{ $$ = alacnary(BLOCK_DECLARATIONr2, 1, $1); }
-	| namespace_alias_definition									{ $$ = alacnary(BLOCK_DECLARATIONr3, 1, $1); }
-	| using_declaration												{ $$ = alacnary(BLOCK_DECLARATIONr4, 1, $1); }
-	| using_directive													{ $$ = alacnary(BLOCK_DECLARATIONr5, 1, $1); }
+	simple_declaration												{ $$ = (TreeNode *)alacnary(BLOCK_DECLARATIONr1, 1, $1); }
+	| asm_definition													{ $$ = (TreeNode *)alacnary(BLOCK_DECLARATIONr2, 1, $1); }
+	| namespace_alias_definition									{ $$ = (TreeNode *)alacnary(BLOCK_DECLARATIONr3, 1, $1); }
+	| using_declaration												{ $$ = (TreeNode *)alacnary(BLOCK_DECLARATIONr4, 1, $1); }
+	| using_directive													{ $$ = (TreeNode *)alacnary(BLOCK_DECLARATIONr5, 1, $1); }
 	;
 
 simple_declaration:
-	decl_specifier_seq init_declarator_list ';'				{ $$ = alacnary(SIMPLE_DECLARATIONr1, 2, $1, $2); }
-	|  decl_specifier_seq ';'										{ $$ = alacnary(SIMPLE_DECLARATIONr2, 1, $1); }
+	decl_specifier_seq init_declarator_list ';'				{ $$ = (TreeNode *)alacnary(SIMPLE_DECLARATIONr1, 2, $1, $2); }
+	|  decl_specifier_seq ';'										{ $$ = (TreeNode *)alacnary(SIMPLE_DECLARATIONr2, 1, $1); }
 	;
 
 decl_specifier:
-	storage_class_specifier											{ $$ = alacnary(DECL_SPECIFIERr1, 1, $1); }
-	| type_specifier													{ $$ = alacnary(DECL_SPECIFIERr2, 1, $1); }
-	| function_specifier												{ $$ = alacnary(DECL_SPECIFIERr3, 1, $1); }
-	| FRIEND																{ $$ = alacnary(DECL_SPECIFIERr4, 1, $1); }
-	| TYPEDEF															{ $$ = alacnary(DECL_SPECIFIERr5, 1, $1); }
+	storage_class_specifier											{ $$ = (TreeNode *)alacnary(DECL_SPECIFIERr1, 1, $1); }
+	| type_specifier													{ $$ = (TreeNode *)alacnary(DECL_SPECIFIERr2, 1, $1); }
+	| function_specifier												{ $$ = (TreeNode *)alacnary(DECL_SPECIFIERr3, 1, $1); }
+	| FRIEND																{ $$ = (TreeNode *)alacnary(DECL_SPECIFIERr4, 1, $1); }
+	| TYPEDEF															{ $$ = (TreeNode *)alacnary(DECL_SPECIFIERr5, 1, $1); }
 	;
 
 decl_specifier_seq:
-	decl_specifier														{ $$ = alacnary(DECL_SPECIFIER_SEQr1, 1, $1); }
-	| decl_specifier_seq decl_specifier							{ $$ = alacnary(DECL_SPECIFIER_SEQr2, 2, $1, $2); }
+	decl_specifier														{ $$ = (TreeNode *)alacnary(DECL_SPECIFIER_SEQr1, 1, $1); }
+	| decl_specifier_seq decl_specifier							{ $$ = (TreeNode *)alacnary(DECL_SPECIFIER_SEQr2, 2, $1, $2); }
 	;
 
 storage_class_specifier:
-	AUTO																	{ $$ = alacnary(STORAGE_CLASS_SPECIFIERr1, 1, $1); }
-	| REGISTER															{ $$ = alacnary(STORAGE_CLASS_SPECIFIERr2, 1, $1); }
-	| STATIC																{ $$ = alacnary(STORAGE_CLASS_SPECIFIERr3, 1, $1); }
-	| EXTERN																{ $$ = alacnary(STORAGE_CLASS_SPECIFIERr4, 1, $1); }
-	| MUTABLE															{ $$ = alacnary(STORAGE_CLASS_SPECIFIERr5, 1, $1); }
+	AUTO																	{ $$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr1, 1, $1); }
+	| REGISTER															{ $$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr2, 1, $1); }
+	| STATIC																{ $$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr3, 1, $1); }
+	| EXTERN																{ $$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr4, 1, $1); }
+	| MUTABLE															{ $$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr5, 1, $1); }
 	;
 
 function_specifier:
-	INLINE																{ $$ = alacnary(FUNCTION_SPECIFIERr1, 1, $1); }
-	| VIRTUAL															{ $$ = alacnary(FUNCTION_SPECIFIERr2, 1, $1); }
-	| EXPLICIT															{ $$ = alacnary(FUNCTION_SPECIFIERr3, 1, $1); }
+	INLINE																{ $$ = (TreeNode *)alacnary(FUNCTION_SPECIFIERr1, 1, $1); }
+	| VIRTUAL															{ $$ = (TreeNode *)alacnary(FUNCTION_SPECIFIERr2, 1, $1); }
+	| EXPLICIT															{ $$ = (TreeNode *)alacnary(FUNCTION_SPECIFIERr3, 1, $1); }
 	;
 
 type_specifier:
-	simple_type_specifier											{ $$ = alacnary(TYPE_SPECIFIERr1, 1, $1); }
-	| class_specifier													{ $$ = alacnary(TYPE_SPECIFIERr2, 1, $1); }
-	| enum_specifier													{ $$ = alacnary(TYPE_SPECIFIERr3, 1, $1); }
-	| elaborated_type_specifier									{ $$ = alacnary(TYPE_SPECIFIERr4, 1, $1); }
-	| cv_qualifier														{ $$ = alacnary(TYPE_SPECIFIERr5, 1, $1); }
+	simple_type_specifier											{ $$ = (TreeNode *)alacnary(TYPE_SPECIFIERr1, 1, $1); }
+	| class_specifier													{ $$ = (TreeNode *)alacnary(TYPE_SPECIFIERr2, 1, $1); }
+	| enum_specifier													{ $$ = (TreeNode *)alacnary(TYPE_SPECIFIERr3, 1, $1); }
+	| elaborated_type_specifier									{ $$ = (TreeNode *)alacnary(TYPE_SPECIFIERr4, 1, $1); }
+	| cv_qualifier														{ $$ = (TreeNode *)alacnary(TYPE_SPECIFIERr5, 1, $1); }
 	;
 
 simple_type_specifier:
-	type_name															{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr1, 1, $1); }
-	| nested_name_specifier type_name							{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr2, 2, $1, $2); }
-	| COLONCOLON nested_name_specifier_opt type_name		{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr3, 3, $1, $2, $3); }
-	| CHAR																{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr4, 1, $1); }
-	| WCHAR_T															{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr5, 1, $1); }
-	| BOOL																{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr6, 1, $1); }
-	| SHORT																{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr7, 1, $1); }
-	| INT																	{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr8, 1, $1); }
-	| LONG																{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr9, 1, $1); }
-	| SIGNED																{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr10, 1, $1); }
-	| UNSIGNED															{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr11, 1, $1); }
-	| FLOAT																{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr12, 1, $1); }
-	| DOUBLE																{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr13, 1, $1); }
-	| VOID																{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr14, 1, $1); }
-	| STR_TYPE															{ $$ = alacnary(SIMPLE_TYPE_SPECIFIERr15, 1, $1); }
+	type_name															{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr1, 1, $1); }
+	| nested_name_specifier type_name							{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr2, 2, $1, $2); }
+	| COLONCOLON nested_name_specifier_opt type_name		{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr3, 3, $1, $2, $3); }
+	| CHAR																{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr4, 1, $1); }
+	| WCHAR_T															{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr5, 1, $1); }
+	| BOOL																{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr6, 1, $1); }
+	| SHORT																{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr7, 1, $1); }
+	| INT																	{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr8, 1, $1); }
+	| LONG																{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr9, 1, $1); }
+	| SIGNED																{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr10, 1, $1); }
+	| UNSIGNED															{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr11, 1, $1); }
+	| FLOAT																{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr12, 1, $1); }
+	| DOUBLE																{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr13, 1, $1); }
+	| VOID																{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr14, 1, $1); }
+	| STR_TYPE															{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr15, 1, $1); }
 	;
 
 type_name:
-	class_name															{ $$ = alacnary(TYPE_NAMEr1, 1, $1); }
-	| enum_name															{ $$ = alacnary(TYPE_NAMEr2, 1, $1); }
-	| typedef_name														{ $$ = alacnary(TYPE_NAMEr3, 1, $1); }
+	class_name															{ $$ = (TreeNode *)alacnary(TYPE_NAMEr1, 1, $1); }
+	| enum_name															{ $$ = (TreeNode *)alacnary(TYPE_NAMEr2, 1, $1); }
+	| typedef_name														{ $$ = (TreeNode *)alacnary(TYPE_NAMEr3, 1, $1); }
 	;
 
 elaborated_type_specifier:
-	class_key COLONCOLON nested_name_specifier identifier	{ $$ = alacnary(ELABORATED_TYPE_SPECIFIERr1, 4, $1, $2, $3, $4); }
-	| class_key COLONCOLON identifier							{ $$ = alacnary(ELABORATED_TYPE_SPECIFIERr2, 3, $1, $2, $3); }
-	| ENUM COLONCOLON nested_name_specifier identifier		{ $$ = alacnary(ELABORATED_TYPE_SPECIFIERr3, 4, $1, $2, $3, $4); }
-	| ENUM COLONCOLON identifier									{ $$ = alacnary(ELABORATED_TYPE_SPECIFIERr4, 3, $1, $2, $3); }
-	| ENUM nested_name_specifier identifier					{ $$ = alacnary(ELABORATED_TYPE_SPECIFIERr5, 3, $1, $2, $3); }
+	class_key COLONCOLON nested_name_specifier identifier	{ $$ = (TreeNode *)alacnary(ELABORATED_TYPE_SPECIFIERr1, 4, $1, $2, $3, $4); }
+	| class_key COLONCOLON identifier							{ $$ = (TreeNode *)alacnary(ELABORATED_TYPE_SPECIFIERr2, 3, $1, $2, $3); }
+	| ENUM COLONCOLON nested_name_specifier identifier		{ $$ = (TreeNode *)alacnary(ELABORATED_TYPE_SPECIFIERr3, 4, $1, $2, $3, $4); }
+	| ENUM COLONCOLON identifier									{ $$ = (TreeNode *)alacnary(ELABORATED_TYPE_SPECIFIERr4, 3, $1, $2, $3); }
+	| ENUM nested_name_specifier identifier					{ $$ = (TreeNode *)alacnary(ELABORATED_TYPE_SPECIFIERr5, 3, $1, $2, $3); }
 	| TYPENAME COLONCOLON_opt nested_name_specifier identifier
-																			{ $$ = alacnary(ELABORATED_TYPE_SPECIFIERr6, 4, $1, $2, $3, $4); }
+																			{ $$ = (TreeNode *)alacnary(ELABORATED_TYPE_SPECIFIERr6, 4, $1, $2, $3, $4); }
 	| TYPENAME COLONCOLON_opt nested_name_specifier identifier '<' template_argument_list '>'
 																			{ exitStatus = 3;
 																				getErrorMessage(ER_TEMPLATE);
@@ -638,21 +634,21 @@ enum_name:
 */
 
 enum_specifier:
-	ENUM identifier '{' enumerator_list_opt '}'				{ $$ = alacnary(ENUM_SPECIFIERr1, 3, $1, $2, $4); }
+	ENUM identifier '{' enumerator_list_opt '}'				{ $$ = (TreeNode *)alacnary(ENUM_SPECIFIERr1, 3, $1, $2, $4); }
 	;
 
 enumerator_list:
-	enumerator_definition											{ $$ = alacnary(ENUMERATOR_LISTr1, 1, $1); }
-	| enumerator_list ',' enumerator_definition				{ $$ = alacnary(ENUMERATOR_LISTr2, 2, $1, $3); }
+	enumerator_definition											{ $$ = (TreeNode *)alacnary(ENUMERATOR_LISTr1, 1, $1); }
+	| enumerator_list ',' enumerator_definition				{ $$ = (TreeNode *)alacnary(ENUMERATOR_LISTr2, 2, $1, $3); }
 	;
 
 enumerator_definition:
-	enumerator															{ $$ = alacnary(ENUMERATOR_DEFINITIONr1, 1, $1); }
-	| enumerator '=' constant_expression						{ $$ = alacnary(ENUMERATOR_DEFINITIONr2, 2, $1, $3); }
+	enumerator															{ $$ = (TreeNode *)alacnary(ENUMERATOR_DEFINITIONr1, 1, $1); }
+	| enumerator '=' constant_expression						{ $$ = (TreeNode *)alacnary(ENUMERATOR_DEFINITIONr2, 2, $1, $3); }
 	;
 
 enumerator:
-	identifier															{ $$ = alacnary(ENUMERATORr1, 1, $1); }
+	identifier															{ $$ = (TreeNode *)alacnary(ENUMERATORr1, 1, $1); }
 	;
 
 /*
@@ -667,30 +663,30 @@ original_namespace_name:
 */
 
 namespace_definition:
-	named_namespace_definition										{ $$ = alacnary(NAMESPACE_DEFINITIONr1, 1, $1); }
-	| unnamed_namespace_definition								{ $$ = alacnary(NAMESPACE_DEFINITIONr2, 1, $1); }
+	named_namespace_definition										{ $$ = (TreeNode *)alacnary(NAMESPACE_DEFINITIONr1, 1, $1); }
+	| unnamed_namespace_definition								{ $$ = (TreeNode *)alacnary(NAMESPACE_DEFINITIONr2, 1, $1); }
 	;
 
 named_namespace_definition:
-	original_namespace_definition									{ $$ = alacnary(NAMED_NAMESPACE_DEFINITIONr1, 1, $1); }
-	| extension_namespace_definition								{ $$ = alacnary(NAMED_NAMESPACE_DEFINITIONr2, 1, $1); }
+	original_namespace_definition									{ $$ = (TreeNode *)alacnary(NAMED_NAMESPACE_DEFINITIONr1, 1, $1); }
+	| extension_namespace_definition								{ $$ = (TreeNode *)alacnary(NAMED_NAMESPACE_DEFINITIONr2, 1, $1); }
 	;
 
 original_namespace_definition:
-	NAMESPACE identifier '{' namespace_body '}'				{ $$ = alacnary(ORIGINAL_NAMESPACE_DEFINITIONr1, 3, $1, $2, $4); }
+	NAMESPACE identifier '{' namespace_body '}'				{ $$ = (TreeNode *)alacnary(ORIGINAL_NAMESPACE_DEFINITIONr1, 3, $1, $2, $4); }
 	;
 
 extension_namespace_definition:
 	NAMESPACE original_namespace_name '{' namespace_body '}'
-																			{ $$ = alacnary(EXTENSION_NAMESPACE_DEFINITIONr1, 3, $1, $2, $4); }
+																			{ $$ = (TreeNode *)alacnary(EXTENSION_NAMESPACE_DEFINITIONr1, 3, $1, $2, $4); }
 	;
 
 unnamed_namespace_definition:
-	NAMESPACE '{' namespace_body '}'								{ $$ = alacnary(UNNAMED_NAMESPACE_DEFINITIONr1, 2, $1, $3); }
+	NAMESPACE '{' namespace_body '}'								{ $$ = (TreeNode *)alacnary(UNNAMED_NAMESPACE_DEFINITIONr1, 2, $1, $3); }
 	;
 
 namespace_body:
-	declaration_seq_opt												{ $$ = alacnary(NAMESPACE_BODYr1, 1, $1); }
+	declaration_seq_opt												{ $$ = (TreeNode *)alacnary(NAMESPACE_BODYr1, 1, $1); }
 	;
 
 /*
@@ -701,43 +697,43 @@ namespace_alias:
 
 namespace_alias_definition:
 	NAMESPACE identifier '=' qualified_namespace_specifier ';'
-																			{ $$ = alacnary(NAMESPACE_ALIAS_DEFINITIONr1, 3, $1, $2, $4); }
+																			{ $$ = (TreeNode *)alacnary(NAMESPACE_ALIAS_DEFINITIONr1, 3, $1, $2, $4); }
 	;
 
 qualified_namespace_specifier:
-	COLONCOLON nested_name_specifier namespace_name			{ $$ = alacnary(QUALIFIED_NAMESPACE_SPECIFIERr1, 3, $1, $2, $3); }
-	| COLONCOLON namespace_name									{ $$ = alacnary(QUALIFIED_NAMESPACE_SPECIFIERr2, 2, $1, $2); }
-	| nested_name_specifier namespace_name						{ $$ = alacnary(QUALIFIED_NAMESPACE_SPECIFIERr3, 2, $1, $2); }
-	| namespace_name													{ $$ = alacnary(QUALIFIED_NAMESPACE_SPECIFIERr4, 1, $1); }
+	COLONCOLON nested_name_specifier namespace_name			{ $$ = (TreeNode *)alacnary(QUALIFIED_NAMESPACE_SPECIFIERr1, 3, $1, $2, $3); }
+	| COLONCOLON namespace_name									{ $$ = (TreeNode *)alacnary(QUALIFIED_NAMESPACE_SPECIFIERr2, 2, $1, $2); }
+	| nested_name_specifier namespace_name						{ $$ = (TreeNode *)alacnary(QUALIFIED_NAMESPACE_SPECIFIERr3, 2, $1, $2); }
+	| namespace_name													{ $$ = (TreeNode *)alacnary(QUALIFIED_NAMESPACE_SPECIFIERr4, 1, $1); }
 	;
 
 using_declaration:
 	USING TYPENAME COLONCOLON nested_name_specifier unqualified_id ';'
-																			{ $$ = alacnary(USING_DECLARATIONr1, 5, $1, $2, $3, $4, $5); }
+																			{ $$ = (TreeNode *)alacnary(USING_DECLARATIONr1, 5, $1, $2, $3, $4, $5); }
 	| USING TYPENAME nested_name_specifier unqualified_id ';'
-																			{ $$ = alacnary(USING_DECLARATIONr2, 4, $1, $2, $3, $4); }
+																			{ $$ = (TreeNode *)alacnary(USING_DECLARATIONr2, 4, $1, $2, $3, $4); }
 	| USING COLONCOLON nested_name_specifier unqualified_id ';'
-																			{ $$ = alacnary(USING_DECLARATIONr3, 4, $1, $2, $3, $4); }
-	| USING nested_name_specifier unqualified_id ';'		{ $$ = alacnary(USING_DECLARATIONr4, 3, $1, $2, $3); }
-	| USING COLONCOLON unqualified_id ';'						{ $$ = alacnary(USING_DECLARATIONr5, 3, $1, $2, $3); }
+																			{ $$ = (TreeNode *)alacnary(USING_DECLARATIONr3, 4, $1, $2, $3, $4); }
+	| USING nested_name_specifier unqualified_id ';'		{ $$ = (TreeNode *)alacnary(USING_DECLARATIONr4, 3, $1, $2, $3); }
+	| USING COLONCOLON unqualified_id ';'						{ $$ = (TreeNode *)alacnary(USING_DECLARATIONr5, 3, $1, $2, $3); }
 	;
 
 using_directive:
 	USING NAMESPACE COLONCOLON nested_name_specifier namespace_name ';'
-																			{ $$ = alacnary(USING_DIRECTIVEr1, 5, $1, $2, $3, $4, $5); }
-	| USING NAMESPACE COLONCOLON namespace_name ';'			{ $$ = alacnary(USING_DIRECTIVEr2, 4, $1, $2, $3, $4); }
+																			{ $$ = (TreeNode *)alacnary(USING_DIRECTIVEr1, 5, $1, $2, $3, $4, $5); }
+	| USING NAMESPACE COLONCOLON namespace_name ';'			{ $$ = (TreeNode *)alacnary(USING_DIRECTIVEr2, 4, $1, $2, $3, $4); }
 	| USING NAMESPACE nested_name_specifier namespace_name ';'
-																			{ $$ = alacnary(USING_DIRECTIVEr3, 4, $1, $2, $3, $4); }
-	| USING NAMESPACE namespace_name ';'						{ $$ = alacnary(USING_DIRECTIVEr4, 3, $1, $2, $3); }
+																			{ $$ = (TreeNode *)alacnary(USING_DIRECTIVEr3, 4, $1, $2, $3, $4); }
+	| USING NAMESPACE namespace_name ';'						{ $$ = (TreeNode *)alacnary(USING_DIRECTIVEr4, 3, $1, $2, $3); }
 	;
 
 asm_definition:
-	ASM '(' string_literal ')' ';'								{ $$ = alacnary(ASM_DEFINITIONr1, 2, $1, $3); }
+	ASM '(' string_literal ')' ';'								{ $$ = (TreeNode *)alacnary(ASM_DEFINITIONr1, 2, $1, $3); }
 	;
 
 linkage_specification:
-	EXTERN string_literal '{' declaration_seq_opt '}'		{ $$ = alacnary(LINKAGE_SPECIFICATIONr1, 3, $1, $2, $4); }
-	| EXTERN string_literal declaration							{ $$ = alacnary(LINKAGE_SPECIFICATIONr2, 3, $1, $2, $3); }
+	EXTERN string_literal '{' declaration_seq_opt '}'		{ $$ = (TreeNode *)alacnary(LINKAGE_SPECIFICATIONr1, 3, $1, $2, $4); }
+	| EXTERN string_literal declaration							{ $$ = (TreeNode *)alacnary(LINKAGE_SPECIFICATIONr2, 3, $1, $2, $3); }
 	;
 
 /*----------------------------------------------------------------------
@@ -745,145 +741,145 @@ linkage_specification:
  *----------------------------------------------------------------------*/
 
 init_declarator_list:
-	init_declarator													{ $$ = alacnary(INIT_DECLARATOR_LISTr1, 1, $1); }
-	| init_declarator_list ',' init_declarator				{ $$ = alacnary(INIT_DECLARATOR_LISTr2, 2, $1, $3); }
+	init_declarator													{ $$ = (TreeNode *)alacnary(INIT_DECLARATOR_LISTr1, 1, $1); }
+	| init_declarator_list ',' init_declarator				{ $$ = (TreeNode *)alacnary(INIT_DECLARATOR_LISTr2, 2, $1, $3); }
 	;
 
 init_declarator:
-	declarator initializer_opt										{ $$ = alacnary(INIT_DECLARATORr1, 1, $1); }
+	declarator initializer_opt										{ $$ = (TreeNode *)alacnary(INIT_DECLARATORr1, 1, $1); }
 	;
 
 declarator:
-	direct_declarator													{ $$ = alacnary(DECLARATORr1, 1, $1); }
-	| ptr_operator declarator										{ $$ = alacnary(DECLARATORr2, 2, $1, $2); }
+	direct_declarator													{ $$ = (TreeNode *)alacnary(DECLARATORr1, 1, $1); }
+	| ptr_operator declarator										{ $$ = (TreeNode *)alacnary(DECLARATORr2, 2, $1, $2); }
 	;
 
 direct_declarator:
 
 
 
-	declarator_id														{ $$ = alacnary(DIRECT_DECLARATORr1, 1, $1); }
+	declarator_id														{ $$ = (TreeNode *)alacnary(DIRECT_DECLARATORr1, 1, $1); }
 	| direct_declarator '('parameter_declaration_clause ')' cv_qualifier_seq exception_specification
-																			{ $$ = alacnary(DIRECT_DECLARATORr2, 4, $1, $3, $5, $6); }
+																			{ $$ = (TreeNode *)alacnary(DIRECT_DECLARATORr2, 4, $1, $3, $5, $6); }
 	| direct_declarator '('parameter_declaration_clause ')' cv_qualifier_seq
-																			{ $$ = alacnary(DIRECT_DECLARATORr3, 3, $1, $3, $5); }
+																			{ $$ = (TreeNode *)alacnary(DIRECT_DECLARATORr3, 3, $1, $3, $5); }
 	| direct_declarator '('parameter_declaration_clause ')' exception_specification
-																			{ $$ = alacnary(DIRECT_DECLARATORr4, 3, $1, $3, $5); }
+																			{ $$ = (TreeNode *)alacnary(DIRECT_DECLARATORr4, 3, $1, $3, $5); }
 	| direct_declarator '('parameter_declaration_clause ')'
-																			{ $$ = alacnary(DIRECT_DECLARATORr5, 2, $1, $3); }
-	| CLASS_NAME '('parameter_declaration_clause ')'		{ $$ = alacnary(DIRECT_DECLARATORr6, 2, $1, $3); }
+																			{ $$ = (TreeNode *)alacnary(DIRECT_DECLARATORr5, 2, $1, $3); }
+	| CLASS_NAME '('parameter_declaration_clause ')'		{ $$ = (TreeNode *)alacnary(DIRECT_DECLARATORr6, 2, $1, $3); }
 	| CLASS_NAME COLONCOLON declarator_id '('parameter_declaration_clause ')'
-																			{ $$ = alacnary(DIRECT_DECLARATORr7, 4, $1, $2, $3, $5); }
+																			{ $$ = (TreeNode *)alacnary(DIRECT_DECLARATORr7, 4, $1, $2, $3, $5); }
 	| CLASS_NAME COLONCOLON CLASS_NAME '('parameter_declaration_clause ')'
-																			{ $$ = alacnary(DIRECT_DECLARATORr8, 4, $1, $2, $3, $5); }
-	| direct_declarator '[' constant_expression_opt ']'	{ $$ = alacnary(DIRECT_DECLARATORr9, 2, $1, $3); }
-	| '(' declarator ')'												{ $$ = alacnary(DIRECT_DECLARATORr10, 1, $2); }
+																			{ $$ = (TreeNode *)alacnary(DIRECT_DECLARATORr8, 4, $1, $2, $3, $5); }
+	| direct_declarator '[' constant_expression_opt ']'	{ $$ = (TreeNode *)alacnary(DIRECT_DECLARATORr9, 2, $1, $3); }
+	| '(' declarator ')'												{ $$ = (TreeNode *)alacnary(DIRECT_DECLARATORr10, 1, $2); }
 	;
 
 ptr_operator:
-	'*'																	{ $$ = alacnary(PTR_OPERATORr1, 0); }
-	| '*' cv_qualifier_seq											{ $$ = alacnary(PTR_OPERATORr2, 1, $2); }
-	| '&'																	{ $$ = alacnary(PTR_OPERATORr3, 0); }
-	| nested_name_specifier '*'									{ $$ = alacnary(PTR_OPERATORr4, 1, $1); }
-	| nested_name_specifier '*' cv_qualifier_seq				{ $$ = alacnary(PTR_OPERATORr5, 2, $1, $3); }
-	| COLONCOLON nested_name_specifier '*'						{ $$ = alacnary(PTR_OPERATORr6, 2, $1, $2); }
+	'*'																	{ $$ = (TreeNode *)alacnary(PTR_OPERATORr1, 0); }
+	| '*' cv_qualifier_seq											{ $$ = (TreeNode *)alacnary(PTR_OPERATORr2, 1, $2); }
+	| '&'																	{ $$ = (TreeNode *)alacnary(PTR_OPERATORr3, 0); }
+	| nested_name_specifier '*'									{ $$ = (TreeNode *)alacnary(PTR_OPERATORr4, 1, $1); }
+	| nested_name_specifier '*' cv_qualifier_seq				{ $$ = (TreeNode *)alacnary(PTR_OPERATORr5, 2, $1, $3); }
+	| COLONCOLON nested_name_specifier '*'						{ $$ = (TreeNode *)alacnary(PTR_OPERATORr6, 2, $1, $2); }
 	| COLONCOLON nested_name_specifier '*' cv_qualifier_seq
-																			{ $$ = alacnary(PTR_OPERATORr7, 3, $1, $2, $4); }
+																			{ $$ = (TreeNode *)alacnary(PTR_OPERATORr7, 3, $1, $2, $4); }
 	;
 
 cv_qualifier_seq:
-	cv_qualifier														{ $$ = alacnary(CV_QUALIFIER_SEQr1, 1, $1); }
-	| cv_qualifier cv_qualifier_seq								{ $$ = alacnary(CV_QUALIFIER_SEQr2, 2, $1, $2); }
+	cv_qualifier														{ $$ = (TreeNode *)alacnary(CV_QUALIFIER_SEQr1, 1, $1); }
+	| cv_qualifier cv_qualifier_seq								{ $$ = (TreeNode *)alacnary(CV_QUALIFIER_SEQr2, 2, $1, $2); }
 	;
 
 cv_qualifier:
-	CONST																	{ $$ = alacnary(CV_QUALIFIERr1, 1, $1); }
-	| VOLATILE															{ $$ = alacnary(CV_QUALIFIERr2, 1, $1); }
+	CONST																	{ $$ = (TreeNode *)alacnary(CV_QUALIFIERr1, 1, $1); }
+	| VOLATILE															{ $$ = (TreeNode *)alacnary(CV_QUALIFIERr2, 1, $1); }
 	;
 
 declarator_id:
-	id_expression														{ $$ = alacnary(DECLARATOR_IDr1, 1, $1); }
-	| COLONCOLON id_expression										{ $$ = alacnary(DECLARATOR_IDr2, 2, $1, $2); }
-	| COLONCOLON nested_name_specifier type_name				{ $$ = alacnary(DECLARATOR_IDr3, 3, $1, $2, $3); }
-	| COLONCOLON type_name											{ $$ = alacnary(DECLARATOR_IDr4, 2, $1, $2); }
+	id_expression														{ $$ = (TreeNode *)alacnary(DECLARATOR_IDr1, 1, $1); }
+	| COLONCOLON id_expression										{ $$ = (TreeNode *)alacnary(DECLARATOR_IDr2, 2, $1, $2); }
+	| COLONCOLON nested_name_specifier type_name				{ $$ = (TreeNode *)alacnary(DECLARATOR_IDr3, 3, $1, $2, $3); }
+	| COLONCOLON type_name											{ $$ = (TreeNode *)alacnary(DECLARATOR_IDr4, 2, $1, $2); }
 	;
 
 type_id:
-	type_specifier_seq abstract_declarator_opt				{ $$ = alacnary(TYPE_IDr1, 2, $1, $2); }
+	type_specifier_seq abstract_declarator_opt				{ $$ = (TreeNode *)alacnary(TYPE_IDr1, 2, $1, $2); }
 	;
 
 type_specifier_seq:
-	type_specifier type_specifier_seq_opt						{ $$ = alacnary(TYPE_SPECIFIER_SEQr1, 2, $1, $2); }
+	type_specifier type_specifier_seq_opt						{ $$ = (TreeNode *)alacnary(TYPE_SPECIFIER_SEQr1, 2, $1, $2); }
 	;
 
 abstract_declarator:
-	ptr_operator abstract_declarator_opt						{ $$ = alacnary(ABSTRACT_DECLARATORr1, 2, $1, $2); }
-	| direct_abstract_declarator									{ $$ = alacnary(ABSTRACT_DECLARATORr2, 1, $1); }
+	ptr_operator abstract_declarator_opt						{ $$ = (TreeNode *)alacnary(ABSTRACT_DECLARATORr1, 2, $1, $2); }
+	| direct_abstract_declarator									{ $$ = (TreeNode *)alacnary(ABSTRACT_DECLARATORr2, 1, $1); }
 	;
 
 direct_abstract_declarator:
 	direct_abstract_declarator_opt '(' parameter_declaration_clause ')' cv_qualifier_seq exception_specification
-																			{ $$ = alacnary(DIRECT_ABSTRACT_DECLARATORr1, 4, $1, $3, $5, $6); }
+																			{ $$ = (TreeNode *)alacnary(DIRECT_ABSTRACT_DECLARATORr1, 4, $1, $3, $5, $6); }
 	| direct_abstract_declarator_opt '(' parameter_declaration_clause ')' cv_qualifier_seq
-																			{ $$ = alacnary(DIRECT_ABSTRACT_DECLARATORr2, 3, $1, $3, $5); }
+																			{ $$ = (TreeNode *)alacnary(DIRECT_ABSTRACT_DECLARATORr2, 3, $1, $3, $5); }
 	| direct_abstract_declarator_opt '(' parameter_declaration_clause ')' exception_specification
-																			{ $$ = alacnary(DIRECT_ABSTRACT_DECLARATORr3, 3, $1, $3, $5); }
+																			{ $$ = (TreeNode *)alacnary(DIRECT_ABSTRACT_DECLARATORr3, 3, $1, $3, $5); }
 	| direct_abstract_declarator_opt '(' parameter_declaration_clause ')'
-																			{ $$ = alacnary(DIRECT_ABSTRACT_DECLARATORr4, 2, $1, $3); }
+																			{ $$ = (TreeNode *)alacnary(DIRECT_ABSTRACT_DECLARATORr4, 2, $1, $3); }
 	| direct_abstract_declarator_opt '[' constant_expression_opt ']'
-																			{ $$ = alacnary(DIRECT_ABSTRACT_DECLARATORr5, 2, $1, $3); }
-	| '(' abstract_declarator ')'									{ $$ = alacnary(DIRECT_ABSTRACT_DECLARATORr6, 1, $2); }																		
+																			{ $$ = (TreeNode *)alacnary(DIRECT_ABSTRACT_DECLARATORr5, 2, $1, $3); }
+	| '(' abstract_declarator ')'									{ $$ = (TreeNode *)alacnary(DIRECT_ABSTRACT_DECLARATORr6, 1, $2); }																		
 	;
 
 parameter_declaration_clause:
-	parameter_declaration_list ELLIPSIS							{ $$ = alacnary(PARAMETER_DECLARATION_CLAUSEr1, 2, $1, $2); }
-	| parameter_declaration_list									{ $$ = alacnary(PARAMETER_DECLARATION_CLAUSEr2, 1, $1); }
-	| ELLIPSIS															{ $$ = alacnary(PARAMETER_DECLARATION_CLAUSEr3, 1, $1); }
-	| /* epsilon */													{ $$ = alacnary(PARAMETER_DECLARATION_CLAUSEr4, 0); }
-	| parameter_declaration_list ',' ELLIPSIS					{ $$ = alacnary(PARAMETER_DECLARATION_CLAUSEr5, 2, $1, $3); }
+	parameter_declaration_list ELLIPSIS							{ $$ = (TreeNode *)alacnary(PARAMETER_DECLARATION_CLAUSEr1, 2, $1, $2); }
+	| parameter_declaration_list									{ $$ = (TreeNode *)alacnary(PARAMETER_DECLARATION_CLAUSEr2, 1, $1); }
+	| ELLIPSIS															{ $$ = (TreeNode *)alacnary(PARAMETER_DECLARATION_CLAUSEr3, 1, $1); }
+	| /* epsilon */													{ $$ = (TreeNode *)alacnary(PARAMETER_DECLARATION_CLAUSEr4, 0); }
+	| parameter_declaration_list ',' ELLIPSIS					{ $$ = (TreeNode *)alacnary(PARAMETER_DECLARATION_CLAUSEr5, 2, $1, $3); }
 	;
 
 parameter_declaration_list:
-	parameter_declaration											{ $$ = alacnary(PARAMETER_DECLARATION_LISTr1, 1, $1); }
+	parameter_declaration											{ $$ = (TreeNode *)alacnary(PARAMETER_DECLARATION_LISTr1, 1, $1); }
 	| parameter_declaration_list ',' parameter_declaration
-																			{ $$ = alacnary(PARAMETER_DECLARATION_LISTr2, 2, $1, $3); }
+																			{ $$ = (TreeNode *)alacnary(PARAMETER_DECLARATION_LISTr2, 2, $1, $3); }
 	;
 
 parameter_declaration:
-	decl_specifier_seq declarator									{ $$ = alacnary(PARAMETER_DECLARATIONr1, 2, $1, $2); }
+	decl_specifier_seq declarator									{ $$ = (TreeNode *)alacnary(PARAMETER_DECLARATIONr1, 2, $1, $2); }
 	| decl_specifier_seq declarator '=' assignment_expression
-																			{ $$ = alacnary(PARAMETER_DECLARATIONr2, 3, $1, $2, $4); }
-	| decl_specifier_seq abstract_declarator_opt				{ $$ = alacnary(PARAMETER_DECLARATIONr3, 2, $1, $2); }
+																			{ $$ = (TreeNode *)alacnary(PARAMETER_DECLARATIONr2, 3, $1, $2, $4); }
+	| decl_specifier_seq abstract_declarator_opt				{ $$ = (TreeNode *)alacnary(PARAMETER_DECLARATIONr3, 2, $1, $2); }
 	| decl_specifier_seq abstract_declarator_opt '=' assignment_expression
-																			{ $$ = alacnary(PARAMETER_DECLARATIONr4, 3, $1, $2, $4); }
+																			{ $$ = (TreeNode *)alacnary(PARAMETER_DECLARATIONr4, 3, $1, $2, $4); }
 	;
 
 function_definition:
-	declarator ctor_initializer_opt function_body			{ $$ = alacnary(FUNCTION_DEFINITIONr1, 3, $1, $2, $3); }
+	declarator ctor_initializer_opt function_body			{ $$ = (TreeNode *)alacnary(FUNCTION_DEFINITIONr1, 3, $1, $2, $3); }
 	| decl_specifier_seq declarator ctor_initializer_opt function_body
-																			{ $$ = alacnary(FUNCTION_DEFINITIONr2, 4, $1, $2, $3, $4); }
-	| declarator function_try_block								{ $$ = alacnary(FUNCTION_DEFINITIONr3, 2, $1, $2); }
-	| decl_specifier_seq declarator function_try_block		{ $$ = alacnary(FUNCTION_DEFINITIONr4, 3, $1, $2, $3); }
+																			{ $$ = (TreeNode *)alacnary(FUNCTION_DEFINITIONr2, 4, $1, $2, $3, $4); }
+	| declarator function_try_block								{ $$ = (TreeNode *)alacnary(FUNCTION_DEFINITIONr3, 2, $1, $2); }
+	| decl_specifier_seq declarator function_try_block		{ $$ = (TreeNode *)alacnary(FUNCTION_DEFINITIONr4, 3, $1, $2, $3); }
 	;
 
 function_body:
-	compound_statement												{ $$ = alacnary(FUNCTION_BODYr1, 1, $1); }
+	compound_statement												{ $$ = (TreeNode *)alacnary(FUNCTION_BODYr1, 1, $1); }
 	;
 
 initializer:
-	'=' initializer_clause											{ $$ = alacnary(INITIALIZERr1, 1, $2); }
-	| '(' expression_list ')'										{ $$ = alacnary(INITIALIZERr2, 1, $2); }
+	'=' initializer_clause											{ $$ = (TreeNode *)alacnary(INITIALIZERr1, 1, $2); }
+	| '(' expression_list ')'										{ $$ = (TreeNode *)alacnary(INITIALIZERr2, 1, $2); }
 	;
 
 initializer_clause:
-	assignment_expression											{ $$ = alacnary(INITIALIZER_CLAUSEr1, 1, $1); }
-	| '{' initializer_list COMMA_opt '}'						{ $$ = alacnary(INITIALIZER_CLAUSEr2, 2, $2, $3); }
-	| '{' '}'															{ $$ = alacnary(INITIALIZER_CLAUSEr3, 0); }
+	assignment_expression											{ $$ = (TreeNode *)alacnary(INITIALIZER_CLAUSEr1, 1, $1); }
+	| '{' initializer_list COMMA_opt '}'						{ $$ = (TreeNode *)alacnary(INITIALIZER_CLAUSEr2, 2, $2, $3); }
+	| '{' '}'															{ $$ = (TreeNode *)alacnary(INITIALIZER_CLAUSEr3, 0); }
 	;
 
 initializer_list:
-	initializer_clause												{ $$ = alacnary(INITIALIZER_LISTr1, 1, $1); }
-	| initializer_list ',' initializer_clause					{ $$ = alacnary(INITIALIZER_LISTr1, 2, $1, $3); }
+	initializer_clause												{ $$ = (TreeNode *)alacnary(INITIALIZER_LISTr1, 1, $1); }
+	| initializer_list ',' initializer_clause					{ $$ = (TreeNode *)alacnary(INITIALIZER_LISTr1, 2, $1, $3); }
 	;
 
 /*----------------------------------------------------------------------
@@ -891,36 +887,36 @@ initializer_list:
  *----------------------------------------------------------------------*/
 
 class_specifier:
-	class_head '{' member_specification_opt '}'				{ $$ = alacnary(CLASS_SPECIFIERr1, 2, $1, $3); }
+	class_head '{' member_specification_opt '}'				{ $$ = (TreeNode *)alacnary(CLASS_SPECIFIERr1, 2, $1, $3); }
 	;
 
 class_head:
-	class_key class_name												{ $$ = alacnary(CLASS_HEADr1, 2, $1, $2); }
-	| class_key class_name base_clause							{ $$ = alacnary(CLASS_HEADr2, 3, $1, $2, $3); }
-	| class_key nested_name_specifier class_name				{ $$ = alacnary(CLASS_HEADr3, 3, $1, $2, $3); }
+	class_key class_name												{ $$ = (TreeNode *)alacnary(CLASS_HEADr1, 2, $1, $2); }
+	| class_key class_name base_clause							{ $$ = (TreeNode *)alacnary(CLASS_HEADr2, 3, $1, $2, $3); }
+	| class_key nested_name_specifier class_name				{ $$ = (TreeNode *)alacnary(CLASS_HEADr3, 3, $1, $2, $3); }
 	| class_key nested_name_specifier class_name base_clause
-																			{ $$ = alacnary(CLASS_HEADr4, 4, $1, $2, $3, $4); }
+																			{ $$ = (TreeNode *)alacnary(CLASS_HEADr4, 4, $1, $2, $3, $4); }
 	;
 
 class_key:
-	CLASS																	{ $$ = alacnary(CLASS_KEYr1, 1, $1); }
-	| STRUCT																{ $$ = alacnary(CLASS_KEYr2, 1, $1); }
-	| UNION																{ $$ = alacnary(CLASS_KEYr3, 1, $1); }
+	CLASS																	{ $$ = (TreeNode *)alacnary(CLASS_KEYr1, 1, $1); }
+	| STRUCT																{ $$ = (TreeNode *)alacnary(CLASS_KEYr2, 1, $1); }
+	| UNION																{ $$ = (TreeNode *)alacnary(CLASS_KEYr3, 1, $1); }
 	;
 
 member_specification:
-	member_declaration member_specification_opt				{ $$ = alacnary(MEMBER_SPECIFICATIONr1, 2, $1, $2); }
-	| access_specifier ':' member_specification_opt			{ $$ = alacnary(MEMBER_SPECIFICATIONr2, 2, $1, $3); }
+	member_declaration member_specification_opt				{ $$ = (TreeNode *)alacnary(MEMBER_SPECIFICATIONr1, 2, $1, $2); }
+	| access_specifier ':' member_specification_opt			{ $$ = (TreeNode *)alacnary(MEMBER_SPECIFICATIONr2, 2, $1, $3); }
 	;
 
 member_declaration:
-	decl_specifier_seq member_declarator_list ';'			{ $$ = alacnary(MEMBER_DECLARATIONr1, 2, $1, $2); }
-	| decl_specifier_seq ';'										{ $$ = alacnary(MEMBER_DECLARATIONr2, 1, $1); }
-	| member_declarator_list ';'									{ $$ = alacnary(MEMBER_DECLARATIONr3, 1, $1); }
-	| ';'																	{ $$ = alacnary(MEMBER_DECLARATIONr4, 0); }
-	| function_definition SEMICOLON_opt							{ $$ = alacnary(MEMBER_DECLARATIONr5, 2, $1, $2); }
-	| qualified_id ';'												{ $$ = alacnary(MEMBER_DECLARATIONr6, 1, $1); }
-	| using_declaration												{ $$ = alacnary(MEMBER_DECLARATIONr7, 1, $1); }
+	decl_specifier_seq member_declarator_list ';'			{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATIONr1, 2, $1, $2); }
+	| decl_specifier_seq ';'										{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATIONr2, 1, $1); }
+	| member_declarator_list ';'									{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATIONr3, 1, $1); }
+	| ';'																	{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATIONr4, 0); }
+	| function_definition SEMICOLON_opt							{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATIONr5, 2, $1, $2); }
+	| qualified_id ';'												{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATIONr6, 1, $1); }
+	| using_declaration												{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATIONr7, 1, $1); }
 	| template_declaration											{ exitStatus = 3;
 																				getErrorMessage(ER_TEMPLATE);
 																				yyerror(NULL);
@@ -929,15 +925,15 @@ member_declaration:
 	;
 
 member_declarator_list:
-	member_declarator													{ $$ = alacnary(MEMBER_DECLARATOR_LISTr1, 1, $1); }
-	| member_declarator_list ',' member_declarator			{ $$ = alacnary(MEMBER_DECLARATOR_LISTr1, 2, $1, $3); }
+	member_declarator													{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATOR_LISTr1, 1, $1); }
+	| member_declarator_list ',' member_declarator			{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATOR_LISTr1, 2, $1, $3); }
 	;
 
 member_declarator:
-	declarator															{ $$ = alacnary(MEMBER_DECLARATORr1, 1, $1); }
-	| declarator pure_specifier									{ $$ = alacnary(MEMBER_DECLARATORr2, 2, $1, $2); }
-	| declarator constant_initializer							{ $$ = alacnary(MEMBER_DECLARATORr3, 2, $1, $2); }
-	| identifier ':' constant_expression						{ $$ = alacnary(MEMBER_DECLARATORr4, 2, $1, $3); }
+	declarator															{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATORr1, 1, $1); }
+	| declarator pure_specifier									{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATORr2, 2, $1, $2); }
+	| declarator constant_initializer							{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATORr3, 2, $1, $2); }
+	| identifier ':' constant_expression						{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATORr4, 2, $1, $3); }
 	;
 
 /*
@@ -946,11 +942,11 @@ member_declarator:
  * context is different.
  */
 pure_specifier:
-	'=' '0'															{ $$ = alacnary(PURE_SPECIFIERr1, 0); }
+	'=' '0'															{ $$ = (TreeNode *)alacnary(PURE_SPECIFIERr1, 0); }
 	;
 
 constant_initializer:
-	'=' constant_expression										{ $$ = alacnary(CONSTANT_INITIALIZERr1, 1, $2); }
+	'=' constant_expression										{ $$ = (TreeNode *)alacnary(CONSTANT_INITIALIZERr1, 1, $2); }
 	;
 
 /*----------------------------------------------------------------------
@@ -958,40 +954,40 @@ constant_initializer:
  *----------------------------------------------------------------------*/
 
 base_clause:
-	':' base_specifier_list										{ $$ = alacnary(BASE_CLAUSEr1, 1, $2); }
+	':' base_specifier_list										{ $$ = (TreeNode *)alacnary(BASE_CLAUSEr1, 1, $2); }
 	;
 
 base_specifier_list:
-	base_specifier													{ $$ = alacnary(BASE_SPECIFIER_LISTr1, 1, $1); }
-	| base_specifier_list ',' base_specifier				{ $$ = alacnary(BASE_SPECIFIER_LISTr2, 2, $1, $3); }
+	base_specifier													{ $$ = (TreeNode *)alacnary(BASE_SPECIFIER_LISTr1, 1, $1); }
+	| base_specifier_list ',' base_specifier				{ $$ = (TreeNode *)alacnary(BASE_SPECIFIER_LISTr2, 2, $1, $3); }
 	;
 
 base_specifier:
-	COLONCOLON nested_name_specifier class_name			{ $$ = alacnary(BASE_SPECIFIERr1, 3, $1, $2, $3); }
-	| COLONCOLON class_name										{ $$ = alacnary(BASE_SPECIFIERr2, 2, $1, $2); }
-	| nested_name_specifier class_name						{ $$ = alacnary(BASE_SPECIFIERr3, 2, $1, $2); }
-	| class_name													{ $$ = alacnary(BASE_SPECIFIERr4, 1, $1); }
+	COLONCOLON nested_name_specifier class_name			{ $$ = (TreeNode *)alacnary(BASE_SPECIFIERr1, 3, $1, $2, $3); }
+	| COLONCOLON class_name										{ $$ = (TreeNode *)alacnary(BASE_SPECIFIERr2, 2, $1, $2); }
+	| nested_name_specifier class_name						{ $$ = (TreeNode *)alacnary(BASE_SPECIFIERr3, 2, $1, $2); }
+	| class_name													{ $$ = (TreeNode *)alacnary(BASE_SPECIFIERr4, 1, $1); }
 	| VIRTUAL access_specifier COLONCOLON nested_name_specifier_opt class_name
-																		{ $$ = alacnary(BASE_SPECIFIERr5, 5, $1, $2, $3, $4, $5); }
+																		{ $$ = (TreeNode *)alacnary(BASE_SPECIFIERr5, 5, $1, $2, $3, $4, $5); }
 	| VIRTUAL access_specifier nested_name_specifier_opt class_name
-																		{ $$ = alacnary(BASE_SPECIFIERr6, 4, $1, $2, $3, $4); }
+																		{ $$ = (TreeNode *)alacnary(BASE_SPECIFIERr6, 4, $1, $2, $3, $4); }
 	| VIRTUAL COLONCOLON nested_name_specifier_opt class_name
-																		{ $$ = alacnary(BASE_SPECIFIERr7, 4, $1, $2, $3, $4); }
-	| VIRTUAL nested_name_specifier_opt class_name		{ $$ = alacnary(BASE_SPECIFIERr8, 3, $1, $2, $3); }
+																		{ $$ = (TreeNode *)alacnary(BASE_SPECIFIERr7, 4, $1, $2, $3, $4); }
+	| VIRTUAL nested_name_specifier_opt class_name		{ $$ = (TreeNode *)alacnary(BASE_SPECIFIERr8, 3, $1, $2, $3); }
 	| access_specifier VIRTUAL COLONCOLON nested_name_specifier_opt class_name
-																		{ $$ = alacnary(BASE_SPECIFIERr9, 5, $1, $2, $3, $4, $5); }
+																		{ $$ = (TreeNode *)alacnary(BASE_SPECIFIERr9, 5, $1, $2, $3, $4, $5); }
 	| access_specifier VIRTUAL nested_name_specifier_opt class_name
-																		{ $$ = alacnary(BASE_SPECIFIERr10, 4, $1, $2, $3, $4); }
+																		{ $$ = (TreeNode *)alacnary(BASE_SPECIFIERr10, 4, $1, $2, $3, $4); }
 	| access_specifier COLONCOLON nested_name_specifier_opt class_name
-																		{ $$ = alacnary(BASE_SPECIFIERr11, 4, $1, $2, $3, $4); }
+																		{ $$ = (TreeNode *)alacnary(BASE_SPECIFIERr11, 4, $1, $2, $3, $4); }
 	| access_specifier nested_name_specifier_opt class_name
-																		{ $$ = alacnary(BASE_SPECIFIERr12, 3, $1, $2, $3); }
+																		{ $$ = (TreeNode *)alacnary(BASE_SPECIFIERr12, 3, $1, $2, $3); }
 	;
 
 access_specifier:
-	PRIVATE															{ $$ = alacnary(ACCESS_SPECIFIERr1, 1, $1); }
-	| PROTECTED														{ $$ = alacnary(ACCESS_SPECIFIERr2, 1, $1); }
-	| PUBLIC															{ $$ = alacnary(ACCESS_SPECIFIERr3, 1, $1); }
+	PRIVATE															{ $$ = (TreeNode *)alacnary(ACCESS_SPECIFIERr1, 1, $1); }
+	| PROTECTED														{ $$ = (TreeNode *)alacnary(ACCESS_SPECIFIERr2, 1, $1); }
+	| PUBLIC															{ $$ = (TreeNode *)alacnary(ACCESS_SPECIFIERr3, 1, $1); }
 	;
 
 /*----------------------------------------------------------------------
@@ -999,36 +995,36 @@ access_specifier:
  *----------------------------------------------------------------------*/
 
 conversion_function_id:
-	OPERATOR conversion_type_id								{ $$ = alacnary(CONVERSION_FUNCTION_IDr1, 2, $1, $2); }
+	OPERATOR conversion_type_id								{ $$ = (TreeNode *)alacnary(CONVERSION_FUNCTION_IDr1, 2, $1, $2); }
 	;
 
 conversion_type_id:
-	type_specifier_seq conversion_declarator_opt			{ $$ = alacnary(CONVERSION_TYPE_IDr1, 2, $1, $2); }
+	type_specifier_seq conversion_declarator_opt			{ $$ = (TreeNode *)alacnary(CONVERSION_TYPE_IDr1, 2, $1, $2); }
 	;
 
 conversion_declarator:
-	ptr_operator conversion_declarator_opt					{ $$ = alacnary(CONVERSION_DECLARATORr1, 2, $1, $2); }
+	ptr_operator conversion_declarator_opt					{ $$ = (TreeNode *)alacnary(CONVERSION_DECLARATORr1, 2, $1, $2); }
 	;
 
 ctor_initializer:
-	':' mem_initializer_list									{ $$ = alacnary(CTOR_INITIALIZERr1, 1, $2); }
+	':' mem_initializer_list									{ $$ = (TreeNode *)alacnary(CTOR_INITIALIZERr1, 1, $2); }
 	;
 
 mem_initializer_list:
-	mem_initializer												{ $$ = alacnary(MEM_INITIALIZER_LISTr1, 1, $1); }
-	| mem_initializer ',' mem_initializer_list			{ $$ = alacnary(MEM_INITIALIZER_LISTr1, 2, $1, $3); }
+	mem_initializer												{ $$ = (TreeNode *)alacnary(MEM_INITIALIZER_LISTr1, 1, $1); }
+	| mem_initializer ',' mem_initializer_list			{ $$ = (TreeNode *)alacnary(MEM_INITIALIZER_LISTr1, 2, $1, $3); }
 	;
 
 mem_initializer:
-	mem_initializer_id '(' expression_list_opt ')'		{ $$ = alacnary(MEM_INITIALIZERr1, 2, $1, $3); }
+	mem_initializer_id '(' expression_list_opt ')'		{ $$ = (TreeNode *)alacnary(MEM_INITIALIZERr1, 2, $1, $3); }
 	;
 
 mem_initializer_id:
-	COLONCOLON nested_name_specifier class_name			{ $$ = alacnary(MEM_INITIALIZER_IDr1, 3, $1, $2, $3); }
-	| COLONCOLON class_name										{ $$ = alacnary(MEM_INITIALIZER_IDr2, 2, $1, $2); }
-	| nested_name_specifier class_name						{ $$ = alacnary(MEM_INITIALIZER_IDr3, 2, $1, $2); }
-	| class_name													{ $$ = alacnary(MEM_INITIALIZER_IDr4, 1, $1); }
-	| identifier													{ $$ = alacnary(MEM_INITIALIZER_IDr5, 1, $1); }
+	COLONCOLON nested_name_specifier class_name			{ $$ = (TreeNode *)alacnary(MEM_INITIALIZER_IDr1, 3, $1, $2, $3); }
+	| COLONCOLON class_name										{ $$ = (TreeNode *)alacnary(MEM_INITIALIZER_IDr2, 2, $1, $2); }
+	| nested_name_specifier class_name						{ $$ = (TreeNode *)alacnary(MEM_INITIALIZER_IDr3, 2, $1, $2); }
+	| class_name													{ $$ = (TreeNode *)alacnary(MEM_INITIALIZER_IDr4, 1, $1); }
+	| identifier													{ $$ = (TreeNode *)alacnary(MEM_INITIALIZER_IDr5, 1, $1); }
 	;
 
 /*----------------------------------------------------------------------
@@ -1036,52 +1032,52 @@ mem_initializer_id:
  *----------------------------------------------------------------------*/
 
 operator_function_id:
-	OPERATOR operator												{ $$ = alacnary(OPERATOR_FUNCTION_IDr1, 2, $1, $2); }
+	OPERATOR operator												{ $$ = (TreeNode *)alacnary(OPERATOR_FUNCTION_IDr1, 2, $1, $2); }
 	;
 
 operator:
-	NEW																{ $$ = alacnary(OPERATORr1, 1, $1); }
-	| DELETE															{ $$ = alacnary(OPERATORr2, 1, $1); }
-	| NEW '[' ']'													{ $$ = alacnary(OPERATORr3, 1, $1); }
-	| DELETE '[' ']'												{ $$ = alacnary(OPERATORr4, 1, $1); }
-	| '+'																{ $$ = alacnary(OPERATORr5, 0); }
-	| '_'																{ $$ = alacnary(OPERATORr6, 0); }
-	| '*'																{ $$ = alacnary(OPERATORr7, 0); }
-	| '/'																{ $$ = alacnary(OPERATORr8, 0); }
-	| '%'																{ $$ = alacnary(OPERATORr9, 0); }
-	| '^'																{ $$ = alacnary(OPERATORr10, 0); }
-	| '&'																{ $$ = alacnary(OPERATORr11, 0); }
-	| '|'																{ $$ = alacnary(OPERATORr12, 0); }
-	| '~'																{ $$ = alacnary(OPERATORr13, 0); }
-	| '!'																{ $$ = alacnary(OPERATORr14, 0); }
-	| '='																{ $$ = alacnary(OPERATORr15, 0); }
-	| '<'																{ $$ = alacnary(OPERATORr16, 0); }
-	| '>'																{ $$ = alacnary(OPERATORr17, 0); }
-	| ADDEQ															{ $$ = alacnary(OPERATORr18, 1, $1); }	
-	| SUBEQ															{ $$ = alacnary(OPERATORr19, 1, $1); }
-	| MULEQ															{ $$ = alacnary(OPERATORr20, 1, $1); }
-	| DIVEQ															{ $$ = alacnary(OPERATORr21, 1, $1); }
-	| MODEQ															{ $$ = alacnary(OPERATORr22, 1, $1); }
-	| XOREQ															{ $$ = alacnary(OPERATORr23, 1, $1); }
-	| ANDEQ															{ $$ = alacnary(OPERATORr24, 1, $1); }
-	| OREQ															{ $$ = alacnary(OPERATORr25, 1, $1); }
-	| SL																{ $$ = alacnary(OPERATORr26, 1, $1); }
-	| SR																{ $$ = alacnary(OPERATORr27, 1, $1); }
-	| SREQ															{ $$ = alacnary(OPERATORr28, 1, $1); }
-	| SLEQ															{ $$ = alacnary(OPERATORr29, 1, $1); }
-	| EQ																{ $$ = alacnary(OPERATORr30, 1, $1); }
-	| NOTEQ															{ $$ = alacnary(OPERATORr31, 1, $1); }
-	| LTEQ															{ $$ = alacnary(OPERATORr32, 1, $1); }
-	| GTEQ															{ $$ = alacnary(OPERATORr33, 1, $1); }
-	| ANDAND															{ $$ = alacnary(OPERATORr34, 1, $1); }
-	| OROR															{ $$ = alacnary(OPERATORr35, 1, $1); }
-	| PLUSPLUS														{ $$ = alacnary(OPERATORr36, 1, $1); }
-	| MINUSMINUS													{ $$ = alacnary(OPERATORr37, 1, $1); }
-	| ','																{ $$ = alacnary(OPERATORr38, 0); }
-	| ARROWSTAR														{ $$ = alacnary(OPERATORr39, 1, $1); }
-	| ARROW															{ $$ = alacnary(OPERATORr40, 1, $1); }
-	| '(' ')'														{ $$ = alacnary(OPERATORr41, 0); }
-	| '[' ']'														{ $$ = alacnary(OPERATORr42, 0); }
+	NEW																{ $$ = (TreeNode *)alacnary(OPERATORr1, 1, $1); }
+	| DELETE															{ $$ = (TreeNode *)alacnary(OPERATORr2, 1, $1); }
+	| NEW '[' ']'													{ $$ = (TreeNode *)alacnary(OPERATORr3, 1, $1); }
+	| DELETE '[' ']'												{ $$ = (TreeNode *)alacnary(OPERATORr4, 1, $1); }
+	| '+'																{ $$ = (TreeNode *)alacnary(OPERATORr5, 0); }
+	| '_'																{ $$ = (TreeNode *)alacnary(OPERATORr6, 0); }
+	| '*'																{ $$ = (TreeNode *)alacnary(OPERATORr7, 0); }
+	| '/'																{ $$ = (TreeNode *)alacnary(OPERATORr8, 0); }
+	| '%'																{ $$ = (TreeNode *)alacnary(OPERATORr9, 0); }
+	| '^'																{ $$ = (TreeNode *)alacnary(OPERATORr10, 0); }
+	| '&'																{ $$ = (TreeNode *)alacnary(OPERATORr11, 0); }
+	| '|'																{ $$ = (TreeNode *)alacnary(OPERATORr12, 0); }
+	| '~'																{ $$ = (TreeNode *)alacnary(OPERATORr13, 0); }
+	| '!'																{ $$ = (TreeNode *)alacnary(OPERATORr14, 0); }
+	| '='																{ $$ = (TreeNode *)alacnary(OPERATORr15, 0); }
+	| '<'																{ $$ = (TreeNode *)alacnary(OPERATORr16, 0); }
+	| '>'																{ $$ = (TreeNode *)alacnary(OPERATORr17, 0); }
+	| ADDEQ															{ $$ = (TreeNode *)alacnary(OPERATORr18, 1, $1); }	
+	| SUBEQ															{ $$ = (TreeNode *)alacnary(OPERATORr19, 1, $1); }
+	| MULEQ															{ $$ = (TreeNode *)alacnary(OPERATORr20, 1, $1); }
+	| DIVEQ															{ $$ = (TreeNode *)alacnary(OPERATORr21, 1, $1); }
+	| MODEQ															{ $$ = (TreeNode *)alacnary(OPERATORr22, 1, $1); }
+	| XOREQ															{ $$ = (TreeNode *)alacnary(OPERATORr23, 1, $1); }
+	| ANDEQ															{ $$ = (TreeNode *)alacnary(OPERATORr24, 1, $1); }
+	| OREQ															{ $$ = (TreeNode *)alacnary(OPERATORr25, 1, $1); }
+	| SL																{ $$ = (TreeNode *)alacnary(OPERATORr26, 1, $1); }
+	| SR																{ $$ = (TreeNode *)alacnary(OPERATORr27, 1, $1); }
+	| SREQ															{ $$ = (TreeNode *)alacnary(OPERATORr28, 1, $1); }
+	| SLEQ															{ $$ = (TreeNode *)alacnary(OPERATORr29, 1, $1); }
+	| EQ																{ $$ = (TreeNode *)alacnary(OPERATORr30, 1, $1); }
+	| NOTEQ															{ $$ = (TreeNode *)alacnary(OPERATORr31, 1, $1); }
+	| LTEQ															{ $$ = (TreeNode *)alacnary(OPERATORr32, 1, $1); }
+	| GTEQ															{ $$ = (TreeNode *)alacnary(OPERATORr33, 1, $1); }
+	| ANDAND															{ $$ = (TreeNode *)alacnary(OPERATORr34, 1, $1); }
+	| OROR															{ $$ = (TreeNode *)alacnary(OPERATORr35, 1, $1); }
+	| PLUSPLUS														{ $$ = (TreeNode *)alacnary(OPERATORr36, 1, $1); }
+	| MINUSMINUS													{ $$ = (TreeNode *)alacnary(OPERATORr37, 1, $1); }
+	| ','																{ $$ = (TreeNode *)alacnary(OPERATORr38, 0); }
+	| ARROWSTAR														{ $$ = (TreeNode *)alacnary(OPERATORr39, 1, $1); }
+	| ARROW															{ $$ = (TreeNode *)alacnary(OPERATORr40, 1, $1); }
+	| '(' ')'														{ $$ = (TreeNode *)alacnary(OPERATORr41, 0); }
+	| '[' ']'														{ $$ = (TreeNode *)alacnary(OPERATORr42, 0); }
 	;
 
 /*----------------------------------------------------------------------
@@ -1215,40 +1211,40 @@ explicit_specialization:
  *----------------------------------------------------------------------*/
 
 try_block:
-	TRY compound_statement handler_seq						{ $$ = alacnary(TRY_BLOCKr1, 3, $1, $2, $3); }
+	TRY compound_statement handler_seq						{ $$ = (TreeNode *)alacnary(TRY_BLOCKr1, 3, $1, $2, $3); }
 	;
 
 function_try_block:
-	TRY ctor_initializer_opt function_body handler_seq	{ $$ = alacnary(FUNCTION_TRY_BLOCKr1, 3, $1, $2, $3); }
+	TRY ctor_initializer_opt function_body handler_seq	{ $$ = (TreeNode *)alacnary(FUNCTION_TRY_BLOCKr1, 3, $1, $2, $3); }
 	;
 
 handler_seq:
-	handler handler_seq_opt										{ $$ = alacnary(HANDLER_SEQr1, 2, $1, $2); }
+	handler handler_seq_opt										{ $$ = (TreeNode *)alacnary(HANDLER_SEQr1, 2, $1, $2); }
 	;
 
 handler:
 	CATCH '(' exception_declaration ')' compound_statement
-																		{ $$ = alacnary(HANDLERr1, 3, $1, $3, $5); }
+																		{ $$ = (TreeNode *)alacnary(HANDLERr1, 3, $1, $3, $5); }
 	;
 
 exception_declaration:
-	type_specifier_seq declarator								{ $$ = alacnary(EXCEPTION_DECLARATIONr1, 2, $1, $2); }
-	| type_specifier_seq abstract_declarator				{ $$ = alacnary(EXCEPTION_DECLARATIONr2, 2, $1, $2); }
-	| type_specifier_seq											{ $$ = alacnary(EXCEPTION_DECLARATIONr3, 1, $1); }
-	| ELLIPSIS														{ $$ = alacnary(EXCEPTION_DECLARATIONr4, 1, $1); }
+	type_specifier_seq declarator								{ $$ = (TreeNode *)alacnary(EXCEPTION_DECLARATIONr1, 2, $1, $2); }
+	| type_specifier_seq abstract_declarator				{ $$ = (TreeNode *)alacnary(EXCEPTION_DECLARATIONr2, 2, $1, $2); }
+	| type_specifier_seq											{ $$ = (TreeNode *)alacnary(EXCEPTION_DECLARATIONr3, 1, $1); }
+	| ELLIPSIS														{ $$ = (TreeNode *)alacnary(EXCEPTION_DECLARATIONr4, 1, $1); }
 	;
 
 throw_expression:
-	THROW assignment_expression_opt							{ $$ = alacnary(THROW_EXPRESSIONr1, 2, $1, $2); }
+	THROW assignment_expression_opt							{ $$ = (TreeNode *)alacnary(THROW_EXPRESSIONr1, 2, $1, $2); }
 	;
 
 exception_specification:
-	THROW '(' type_id_list_opt ')'							{ $$ = alacnary(EXCEPTION_SPECIFICATIONr1, 2, $1, $3); }
+	THROW '(' type_id_list_opt ')'							{ $$ = (TreeNode *)alacnary(EXCEPTION_SPECIFICATIONr1, 2, $1, $3); }
 	;
 
 type_id_list:
-	type_id															{ $$ = alacnary(TYPE_ID_LISTr1, 1, $1); }
-	| type_id_list ',' type_id									{ $$ = alacnary(TYPE_ID_LISTr2, 2, $1, $3); }
+	type_id															{ $$ = (TreeNode *)alacnary(TYPE_ID_LISTr1, 1, $1); }
+	| type_id_list ',' type_id									{ $$ = (TreeNode *)alacnary(TYPE_ID_LISTr2, 2, $1, $3); }
 	;
 
 /*----------------------------------------------------------------------
@@ -1256,48 +1252,48 @@ type_id_list:
  *----------------------------------------------------------------------*/
 
 declaration_seq_opt:
-	/* epsilon */													{ $$ = alacnary(DECLARATION_SEQ_OPTr1, 0); }
-	| declaration_seq												{ $$ = alacnary(DECLARATION_SEQ_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(DECLARATION_SEQ_OPTr1, 0); }
+	| declaration_seq												{ $$ = (TreeNode *)alacnary(DECLARATION_SEQ_OPTr2, 1, $1); }
 	;
 
 nested_name_specifier_opt:
-	/* epsilon */													{ $$ = alacnary(NESTED_NAME_SPECIFIER_OPTr1, 0); }
-	| nested_name_specifier										{ $$ = alacnary(NESTED_NAME_SPECIFIER_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(NESTED_NAME_SPECIFIER_OPTr1, 0); }
+	| nested_name_specifier										{ $$ = (TreeNode *)alacnary(NESTED_NAME_SPECIFIER_OPTr2, 1, $1); }
 	;
 
 expression_list_opt:
-	/* epsilon */													{ $$ = alacnary(EXPRESSION_LIST_OPTr1, 0); }
-	| expression_list												{ $$ = alacnary(EXPRESSION_LIST_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(EXPRESSION_LIST_OPTr1, 0); }
+	| expression_list												{ $$ = (TreeNode *)alacnary(EXPRESSION_LIST_OPTr2, 1, $1); }
 	;
 
 COLONCOLON_opt:
-	/* epsilon */													{ $$ = alacnary(COLONCOLON_OPTr1, 0); }
-	| COLONCOLON													{ $$ = alacnary(COLONCOLON_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)(TreeNode *)alacnary(COLONCOLON_OPTr1, 0); }
+	| COLONCOLON													{ $$ = (TreeNode *)alacnary(COLONCOLON_OPTr2, 1, $1); }
 	;
 
 new_placement_opt:
-	/* epsilon */													{ $$ = alacnary(NEW_PLACEMENT_OPTr1, 0); }
-	| new_placement												{ $$ = alacnary(NEW_PLACEMENT_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(NEW_PLACEMENT_OPTr1, 0); }
+	| new_placement												{ $$ = (TreeNode *)alacnary(NEW_PLACEMENT_OPTr2, 1, $1); }
 	;
 
 new_initializer_opt:
-	/* epsilon */													{ $$ = alacnary(NEW_INITIALIZER_OPTr1, 0); }
-	| new_initializer												{ $$ = alacnary(NEW_INITIALIZER_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(NEW_INITIALIZER_OPTr1, 0); }
+	| new_initializer												{ $$ = (TreeNode *)alacnary(NEW_INITIALIZER_OPTr2, 1, $1); }
 	;
 
 new_declarator_opt:
-	/* epsilon */													{ $$ = alacnary(NEW_DECLARATOR_OPTr1, 0); }
-	| new_declarator												{ $$ = alacnary(NEW_DECLARATOR_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(NEW_DECLARATOR_OPTr1, 0); }
+	| new_declarator												{ $$ = (TreeNode *)alacnary(NEW_DECLARATOR_OPTr2, 1, $1); }
 	;
 
 expression_opt:
-	/* epsilon */													{ $$ = alacnary(EXPRESSION_OPTr1, 0); }
-	| expression													{ $$ = alacnary(EXPRESSION_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(EXPRESSION_OPTr1, 0); }
+	| expression													{ $$ = (TreeNode *)alacnary(EXPRESSION_OPTr2, 1, $1); }
 	;
 
 statement_seq_opt:
-	/* epsilon */													{ $$ = alacnary(STATEMENT_SEQ_OPTr1, 0); }
-	| statement_seq												{ $$ = alacnary(STATEMENT_SEQ_OPTr2, 1, $1); }
+	/* epsilon */													{ $$ = (TreeNode *)alacnary(STATEMENT_SEQ_OPTr1, 0); }
+	| statement_seq												{ $$ = (TreeNode *)alacnary(STATEMENT_SEQ_OPTr2, 1, $1); }
 	;
 
 condition_opt:
@@ -1382,76 +1378,12 @@ type_id_list_opt:
 
 %%
 
-void memoryError(){
-	exitStatus = 4;
-	getErrorMessage(ER_MALLOC_E);
-	yyerror(NULL);
-	exit(exitStatus);
-}
-
-void getErrorMessage(int ecode){
-   int size = 128;
-   int code;
-	char *line = (char *)calloc(size, sizeof(char));
-	char *ertype = (char *)calloc(size, sizeof(char));
-	char *mes = (char *)calloc(size, sizeof(char));
-	e_message = (ErrorMessage *)calloc(1, sizeof(ErrorMessage));
-	if(e_message == NULL || line == NULL || ertype == NULL || mes == NULL) memoryError();
-	ef = fopen("errors.def", "r");
-	while(fgets(line, size, ef)){
-		code = atoi(line);
-		fgets(ertype, size, ef);
-		fgets(mes, size, ef);
-		if(code == ecode){
-			char *t = (char *)calloc(size, sizeof(char));
-			char *m = (char *)calloc(size, sizeof(char));
-			if(t == NULL || m == NULL) memoryError();
-			strcpy(t, ertype);
-			strcpy(m, mes);
-			e_message->number = code;
-			e_message->errorType = t;
-			e_message->message = m;
-		}
-	}
-	close(ef);
-}
+//#include "types.h"
 
 /*
  * creates a token with its attributes
- */
-
-Token *createToken(int tcode){
-	Token *token = (Token *)calloc(1, sizeof(Token));
-	if(token == NULL)memoryError();
-	
-	int length = strlen(yytext) + 1;
-	char *text = (char *)calloc(length, sizeof(char));
-	if(text == NULL) memoryError();
-   strcpy(text, yytext); 
-	token->category = tcode;
-   token->text = text;
-   token->lineno = lineno;
-	
-	char *filename = (char *)calloc(strlen(fname) + 1, sizeof(char));
-	if(filename == NULL) memoryError();
-	strcpy(filename, fname);
-   token->filename =filename;
-	
-	if(tcode == INTEGER) token->ival = atoi(token->text);
-   if(tcode == STRING){
-      token->ival = length;
-      int *st = (int *)calloc(length, sizeof(int));
-		if(st == NULL) memoryError();
-      int i;
-      for(i = 0; i < length; i++) st[i] = (int)text[i];
-      token->sval = st;
-   }
-	else token->sval = NULL;
-	
-	return token;
-}
-
-TreeNode *alacnary(int prodRule, int children,...){
+ *//*
+TreeNode *alacnary(int prodRule, int children, ...){
 	TreeNode *nd = (TreeNode *)calloc(1, sizeof(TreeNode));
 	if(!nd)memoryError();
 	
@@ -1467,299 +1399,7 @@ TreeNode *alacnary(int prodRule, int children,...){
 	}
 	va_end(mylist);
 	return nd;
-}
-
-void printTree(struct TreeNode *t, int depth)
-{
-	char *text;
-	int i;
-	if(t->symbol >= 1000){
-		printf("%*s%s: %d\n", depth*2, " ", humanreadable(t->u.n.rule), t->u.n.children);
-		if(t->u.n.children > 0)
-			for(i=0; i<t->u.n.children; i++)
-				printTree(t->u.n.child[i], depth+1);
-	} else {
-		printf("%*s%s: %s\n", depth*2, " ", humanreadable(t->symbol), t->u.t.token->text);
-	}
-}
-
-char *humanreadable(int ncode){
-	if(ncode >= 1000)ncode = (int)(ncode / 100) * 100;
-	switch (ncode) {
-		case IDENTIFIER: return "IDENTIFIER";
-		case INTEGER: return "INTEGER";
-		case FLOATING: return "FLOATING";
-		case CHARACTER: return "CHARACTER";
-		case STRING: return "STRING";
-		case TYPEDEF_NAME: return "TYPEDEF_NAME";
-		case NAMESPACE_NAME: return "NAMESPACE_NAME";
-		case CLASS_NAME: return "CLASS_NAME";
-		case ENUM_NAME: return "ENUM_NAME";
-		case TEMPLATE_NAME: return "TEMPLATE_NAME";
-		case ELLIPSIS: return "ELLIPSIS";
-		case COLONCOLON: return "COLONCOLON"; 
-		case DOTSTAR: return "DOTSTAR"; 
-		case ADDEQ: return "ADDEQ"; 
-		case SUBEQ: return "SUBEQ"; 
-		case MULEQ: return "MULEQ"; 
-		case DIVEQ: return "DIVEQ"; 
-		case MODEQ: return "MODEQ";
-		case XOREQ: return "XOREQ"; 
-		case ANDEQ: return "ANDEQ";  
-		case OREQ: return "OREQ"; 
-		case SL: return "SL"; 
-		case SR: return "SR"; 
-		case SREQ: return "SLEQ"; 
-		case SLEQ: return "SLEQ";
-		case EQ: return "EQ";
-		case NOTEQ  : return "NOTEQ";
-		case LTEQ  : return "LTEQ";
-		case GTEQ  : return "GTEQ";
-		case ANDAND  : return "ANDAND";
-		case OROR : return "OROR" ;
-		case PLUSPLUS  : return "PLUSPLUS";
-		case MINUSMINUS  : return "MINUSMINUS"  ;
-		case ARROWSTAR  : return "ARROWSTAR"  ;
-		case ARROW : return "ARROW" ;
-		case ASM  : return "ASM"  ;
-		case AUTO  : return "AUTO"  ;
-		case BOOL  : return "BOOL"  ;
-		case BREAK  : return "BREAK"  ;
-		case CASE  : return "CASE"  ;
-		case CATCH  : return "CATCH"  ;
-		case CHAR  : return "CHAR"  ;
-		case CLASS  : return "CLASS"  ;
-		case CONST  : return "CONST"  ;
-		case CONST_CAST  : return "CONST_CAST"  ;
-		case CONTINUE : return "CONTINUE" ;
-		case DEFAULT  : return "DEFAULT"  ;
-		case DELETE  : return "DELETE"  ;
-		case DO  : return "DO"  ;
-		case DOUBLE  : return "DOUBLE"  ;
-		case DYNAMIC_CAST  : return "DYNAMIC_CAST"  ;
-		case ELSE  : return "ELSE"  ;
-		case ENUM  : return "ENUM"  ;
-		case EXPLICIT  : return "EXPLICIT"  ;
-		case EXPORT  : return "EXPORT"  ;
-		case EXTERN : return "EXTERN" ;
-		case FALSE : return "FALSE" ;
-		case FLOAT  : return "FLOAT"  ;
-		case FOR  : return "FOR"  ;
-		case FRIEND  : return "FRIEND"  ;
-		case GOTO  : return "GOTO"  ;
-		case IF  : return "IF"  ;
-		case INLINE  : return "INLINE"  ;
-		case INT  : return "INT"  ;
-		case LONG  : return "LONG"  ;
-		case MUTABLE  : return "MUTABLE"  ;
-		case NAMESPACE  : return "NAMESPACE"  ;
-		case NEW : return "NEW" ;
-		case OPERATOR  : return "OPERATOR"  ;
-		case PRIVATE  : return "PRIVATE"  ;
-		case PROTECTED  : return "PROTECTED"  ;
-		case PUBLIC  : return "PUBLIC"  ;
-		case REGISTER  : return "REGISTER"  ;
-		case REINTERPRET_CAST  : return "REINTERPRET_CAST"  ;
-		case RETURN : return "RETURN" ;
-		case SHORT  : return "SHORT"  ;
-		case SIGNED  : return "SIGNED"  ;
-		case SIZEOF  : return "SIZEOF"  ;
-		case STATIC  : return "STATIC"  ;
-		case STATIC_CAST  : return "STATIC_CAST"  ;
-		case STRUCT  : return "STRUCT"  ;
-		case SWITCH  : return "SWITCH"  ;
-		case TEMPLATE  : return "TEMPLATE"  ;
-		case THIS : return "THIS" ;
-		case THROW  : return "THROW"  ;
-		case TRUE : return "TRUE" ;
-		case TRY  : return "TRY"  ;
-		case TYPEDEF  : return "TYPEDEF"  ;
-		case TYPEID  : return "TYPEID"  ;
-		case TYPENAME  : return "TYPENAME"  ;
-		case UNION  : return "UNION"  ;
-		case UNSIGNED  : return "UNSIGNED"  ;
-		case USING  : return "USING"  ;
-		case VIRTUAL : return "VIRTUAL" ;
-		case VOID  : return "VOID"  ;
-		case VOLATILE  : return "VOLATILE"  ;
-		case WCHAR_T  : return "WCHAR_T"  ;
-		case WHILE  : return "WHILE"  ;
-		case STR_TYPE : return "STR_TYPE" ;
-		case typedef_name  : return "typedef_name"  ;
-		case namespace_name  : return "namespace_name"  ;
-		case original_namespace_name  : return "original_namespace_name"  ;
-		case class_name  : return "class_name"  ;
-		case enum_name  : return "enum_name"  ;
-		case template_name : return "template_name" ;
-		case identifier  : return "identifier"  ;
-		case literal  : return "literal"  ;
-		case integer_literal  : return "integer_literal"  ;
-		case character_literal  : return "character_literal"  ;
-		case floating_literal  : return "floating_literal"  ;
-		case string_literal : return "string_literal" ;
-		case boolean_literal  : return "boolean_literal"  ;
-		case translation_unit : return "program" ;
-		case primary_expression  : return "primary_expression"  ;
-		case id_expression  : return "id_expression"  ;
-		case unqualified_id  : return "unqualified_id"  ;
-		case qualified_id : return "qualified_id" ;
-		case nested_name_specifier  : return "nested_name_specifier"  ;
-		case postfix_expression  : return "postfix_expression"  ;
-		case expression_list  : return "expression_list"  ;
-		case unary_expression  : return "unary_expression"  ;
-		case unary_operator : return "unary_operator" ;
-		case new_expression  : return "new_expression"  ;
-		case new_placement  : return "new_placement"  ;
-		case new_type_id  : return "new_type_id"  ;
-		case new_declarator  : return "new_declarator"  ;
-		case direct_new_declarator  : return "direct_new_declarator"  ;
-		case new_initializer : return "new_initializer" ;
-		case delete_expression  : return "delete_expression"  ;
-		case cast_expression  : return "cast_expression"  ;
-		case pm_expression  : return "pm_expression"  ;
-		case multiplicative_expression  : return "multiplicative_expression"  ;
-		case additive_expression : return "additive_expression" ;
-		case shift_expression  : return "shift_expression"  ;
-		case relational_expression  : return "relational_expression"  ;
-		case equality_expression  : return "equality_expression"  ;
-		case and_expression  : return "and_expression"  ;
-		case exclusive_or_expression : return "exclusive_or_expression" ;
-		case inclusive_or_expression  : return "inclusive_or_expression"  ;
-		case logical_and_expression  : return "logical_and_expression"  ;
-		case logical_or_expression  : return "logical_or_expression"  ;
-		case conditional_expression : return "conditional_expression" ;
-		case assignment_expression  : return "assignment_expression"  ;
-		case assignment_operator  : return "assignment_operator"  ;
-		case expression  : return "expression"  ;
-		case constant_expression  : return "constant_expression"  ;
-		case statement : return "statement" ;
-		case labeled_statement  : return "labeled_statement"  ;
-		case expression_statement  : return "expression_statement"  ;
-		case compound_statement  : return "compound_statement"  ;
-		case statement_seq  : return "statement_seq"  ;
-		case selection_statement : return "selection_statement" ;
-		case condition  : return "condition"  ;
-		case iteration_statement  : return "iteration_statement"  ;
-		case for_init_statement  : return "for_init_statement"  ;
-		case jump_statement  : return "jump_statement"  ;
-		case declaration_statement : return "declaration_statement" ;
-		case declaration_seq  : return "declaration_seq"  ;
-		case declaration  : return "declaration"  ;
-		case block_declaration  : return "block_declaration"  ;
-		case simple_declaration  : return "simple_declaration"  ;
-		case decl_specifier : return "decl_specifier" ;
-		case decl_specifier_seq  : return "decl_specifier_seq"  ;
-		case storage_class_specifier  : return "storage_class_specifier"  ;
-		case function_specifier  : return "function_specifier"  ;
-		case type_specifier  : return "type_specifier"  ;
-		case simple_type_specifier : return "simple_type_specifier" ;
-		case type_name  : return "type_name"  ;
-		case elaborated_type_specifier  : return "elaborated_type_specifier"  ;
-		case enum_specifier  : return "enum_specifier"  ;
-		case enumerator_list  : return "enumerator_list"  ;
-		case enumerator_definition : return "enumerator_definition" ;
-		case enumerator  : return "enumerator"  ;
-		case namespace_definition  : return "namespace_definition"  ;
-		case named_namespace_definition  : return "named_namespace_definition"  ;
-		case original_namespace_definition : return "original_namespace_definition" ;
-		case extension_namespace_definition  : return "extension_namespace_definition"  ;
-		case unnamed_namespace_definition  : return "unnamed_namespace_definition"  ;
-		case namespace_body  : return "namespace_body"  ;
-		case namespace_alias_definition : return "namespace_alias_definition" ;
-		case qualified_namespace_specifier  : return "qualified_namespace_specifier"  ;
-		case using_declaration  : return "using_declaration"  ;
-		case using_directive  : return "using_directive"  ;
-		case asm_definition  : return "asm_definition"  ;
-		case linkage_specification  : return "linkage_specification"  ;
-		case init_declarator_list  : return "init_declarator_list"  ;
-		case init_declarator  : return "init_declarator"  ;
-		case declarator  : return "declarator"  ;
-		case direct_declarator  : return "direct_declarator"  ;
-		case ptr_operator  : return "ptr_operator"  ;
-		case cv_qualifier_seq : return "cv_qualifier_seq" ;
-		case cv_qualifier  : return "cv_qualifier"  ;
-		case declarator_id  : return "declarator_id"  ;
-		case type_id  : return "type_id"  ;
-		case type_specifier_seq  : return "type_specifier_seq"  ;
-		case abstract_declarator  : return "abstract_declarator"  ;
-		case direct_abstract_declarator : return "direct_abstract_declarator" ;
-		case parameter_declaration_clause  : return "parameter_declaration_clause"  ;
-		case parameter_declaration_list  : return "parameter_declaration_list"  ;
-		case parameter_declaration  : return "parameter_declaration"  ;
-		case function_definition : return "function_definition" ;
-		case function_body  : return "function_body"  ;
-		case initializer  : return "initializer"  ;
-		case initializer_clause  : return "initializer_clause"  ;
-		case initializer_list  : return "initializer_list"  ;
-		case class_specifier  : return "class_specifier"  ;
-		case class_head : return "class_head" ;
-		case class_key  : return "class_key"  ;
-		case member_specification  : return "member_specification"  ;
-		case member_declaration  : return "member_declaration"  ;
-		case member_declarator_list  : return "member_declarator_list"  ;
-		case member_declarator : return "member_declarator" ;
-		case pure_specifier  : return "pure_specifier"  ;
-		case constant_initializer  : return "constant_initializer"  ;
-		case base_clause  : return "base_clause"  ;
-		case base_specifier_list  : return "base_specifier_list"  ;
-		case base_specifier : return "base_specifier" ;
-		case access_specifier  : return "access_specifier"  ;
-		case conversion_function_id  : return "conversion_function_id"  ;
-		case conversion_type_id  : return "conversion_type_id"  ;
-		case conversion_declarator  : return "conversion_declarator"  ;
-		case ctor_initializer  : return "ctor_initializer"  ;
-		case mem_initializer_list  : return "mem_initializer_list"  ;
-		case mem_initializer  : return "mem_initializer"  ;
-		case mem_initializer_id  : return "mem_initializer_id"  ;
-		case operator_function_id : return "operator_function_id" ;
-		case operator  : return "operator"  ;
-		case template_declaration  : return "template_declaration"  ;
-		case template_parameter_list  : return "template_parameter_list"  ;
-		case template_parameter  : return "template_parameter"  ;
-		case type_parameter : return "type_parameter" ;
-		case template_id  : return "template_id"  ;
-		case template_argument_list  : return "template_argument_list"  ;
-		case template_argument  : return "template_argument"  ;
-		case explicit_instantiation  : return "explicit_instantiation"  ;
-		case explicit_specialization : return "explicit_specialization" ;
-		case try_block  : return "try_block"  ;
-		case function_try_block  : return "function_try_block"  ;
-		case handler_seq : return "handler_seq"  ;
-		case handler : return "handler"  ;
-		case exception_declaration  : return "exception_declaration"  ;
-		case throw_expression : return "throw_expression" ;
-		case exception_specification  : return "exception_specification"  ;
-		case type_id_list  : return "type_id_list"  ;
-		case declaration_seq_opt  : return "declaration_seq_opt"  ;
-		case nested_name_specifier_opt  : return "nested_name_specifier_opt"  ;
-		case expression_list_opt  : return "expression_list_opt"  ;
-		case COLONCOLON_opt  : return "COLONCOLON_opt"  ;
-		case new_placement_opt  : return "new_placement_opt"  ;
-		case new_initializer_opt  : return "new_initializer_opt"  ;
-		case new_declarator_opt : return "new_declarator_opt" ;
-		case expression_opt  : return "expression_opt"  ;
-		case statement_seq_opt  : return "statement_seq_opt"  ;
-		case condition_opt  : return "condition_opt"  ;
-		case enumerator_list_opt  : return "enumerator_list_opt"  ;
-		case initializer_opt : return "initializer_opt" ;
-		case constant_expression_opt  : return "constant_expression_opt"  ;
-		case abstract_declarator_opt  : return "abstract_declarator_opt"  ;
-		case type_specifier_seq_opt  : return "type_specifier_seq_opt"  ;
-		case direct_abstract_declarator_opt : return "direct_abstract_declarator_opt" ;
-		case ctor_initializer_opt  : return "ctor_initializer_opt"  ;
-		case COMMA_opt  : return "COMMA_opt"  ;
-		case member_specification_opt  : return "member_specification_opt"  ;
-		case SEMICOLON_opt  : return "SEMICOLON_opt"  ;
-		case conversion_declarator_opt : return "conversion_declarator_opt" ;
-		case EXPORT_opt  : return "EXPORT_opt"  ;
-		case handler_seq_opt  : return "handler_seq_opt"  ;
-		case assignment_expression_opt  : return "assignment_expression_opt"  ;
-		case type_id_list_opt : return "type_id_list_opt" ;
-
-		default : return "Not Found";
-
-	}
-}
+}*/
 
 int main(int argc, char **argv){
 	int rv;
@@ -1778,6 +1418,7 @@ int main(int argc, char **argv){
 			rv = yyparse();
 			switch(rv){
 				case 0 :
+					buildTypes(root);
 					printTree(root, 0);
 					break;
 				case 1 :
@@ -1791,19 +1432,4 @@ int main(int argc, char **argv){
 	}
 	//printf("\n%d\n", exitStatus);
    return exitStatus;
-}
-
-void yyerror(char *s)
-{
-   errors++;
-   fprintf(stderr, "\nError #%d: %s, line: %d ", errors, fname, lineno);
-	if(!e_message) {
-		s = NULL;
-		getErrorMessage(ER_SYNTAX);
-	}
-	if(s != NULL) fprintf(stderr, "%s\t\'%s\' %s\n",e_message->errorType, s, e_message->message);
-	else fprintf(stderr, "%s\t%s\n",e_message->errorType, e_message->message);
-	e_message = NULL;
-	free(e_message);
-	fflush(stderr);
 }

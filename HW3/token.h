@@ -5,24 +5,14 @@
  * token.h defines Token and TokenList
  */
 
-typedef struct Token Token;
-struct Token{
-  int category;
-  char *text;
-  int lineno;
-  char *filename;
-  int ival;
-  int *sval;
-};
-
-typedef struct TokenList TokenList;
-struct TokenList {
-  struct Token *t;
-  struct TokenList *next;
-};
-
 extern char *fname;
-extern int line_num;
+extern int lineno;
 extern int tcode;
 extern char *yytext;
 extern Token *yytoken;
+
+/* prototypes */
+char *cvnIntString(int, int *);
+Token *createToken(int);
+void printToken(Token *);
+void printAllTokens(TokenList *);

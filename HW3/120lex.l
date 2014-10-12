@@ -44,24 +44,10 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#include "errors.h"
-#include "token.h"
-#include "120parse.h"
+#include "sdef.h"
 #include "120gram.h"
-//#include "typedef.h"
-
-typedef struct FileStack FileStack;
-struct FileStack {
-   char *filename;
-	int lineno;
-	FileStack *next;
-};
-
-typedef struct TypeStack TypeStack;
-struct TypeStack{
-	int tcode;
-	TypeStack *next;
-};
+#include "token.h"
+#include "errors.h"
 
 FileStack *topFile = NULL;
 TypeStack *topType = NULL;
@@ -90,7 +76,8 @@ int included_string = 0;
 int included_fstream = 0;
 int included_stdio = 0; 
 int included_stdlib = 0;
-
+int typedefMode = 0;
+int unionMode = 0;
 %}
 
 intsuffix				([uU][lL]?)|([lL][uU]?)
@@ -236,11 +223,11 @@ stringtext				([^"])|(\\.)
 "throw"										{ return alac((Token *)createToken(THROW)); }
 "true"										{ return alac((Token *)createToken(TRUE)); }
 "try"											{ return alac((Token *)createToken(TRY)); }
-"typedef"									{ pushTypeStack(TYPEDEF);
+"typedef"									{ typedefMode = 1;
 													return alac((Token *)createToken(TYPEDEF)); }
 "typeid"										{ return alac((Token *)createToken(TYPEID)); }
 "typename"									{ return alac((Token *)createToken(TYPENAME)); }
-"union"										{ pushTypeStack(UNION);
+"union"										{ unionMode = 1;
 													return alac((Token *)createToken(UNION)); }
 "unsigned"									{ return alac((Token *)createToken(UNSIGNED)); }
 "using"										{ return alac((Token *)createToken(USING)); }
@@ -303,6 +290,37 @@ static int
 yywrap(void)
 {
 	return 1;
+}
+
+Token *createToken(int tcode){
+	Token *token = (Token *)calloc(1, sizeof(Token));
+	if(token == NULL)memoryError();
+	
+	int length = strlen(yytext) + 1;
+	char *text = (char *)calloc(length, sizeof(char));
+	if(text == NULL) memoryError();
+   strcpy(text, yytext); 
+	token->category = tcode;
+   token->text = text;
+   token->lineno = lineno;
+	
+	char *filename = (char *)calloc(strlen(fname) + 1, sizeof(char));
+	if(filename == NULL) memoryError();
+	strcpy(filename, fname);
+   token->filename =filename;
+	
+	if(tcode == INTEGER) token->ival = atoi(token->text);
+   if(tcode == STRING){
+      token->ival = length;
+      int *st = (int *)calloc(length, sizeof(int));
+		if(st == NULL) memoryError();
+      int i;
+      for(i = 0; i < length; i++) st[i] = (int)text[i];
+      token->sval = st;
+   }
+	else token->sval = NULL;
+	
+	return token;
 }
 
 void pushTypeStack(int tcode){
@@ -427,10 +445,10 @@ int typenametable_lookup(char *s)
 				popTypeStack();
 				typenametable_insert(s, CLASS_NAME);
 				return CLASS_NAME;
-			case TYPEDEF : 
+		/*	case TYPEDEF : 
 				popTypeStack();
 				typenametable_insert(s, TYPEDEF_NAME);
-				return TYPEDEF_NAME;
+				return TYPEDEF_NAME;*/
 			case ENUM : 
 				popTypeStack();
 				typenametable_insert(s, ENUM_NAME);
@@ -439,18 +457,18 @@ int typenametable_lookup(char *s)
 				popTypeStack();
 				typenametable_insert(s, NAMESPACE_NAME);
 				return NAMESPACE_NAME;
-			case TEMPLATE : 
+		/*	case TEMPLATE : 
 				popTypeStack();
 				typenametable_insert(s, TEMPLATE_NAME);
-				return TEMPLATE_NAME;
+				return TEMPLATE_NAME;*/
 			case STRUCT : 
 				popTypeStack();
 				typenametable_insert(s, CLASS_NAME);
 				return CLASS_NAME;
-			case UNION : 
+		/*	case UNION : 
 				popTypeStack();
 				typenametable_insert(s, CLASS_NAME);
-				return CLASS_NAME;
+				return CLASS_NAME;*/
 		}
 	}
    return IDENTIFIER;
@@ -491,13 +509,3 @@ static int alac(Token *token)
 	return token->category;
 }
 
-void lexerr(char *s)
-{
-   errors++;
-   fprintf(stderr, "\nLexical Error #%d: %s, line: %d ", errors, fname, lineno);
-	if(s != NULL) fprintf(stderr, "%s\t\'%s\' %s\n",e_message->errorType, s, e_message->message);
-	else fprintf(stderr, "%s\t%s\n",e_message->errorType, e_message->message);
-	e_message = NULL;
-	free(e_message);
-	fflush(stderr);
-}

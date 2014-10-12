@@ -8,8 +8,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-//#include "token.h"
-//#include "120gram.c"
+
+#include "token.h"
+
 
 /*
  * handles the escape items in a string of text
@@ -55,42 +56,6 @@ char *cvnIntString(int length, int *stVal){
   }
   return st;
 }
-
-/*
- * creates a token with its attributes
- */
-/* 
-Token *createToken(int tcode){
-	Token *token = (Token *)calloc(1, sizeof(Token));
-	if(token == NULL)memoryError();
-	
-	int length = strlen(yytext) + 1;
-	char *text = (char *)calloc(length, sizeof(char));
-	if(text == NULL) memoryError();
-   strcpy(text, yytext); 
-	token->category = tcode;
-   token->text = text;
-   token->lineno = line_num;
-	
-	char *filename = (char *)calloc(strlen(fname) + 1, sizeof(char));
-	if(filename == NULL) memoryError();
-	strcpy(filename, fname);
-   token->filename =filename;
-	
-	if(tcode == INTEGER) token->ival = atoi(token->text);
-	else token->ival = NULL;
-   if(tcode == STRING){
-      token->ival = length;
-      int *st = (int *)calloc(length, sizeof(int));
-		if(st == NULL) memoryError();
-      int i;
-      for(i = 0; i < length; i++) st[i] = (int)text[i];
-      token->sval = st;
-   }
-	else token->sval = NULL;
-	
-	return token;
-}*/
 
 /*
  * prints a single token

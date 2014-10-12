@@ -5,45 +5,30 @@
  * types.h
  */
  
-#define TYPE_NULL 100000
-#define TYPE_INT 100001
-#define TYPE_CHAR 100002
+#define NULL_TYPE 100000
+#define CHAR_TYPE 100001
+#define WCHAR_T_TYPE 100002	
+#define BOOL_TYPE 100003
+#define SHORT_TYPE 100004
+#define INT_TYPE 100005
+#define LONG_TYPE 100006 
+#define SIGNED_TYPE 100007
+#define UNSIGNED_TYPE 100008
+#define FLOAT_TYPE 100009
+#define DOUBLE_TYPE	100010
+#define VOID_TYPE 100011
+#define STR_TYPE_TYPE 100012
 
-#define TYPE_ARRAY 100021
+#define ARRAY_TYPE 100021
 
-#define TYPE_CLASS 100031
-#define TYPE_STRUCT 100032
-#define TYPE_UNION 100033
+#define CLASS_TYPE 100031
+#define STRUCT_TYPE 100032
+#define UNION_TYPE 100033
 
-#define TYPE_METHOD 100041
+#define METHOD_TYPE 100041
+#define FUNC_TYPE 100042
 
-typedef struct Field Field;
-struct Field {			/* members (fields) of structs */
-   char *name;
-   struct ctype *elemtype;
-}
+#define TOUPLE 100051
 
-typedef struct SymbolType SymbolType;
-struct SymbolType {
-   /*
-    * Integer code that says what kind of type this is.
-    * Includes all primitive types: 1 = int, 2=float,
-    * Also includes codes for compound types that then also
-    * hold type information in a supporting union...
-    * 7 = array, 8 = struct, 9 = pointer etc. */
-   int base_type;
-   union {
-      struct array {
-         int size; /* allow for missing size, e.g. -1 */
-	 Type *elemtype; /* pointer to c_type for elements in array,
-	 				follow it to find its base type, etc.*/
-      } a;
-      struct c
-      struct struc {		/* structs */
-         char *label;
-	 int nfields;
-         Field **f;
-	 } s;
-      struct ctype *p;		/* pointer type, points at another type */
-   } u;
-}
+#define UNKNOWN_TYPE 110000
+
