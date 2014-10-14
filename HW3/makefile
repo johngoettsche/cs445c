@@ -29,4 +29,3 @@ errors.o: errors.h errors.c
 clean:
 	rm -f 120 *.o
 	rm -f 120lex.c 120gram.c 120gram.h
-	

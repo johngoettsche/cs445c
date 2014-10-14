@@ -59,7 +59,10 @@
 
 #include "sdef.h"
 #include "parsedef.h"
+//#include "symbol.h"
 #include "errors.h"
+
+#define SYMBOL_TABLE_SIZE 31
 
 extern int lineno;
 int yydebug=1;
@@ -69,6 +72,7 @@ int errors;
 ErrorMessage *e_message;
 TreeNode *root;
 extern int exitStatus;
+SymbolTable *globalSymbolTable;
 
 %}
 
@@ -229,15 +233,15 @@ primary_expression:
 	;
 
 id_expression:
-	unqualified_id														{ $$ = (TreeNode *)alacnary(PRIMARY_EXPRESSIONr1, 1, $1); }
-	| qualified_id														{ $$ = (TreeNode *)alacnary(PRIMARY_EXPRESSIONr2, 1, $1); }
+	unqualified_id														{ $$ = (TreeNode *)alacnary(ID_EXPRESSIONr1, 1, $1); }
+	| qualified_id														{ $$ = (TreeNode *)alacnary(ID_EXPRESSIONr2, 1, $1); }
 	;
 
 unqualified_id:
-	identifier															{ $$ = (TreeNode *)alacnary(PRIMARY_EXPRESSIONr1, 1, $1); }
-	| operator_function_id											{ $$ = (TreeNode *)alacnary(PRIMARY_EXPRESSIONr2, 1, $1); }
-	| conversion_function_id										{ $$ = (TreeNode *)alacnary(PRIMARY_EXPRESSIONr3, 1, $1); }
-	| '~' class_name													{ $$ = (TreeNode *)alacnary(PRIMARY_EXPRESSIONr4, 1, $2); }
+	identifier															{ $$ = (TreeNode *)alacnary(UNQUALIFIED_IDr1, 1, $1); }
+	| operator_function_id											{ $$ = (TreeNode *)alacnary(UNQUALIFIED_IDr2, 1, $1); }
+	| conversion_function_id										{ $$ = (TreeNode *)alacnary(UNQUALIFIED_IDr3, 1, $1); }
+	| '~' class_name													{ $$ = (TreeNode *)alacnary(UNQUALIFIED_IDr4, 1, $2); }
 	;
 
 qualified_id:
@@ -1378,29 +1382,6 @@ type_id_list_opt:
 
 %%
 
-//#include "types.h"
-
-/*
- * creates a token with its attributes
- *//*
-TreeNode *alacnary(int prodRule, int children, ...){
-	TreeNode *nd = (TreeNode *)calloc(1, sizeof(TreeNode));
-	if(!nd)memoryError();
-	
-	nd->symbol = (int)(prodRule / 100) * 100;
-	nd->u.n.rule = prodRule;
-	nd->u.n.children = children;
-	int c = 0;
-	va_list mylist;
-	va_start(mylist, children);
-	while(c < children){
-		nd->u.n.child[c] = va_arg(mylist, TreeNode *);
-		c++;
-	}
-	va_end(mylist);
-	return nd;
-}*/
-
 int main(int argc, char **argv){
 	int rv;
    if(argc > 1) { 
@@ -1418,6 +1399,7 @@ int main(int argc, char **argv){
 			rv = yyparse();
 			switch(rv){
 				case 0 :
+					globalSymbolTable = (SymbolTable *)createGlobalSymbolTable(SYMBOL_TABLE_SIZE);
 					buildTypes(root);
 					printTree(root, 0);
 					break;

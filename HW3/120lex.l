@@ -318,6 +318,8 @@ Token *createToken(int tcode){
       for(i = 0; i < length; i++) st[i] = (int)text[i];
       token->sval = st;
    }
+	if(tcode == TRUE) token->ival = 1;
+	if(tcode == FALSE) token->ival = 0;
 	else token->sval = NULL;
 	
 	return token;

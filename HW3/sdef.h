@@ -55,6 +55,11 @@ typedef struct NType {
 			int nfields;
          Field **f;
 		} struc;
+		struct clas {
+			char *label;
+			int nfields;
+			Field **f;
+		} clas;
 		struct func {
 			char *label;
 			struct NType *retType;
@@ -83,8 +88,34 @@ typedef struct TreeNode {
    } u;
 } TreeNode;
 
+typedef struct Symbol{
+	int type;
+	char *label;
+	/*union{
+		struct IntegerType {
+			int value;
+		}intgr;
+	}u;*/
+}Symbol;
+
+typedef struct SymbolTableEntry{
+	Symbol *s;
+	//Type *type;
+	struct SymbolTableEntry *next;
+}SymbolTableEntry;
+
+typedef struct SymbolTable{
+	int size;
+	int entries;
+	//Type *scope;
+	struct SymbolTable *parent;
+	SymbolTableEntry **bucket;
+}SymbolTable;
+
 typedef struct ErrorMessage{
    int number;
 	char *errorType;
 	char *message;
 }ErrorMessage;
+
+

@@ -294,8 +294,7 @@ char *humanreadable(int ncode){
 	return name;
 }
 
-void printTree(TreeNode *t, int depth)
-{
+void printTree(TreeNode *t, int depth){
 	char *text;
 	int i;
 	if(t->symbol >= 1000){
@@ -334,6 +333,24 @@ NType *getType(int tcode){
 	return ntype;
 }
 
+SymbolTable *createSymbolTable(SymbolTable *parent, int size){
+	SymbolTable *symbolTable;
+	if((symbolTable = (SymbolTable *)calloc(1, sizeof(SymbolTable))) == NULL) memoryError();
+	symbolTable->parent = parent;
+	symbolTable->size = size;
+	if((symbolTable->bucket = calloc(size, sizeof(SymbolTableEntry))) == NULL) memoryError();
+	
+	return symbolTable;
+}
+
+SymbolTable *createGlobalSymbolTable(int size){
+	SymbolTable *symbolTable;
+	if((symbolTable = (SymbolTable *)calloc(1, sizeof(SymbolTable))) == NULL) memoryError();
+	symbolTable->size = size;
+	if((symbolTable->bucket = calloc(size, sizeof(SymbolTableEntry))) == NULL) memoryError();
+	return symbolTable;
+}
+
 void buildTypes(TreeNode *node){
 	if(node != NULL){
 		int n;
@@ -341,6 +358,291 @@ void buildTypes(TreeNode *node){
 			buildTypes(node->u.n.child[n]);
 		}
 		switch(node->u.n.rule){
+			case IDENTIFIERr1 :
+				node->type = node->u.n.child[0]->type;
+				/* ADD TO SYMBOL TABLE */
+				break;
+				
+			case LITERALr1 :
+				node->type = node->u.n.child[0]->type;
+				break;
+			case LITERALr2 :
+				node->type = node->u.n.child[0]->type;
+				break;
+			case LITERALr3 :
+				node->type = node->u.n.child[0]->type;
+				break;
+			case LITERALr4 :
+				node->type = node->u.n.child[0]->type;
+				break;
+			case LITERALr5 :
+				node->type = node->u.n.child[0]->type;
+				break;
+				
+			case INTEGER_LITERALr1 :
+				node->type = getType(INT_TYPE);
+				node->u.n.child[0]->type = node->type;
+				break;
+			case CHARACTER_LITERALr1 :
+				node->type = getType(CHAR_TYPE);
+				node->u.n.child[0]->type = node->type;
+				break;
+			case FLOATING_LITERALr1 :
+				node->type = getType(FLOAT_TYPE);
+				node->u.n.child[0]->type = node->type;
+				break;
+			case STRING_LITERALr1 :
+				node->type = getType(STR_TYPE_TYPE);
+				node->u.n.child[0]->type = node->type;
+				break;
+			case BOOLEAN_LITERALr1 :
+				node->type = getType(BOOL_TYPE);
+				node->u.n.child[0]->type = node->type;
+				break;
+			case BOOLEAN_LITERALr2 :
+				node->type = getType(BOOL_TYPE);
+				node->u.n.child[0]->type = node->type;
+				break;
+
+			case TRANSLATION_UNITr1 :
+			/* NOT SHURE WHAT THIS ONE DOES YET */
+				node->type = node->u.n.child[0]->type;
+				break;
+				
+			case PRIMARY_EXPRESSIONr1 :
+				node->type = node->u.n.child[0]->type;
+				break;
+			case PRIMARY_EXPRESSIONr2 :
+				/* GET TYPE FROM CURRENT CLASS */
+				break;
+			case PRIMARY_EXPRESSIONr3 :
+				node->type = node->u.n.child[1]->type;
+				break;
+			case PRIMARY_EXPRESSIONr4 :
+				node->type = node->u.n.child[0]->type;
+				break;
+
+			case ID_EXPRESSIONr1 :
+				node->type = node->u.n.child[0]->type;
+				break;
+			case ID_EXPRESSIONr2 :
+				node->type = node->u.n.child[0]->type;
+				break;
+				
+			case UNQUALIFIED_IDr1 :
+				node->type = node->u.n.child[0]->type;
+				break;
+			case UNQUALIFIED_IDr2 :
+				node->type = node->u.n.child[0]->type;
+				break;
+			case UNQUALIFIED_IDr3 :
+				node->type = node->u.n.child[0]->type;
+				break;
+			case UNQUALIFIED_IDr4 :
+				node->type = node->u.n.child[1]->type;
+				break;
+				
+			
+			/*
+qualified_id:
+	nested_name_specifier unqualified_id						{ $$ = (TreeNode *)alacnary(QUALIFIED_IDr1, 2, $1, $2); }
+	| nested_name_specifier TEMPLATE unqualified_id			{ $$ = (TreeNode *)alacnary(QUALIFIED_IDr1, 3, $1, $2, $3); }
+	;
+
+nested_name_specifier:
+	class_name COLONCOLON nested_name_specifier				{ $$ = (TreeNode *)alacnary(NESTED_NAME_SPECIFIERr1, 3, $1, $2, $3); }
+	| namespace_name COLONCOLON nested_name_specifier		{ $$ = (TreeNode *)alacnary(NESTED_NAME_SPECIFIERr2, 3, $1, $2, $3); }
+	| class_name COLONCOLON											{ $$ = (TreeNode *)alacnary(NESTED_NAME_SPECIFIERr3, 2, $1, $2); }
+	| namespace_name COLONCOLON									{ $$ = (TreeNode *)alacnary(NESTED_NAME_SPECIFIERr4, 2, $1, $2); }
+	;
+
+postfix_expression:
+	primary_expression												{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr1, 1, $1); }
+	| postfix_expression '[' expression ']'					{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr2, 2, $1, $3); }
+	| postfix_expression '(' expression_list_opt ')'		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr3, 2, $1, $3); }
+	| postfix_expression '.' TEMPLATE COLONCOLON id_expression
+																			{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr4, 3, $1, $3, $4); }
+	| postfix_expression '.' TEMPLATE id_expression			{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr5, 3, $1, $3, $4); }
+	| postfix_expression '.' COLONCOLON id_expression		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr6, 3, $1, $3, $4); }
+	| postfix_expression '.' id_expression						{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr7, 2, $1, $3); }
+	| postfix_expression ARROW TEMPLATE COLONCOLON id_expression
+																			{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr8, 5, $1, $2, $3, $4, $5); }
+	| postfix_expression ARROW TEMPLATE id_expression		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr9, 4, $1, $2, $3, $4); }
+	| postfix_expression ARROW COLONCOLON id_expression	{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr10, 4, $1, $2, $3, $4); }
+	| postfix_expression ARROW id_expression					{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr11, 3, $1, $2, $3); }
+	| postfix_expression PLUSPLUS									{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr12, 2, $1, $2); }
+	| postfix_expression MINUSMINUS								{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr13, 2, $1, $2); }
+	| DYNAMIC_CAST '<' type_id '>' '(' expression ')'		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr14, 3, $1, $3, $6); }
+	| STATIC_CAST '<' type_id '>' '(' expression ')'		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr15, 3, $1, $3, $6); }
+	| REINTERPRET_CAST '<' type_id '>' '(' expression ')'	{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr16, 3, $1, $3, $6); }
+	| CONST_CAST '<' type_id '>' '(' expression ')'			{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr17, 3, $1, $3, $6); }
+	| TYPEID '(' expression ')'									{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr18, 2, $1, $3); }
+	| TYPEID '(' type_id ')'										{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr19, 2, $1, $3); }
+	;
+				*/
+				
+			case UNARY_EXPRESSIONr1 :
+				node->type = node->u.n.child[0]->type;
+				break;
+			case UNARY_EXPRESSIONr2 :
+				node->type = node->u.n.child[1]->type;
+				break;
+			case UNARY_EXPRESSIONr3 :
+				node->type = node->u.n.child[1]->type;
+				break;
+			case UNARY_EXPRESSIONr4 :
+				//pointer//
+				/*node->type = node->u.n.child[1]->type;*/
+				break;
+			case UNARY_EXPRESSIONr5 :
+				//&//
+				/*node->type = node->u.n.child[1]->type;*/
+				break;
+			case UNARY_EXPRESSIONr6 :
+				node->type = node->u.n.child[1]->type;
+				break;
+			case UNARY_EXPRESSIONr7 :
+				node->type = getType(INT_TYPE);
+				break;
+			case UNARY_EXPRESSIONr8 :
+				node->type = getType(INT_TYPE);
+				break;
+			case UNARY_EXPRESSIONr9 :
+				node->type = node->u.n.child[1]->type;
+				break;
+			case UNARY_EXPRESSIONr10 :
+				//NOT SHURE YET//
+				/*node->type = node->u.n.child[1]->type;*/
+				break;
+
+/* SKIPPED UNARY_OPERATOR */
+				
+				
+/*
+new_expression:
+	  NEW new_placement_opt new_type_id new_initializer_opt
+																			{ $$ = (TreeNode *)alacnary(NEW_EXPRESSIONr1, 4, $1, $2, $3, $4); }
+	| COLONCOLON NEW new_placement_opt new_type_id new_initializer_opt
+																			{ $$ = (TreeNode *)alacnary(NEW_EXPRESSIONr2, 5, $1, $2, $3, $4, $5); }
+	| NEW new_placement_opt '(' type_id ')' new_initializer_opt
+																			{ $$ = (TreeNode *)alacnary(NEW_EXPRESSIONr3, 4, $1, $2, $4, $6); }
+	| COLONCOLON NEW new_placement_opt '(' type_id ')' new_initializer_opt
+																			{ $$ = (TreeNode *)alacnary(NEW_EXPRESSIONr4, 5, $1, $2, $3, $5, $7); }
+	;
+
+new_placement:
+	'(' expression_list ')'											{ $$ = (TreeNode *)alacnary(NEW_PLACEMENTr1, 1, $2); }
+	;
+
+new_type_id:
+	type_specifier_seq new_declarator_opt						{ $$ = (TreeNode *)alacnary(NEW_TYPE_IDr1, 2, $1, $2); }
+	;
+
+new_declarator:
+	ptr_operator new_declarator_opt								{ $$ = (TreeNode *)alacnary(NEW_DECLARATORr1, 2, $1, $2); }
+	| direct_new_declarator											{ $$ = (TreeNode *)alacnary(NEW_DECLARATORr2, 1, $1); }
+	;
+
+direct_new_declarator:
+	'[' expression ']'												{ $$ = (TreeNode *)alacnary(DIRECT_NEW_DECLARATORr1, 1, $2); }
+	| direct_new_declarator '[' constant_expression ']'	{ $$ = (TreeNode *)alacnary(DIRECT_NEW_DECLARATORr2, 2, $1, $3); }
+	;
+
+new_initializer:
+	'(' expression_list_opt ')'									{ $$ = (TreeNode *)alacnary(NEW_INITIALIZERr1, 1, $2); }
+	;
+
+delete_expression:
+	DELETE cast_expression											{ $$ = (TreeNode *)alacnary(DELETE_EXPRESSIONr1, 2, $1, $2); }
+	| COLONCOLON DELETE cast_expression							{ $$ = (TreeNode *)alacnary(DELETE_EXPRESSIONr2, 3, $1, $2, $3); }
+	| DELETE '[' ']' cast_expression								{ $$ = (TreeNode *)alacnary(DELETE_EXPRESSIONr3, 2, $1, $4); }
+	| COLONCOLON DELETE '[' ']' cast_expression				{ $$ = (TreeNode *)alacnary(DELETE_EXPRESSIONr4, 3, $1, $2, $5); }
+	;
+
+cast_expression:
+	unary_expression													{ $$ = (TreeNode *)alacnary(CAST_EXPRESSIONr1, 1, $1); }
+	| '(' type_id ')' cast_expression							{ $$ = (TreeNode *)alacnary(CAST_EXPRESSIONr2, 2, $2, $4); }
+	;
+
+pm_expression:
+	cast_expression													{ $$ = (TreeNode *)alacnary(PM_EXPRESSIONr1, 1, $1); }
+	| pm_expression DOTSTAR cast_expression					{ $$ = (TreeNode *)alacnary(PM_EXPRESSIONr2, 3, $1, $2, $3); }
+	| pm_expression ARROWSTAR cast_expression					{ $$ =(TreeNode *)alacnary(PM_EXPRESSIONr3, 3, $1, $2, $3); }
+	;
+
+multiplicative_expression:
+	pm_expression														{ $$ = (TreeNode *)alacnary(MULTIPLICATIVE_EXPRESSIONr1, 1, $1); }
+	| multiplicative_expression '*' pm_expression			{ $$ = (TreeNode *)alacnary(MULTIPLICATIVE_EXPRESSIONr2, 2, $1, $3); }
+	| multiplicative_expression '/' pm_expression			{ $$ = (TreeNode *)alacnary(MULTIPLICATIVE_EXPRESSIONr3, 2, $1, $3); }
+	| multiplicative_expression '%' pm_expression			{ $$ = (TreeNode *)alacnary(MULTIPLICATIVE_EXPRESSIONr4, 2, $1, $3); }
+	;
+
+additive_expression:
+	multiplicative_expression										{ $$ = (TreeNode *)alacnary(ADDITIVE_EXPRESSIONr1, 1, $1); }
+	| additive_expression '+' multiplicative_expression	{ $$ = (TreeNode *)alacnary(ADDITIVE_EXPRESSIONr2, 2, $1, $3); }
+	| additive_expression '-' multiplicative_expression	{ $$ = (TreeNode *)alacnary(ADDITIVE_EXPRESSIONr3, 2, $1, $3); }
+	;
+
+shift_expression:
+	additive_expression												{ $$ = (TreeNode *)alacnary(SHIFT_EXPRESSIONr1, 1, $1); }
+	| shift_expression SL additive_expression					{ $$ = (TreeNode *)alacnary(SHIFT_EXPRESSIONr2, 3, $1, $2, $3); }
+	| shift_expression SR additive_expression					{ $$ = (TreeNode *)alacnary(SHIFT_EXPRESSIONr3, 3, $1, $2, $3); }
+	;
+
+relational_expression:
+	shift_expression													{ $$ = (TreeNode *)alacnary(RELATIONAL_EXPRESSIONr1, 1, $1); }
+	| relational_expression '<' shift_expression				{ $$ = (TreeNode *)alacnary(RELATIONAL_EXPRESSIONr2, 2, $1, $3); }
+	| relational_expression '>' shift_expression				{ $$ = (TreeNode *)alacnary(RELATIONAL_EXPRESSIONr3, 2, $1, $3); }
+	| relational_expression LTEQ shift_expression			{ $$ = (TreeNode *)alacnary(RELATIONAL_EXPRESSIONr4, 3, $1, $2, $3); }
+	| relational_expression GTEQ shift_expression			{ $$ = (TreeNode *)alacnary(RELATIONAL_EXPRESSIONr5, 3, $1, $2, $3); }
+	;
+
+equality_expression:
+	relational_expression											{ $$ = (TreeNode *)alacnary(EQUALITY_EXPRESSIONr1, 1, $1); }
+	| equality_expression EQ relational_expression			{ $$ = (TreeNode *)alacnary(EQUALITY_EXPRESSIONr2, 3, $1, $2, $3); }
+	| equality_expression NOTEQ relational_expression		{ $$ = (TreeNode *)alacnary(EQUALITY_EXPRESSIONr3, 1, $1, $2, $3); }
+	;
+
+and_expression:
+	equality_expression												{ $$ = (TreeNode *)alacnary(AND_EXPRESSIONr1, 1, $1); }
+	| and_expression '&' equality_expression					{ $$ = (TreeNode *)alacnary(AND_EXPRESSIONr2, 2, $1, $3); }
+	;
+
+exclusive_or_expression:
+	and_expression														{ $$ = (TreeNode *)alacnary(EXCLUSIVE_OR_EXPRESSIONr1, 1, $1); }
+	| exclusive_or_expression '^' and_expression				{ $$ = (TreeNode *)alacnary(EXCLUSIVE_OR_EXPRESSIONr2, 2, $1, $3); }
+	;
+
+inclusive_or_expression:
+	exclusive_or_expression											{ $$ = (TreeNode *)alacnary(INCLUSIVE_OR_EXPRESSIONr1, 1, $1); }
+	| inclusive_or_expression '|' exclusive_or_expression	{ $$ = (TreeNode *)alacnary(INCLUSIVE_OR_EXPRESSIONr2, 2, $1, $3); }
+	;
+
+logical_and_expression:
+	inclusive_or_expression											{ $$ = (TreeNode *)alacnary(LOGICAL_AND_EXPRESSIONr1, 1, $1); }
+	| logical_and_expression ANDAND inclusive_or_expression
+																			{ $$ = (TreeNode *)alacnary(LOGICAL_AND_EXPRESSIONr1, 3, $1, $2, $3); }
+	;
+
+logical_or_expression:
+	logical_and_expression											{ $$ = (TreeNode *)alacnary(LOGICAL_OR_EXPRESSIONr1, 1, $1); }
+	| logical_or_expression OROR logical_and_expression	{ $$ = (TreeNode *)alacnary(LOGICAL_OR_EXPRESSIONr2, 3, $1, $2, $3); }
+	;
+
+conditional_expression:
+	logical_or_expression											{ $$ = (TreeNode *)alacnary(CONDITIONAL_EXPRESSIONr1, 1, $1); }
+	| logical_or_expression  '?' expression ':' assignment_expression
+																			{ $$ = (TreeNode *)alacnary(CONDITIONAL_EXPRESSIONr2, 3, $1, $3, $5); }
+	;
+
+assignment_expression:
+	conditional_expression											{ $$ = (TreeNode *)alacnary(ASSIGNMENT_EXPRESSIONr1, 1, $1); }
+	| logical_or_expression assignment_operator assignment_expression
+																			{ $$ = (TreeNode *)alacnary(ASSIGNMENT_EXPRESSIONr2, 3, $1, $2, $3); }
+	| throw_expression												{ $$ = (TreeNode *)alacnary(ASSIGNMENT_EXPRESSIONr3, 1, $1); }
+	;
+*/
+/***************************************************************/
 			case DECL_SPECIFIER_SEQr1:
 				node->type = node->u.n.child[0]->type;
 				break;
