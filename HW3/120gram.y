@@ -73,6 +73,7 @@ ErrorMessage *e_message;
 TreeNode *root;
 extern int exitStatus;
 SymbolTable *globalSymbolTable;
+SymbolTable *currentSymbolTable;
 
 %}
 
@@ -759,9 +760,6 @@ declarator:
 	;
 
 direct_declarator:
-
-
-
 	declarator_id														{ $$ = (TreeNode *)alacnary(DIRECT_DECLARATORr1, 1, $1); }
 	| direct_declarator '('parameter_declaration_clause ')' cv_qualifier_seq exception_specification
 																			{ $$ = (TreeNode *)alacnary(DIRECT_DECLARATORr2, 4, $1, $3, $5, $6); }
@@ -1400,6 +1398,7 @@ int main(int argc, char **argv){
 			switch(rv){
 				case 0 :
 					globalSymbolTable = (SymbolTable *)createGlobalSymbolTable(SYMBOL_TABLE_SIZE);
+					currentSymbolTable = globalSymbolTable;
 					buildTypes(root);
 					printTree(root, 0);
 					break;

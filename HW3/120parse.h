@@ -5,6 +5,7 @@
  * 120parse.h 
  */
 
+
 /* prototypes */
 char *humanreadable(int);
 void printTree(TreeNode *, int);
@@ -13,4 +14,6 @@ TreeNode *alacnary(int, int,...);
 NType *getType(int);
 SymbolTable *createSymbolTable(SymbolTable, int);
 SymbolTable *createGlobalSymbolTable(int);
-void buildTypes(TreeNode *);
+int hashSymbol(NType *, int);
+int inSymbolTable(SymbolTable *, NType *);
+void addToSymbolTable(SymbolTable *, NType *);

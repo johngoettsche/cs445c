@@ -15,10 +15,13 @@ Memory Allocation Error
 unable to allocate memory.
 50020
 Token Not Supported
-is not supported in 120++
+is not supported in 120++.
 50021
 Template Error
-Templates are not supported in 120++
+Templates are not supported in 120++.
 50022
 Syntax Error
 Improper Syntax
+50023
+Symbol Error
+already defined.

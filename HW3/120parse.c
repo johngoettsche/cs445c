@@ -4,6 +4,7 @@
  *
  * 120parse.c 
  */
+ 
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,9 +12,12 @@
 #include <stdarg.h>
 
 #include "sdef.h"
+#include "errortab.h"
 #include "parsedef.h"
 #include "types.h"
 #include "120gram.h"
+
+extern SymbolTable *currentSymbolTable;
 
 char *humanreadable(int ncode){
 	if(ncode >= 1000)ncode = (int)(ncode / 100) * 100;
@@ -298,7 +302,9 @@ void printTree(TreeNode *t, int depth){
 	char *text;
 	int i;
 	if(t->symbol >= 1000){
-		printf("%*s%s: %d - %d\n", depth*2, " ", humanreadable(t->u.n.rule), t->u.n.children, t->type->base_type);
+		printf("%*s%s: %d", depth*2, " ", humanreadable(t->u.n.rule), t->u.n.children);
+		if(t->type->label != NULL) printf(" %s ", t->type->label);
+		printf(" - %d\n", t->type->base_type);
 		if(t->u.n.children > 0)
 			for(i=0; i<t->u.n.children; i++)
 				printTree(t->u.n.child[i], depth+1);
@@ -344,34 +350,66 @@ SymbolTable *createSymbolTable(SymbolTable *parent, int size){
 }
 
 SymbolTable *createGlobalSymbolTable(int size){
+	int i;
 	SymbolTable *symbolTable;
 	if((symbolTable = (SymbolTable *)calloc(1, sizeof(SymbolTable))) == NULL) memoryError();
 	symbolTable->size = size;
 	if((symbolTable->bucket = calloc(size, sizeof(SymbolTableEntry))) == NULL) memoryError();
+	printf("xx\n");
+	for(i = 0; i < size; i++){
+		symbolTable->bucket[i] = NULL;
+	}
+	printf("--\n");
 	return symbolTable;
 }
 
-int hashSymbol(Symbol *symbol){
+int hashSymbol(NType *symbol, int size){
+printf("\n%d\n", size);
 	int i;
 	int sum = 0;
+	printf("%s", symbol->label);
 	for(i = 0; i < strlen(symbol->label); i++){
-		sum += symbol[i];
+		sum += symbol->label[i];
 	}
-	return sum % SYMBOL_TABLE_SIZE;
+	printf("b");
+	return sum % size;
 }
 
-int inSymbolTable(SymbolTable *symbolTable, Symbol *symbol){
-	
+int inSymbolTable(SymbolTable *symbolTable, NType *symbol){
+	int hashvalue = hashSymbol(symbol, symbolTable->size);
+	if(symbolTable->bucket[hashvalue]->symbol == NULL) return 0;
+	SymbolTableEntry *current = symbolTable->bucket[hashvalue];
+	while(current != NULL){
+		if(strcmp(current->symbol->label, symbol->label) == 0) return 1;
+		current = current->next;
+	}
+	return 0;
 }
 
-void addToSymbolTable(SymbolTable *symbolTable, Symbol *symbol){
-	SymbolTableEntry newEntry;
-	int hashvalue = hash(symbol);
-	if(symbolTable->bucket[hashvalue]->symbol == NULL)symbolTable->bucket[hashvalue]->symbol = symbol;
+void addToSymbolTable(SymbolTable *symbolTable, NType *symbol){
+printf("a");
+	SymbolTableEntry *newEntry;
+	if((newEntry = (SymbolTableEntry *)calloc(1, sizeof(SymbolTableEntry))) == NULL) memoryError();
+	newEntry->symbol = symbol;
+	int hashvalue = hashSymbol(symbol, symbolTable->size);
+printf("b");
+	if(symbolTable->bucket[hashvalue] == NULL){
+		printf("C");
+		symbolTable->bucket[hashvalue] = newEntry;
+	}
 	else {
-		
-		if((newEntry = (SymbolTableEntry *)calloc(1, sizeof(SymbolTableEntry))) == NULL) memoryError();
-		
+		printf("c");
+		if(inSymbolTable(symbolTable, symbol) == 0){
+			printf("d");
+			newEntry->next = symbolTable->bucket[hashvalue];
+			symbolTable->bucket[hashvalue] = newEntry;
+			printf("g");
+		}else{
+			/* symbol used */
+			printf("h");
+			getErrorMessage(ER_USED_SYMBOL_LABEL);
+			yyerror(symbol->label);
+		}
 	}
 }
 
@@ -383,8 +421,10 @@ void buildTypes(TreeNode *node){
 		}
 		switch(node->u.n.rule){
 			case IDENTIFIERr1 :
-				node->type = node->u.n.child[0]->type;
-				/* ADD TO SYMBOL TABLE */
+				node->type = getType(UNKNOWN_TYPE);
+				node->type->label = node->u.n.child[0]->u.t.token->text;
+				node->u.n.child[0]->type = node->type;
+				/* ADD TO SYMBOL TABLE ??? */
 				break;
 				
 			case LITERALr1 :
@@ -773,14 +813,19 @@ assignment_expression:
 			case FUNCTION_DEFINITIONr1:
 				node->type = getType(FUNC_TYPE);
 				/* CREATE SCOPE */
-				node->type->u.func.retType = node->u.n.child[0]->type;
+				node->type->u.func.retType = getType(VOID_TYPE);
+				node->u.n.child[1]->type = node->u.n.child[0]->type;
 				//node->type.u.g.label = node->u.n.child[0]->type->u.dec**.label;
 				//node->type->u.f.args = node->u.n.child[1]->type->u.ini**.label;
 				break;	
 			case FUNCTION_DEFINITIONr2:
 				node->type = getType(FUNC_TYPE);
-				/* CREATE SCOPE */
 				node->type->u.func.retType = node->u.n.child[0]->type;
+				node->u.n.child[1]->type->base_type = node->u.n.child[0]->type->base_type;
+		printf("\n*****************\n");
+				addToSymbolTable(currentSymbolTable, node->u.n.child[1]->type);
+		printf("%s\n", node->u.n.child[1]->type->label);
+		printf("*****************\n");
 				//node->type.u.g.label = node->u.n.child[1]->type->u.dec**.label;
 				//node->type->u.f.args = node->u.n.child[2]->type->u.ini**.label;
 				//child 3 is func body
@@ -799,11 +844,70 @@ assignment_expression:
 				//node->type.u.g.label = node->u.n.child[1]->type->u.dec**.label;
 				//node->type->u.f.args = node->u.n.child[2]->type->u.ini**.label;
 				break;
-	/*		
-			
-	| declarator function_try_block								{ $$ = (TreeNode *)alacnary(FUNCTION_DEFINITIONr3, 2, $1, $2); }
-	| decl_specifier_seq declarator function_try_block		{ $$ = (TreeNode *)alacnary(FUNCTION_DEFINITIONr4, 3, $1, $2, $3); }
-	;*/
+				
+			case DECLARATORr1:
+				node->type = node->u.n.child[0]->type;
+				printf("%s\n", node->u.n.child[0]->type->label);
+				break;
+			case DECLARATORr2:
+				node->type = getType(POINTER_TYPE);
+				node->type->u.ptr = node->u.n.child[1]->type;
+/*
+declarator:
+	direct_declarator													{ $$ = (TreeNode *)alacnary(DECLARATORr1, 1, $1); }
+	| ptr_operator declarator										{ $$ = (TreeNode *)alacnary(DECLARATORr2, 2, $1, $2); }
+	;
+*/
+				
+			case DIRECT_DECLARATORr1:
+				node->type = node->u.n.child[0]->type;
+				break;
+			case DIRECT_DECLARATORr2:
+				node->type = node->u.n.child[0]->type;
+				break;
+			case DIRECT_DECLARATORr3:
+				node->type = node->u.n.child[0]->type;
+				break;
+			case DIRECT_DECLARATORr4:
+				node->type = node->u.n.child[0]->type;
+				break;
+			case DIRECT_DECLARATORr5:
+				node->type = node->u.n.child[0]->type;
+				break;
+			case DIRECT_DECLARATORr6:
+			/*????????*/
+				node->type = node->u.n.child[0]->type;
+				break;
+			case DIRECT_DECLARATORr7:
+			/*????????*/
+				node->type = node->u.n.child[2]->type;
+				break;
+			case DIRECT_DECLARATORr8:
+			/*????????*/
+				node->type = node->u.n.child[0]->type;
+				break;
+			case DIRECT_DECLARATORr9:
+			/*????????*/
+				node->type = node->u.n.child[0]->type;
+				break;
+			case DIRECT_DECLARATORr10:
+				node->type = node->u.n.child[1]->type;
+				break;
+				
+			case DECLARATOR_IDr1:
+				node->type = node->u.n.child[0]->type;
+				break;
+			case DECLARATOR_IDr2:
+				node->type = node->u.n.child[1]->type;
+				break;
+			case DECLARATOR_IDr3:
+			/*????????*/
+				node->type = node->u.n.child[2]->type;
+				break;
+			case DECLARATOR_IDr4:
+			/*????????*/
+				node->type = node->u.n.child[1]->type;
+				break;
 
 			default:
 				node->type = getType(UNKNOWN_TYPE);

@@ -34,34 +34,29 @@ struct TypeStack{
 
 typedef struct Field {			/* members (fields) of structs */
    char *name;
-   struct ctype *elemtype;
+   struct NType *elemtype;
 }Field;
 
 typedef struct NType {
-   /*
-    * Integer code that says what kind of type this is.
-    * Includes all primitive types: 1 = int, 2=float,
-    * Also includes codes for compound types that then also
-    * hold type information in a supporting union...
-    * 7 = array, 8 = struct, 9 = pointer etc. */
    int base_type;
+	char *label;
    union {
       struct array {
          int size;
 			struct NType *elemtype; 
       } arry;
       struct struc {		
-         char *label;
+         //char *label;
 			int nfields;
          Field **f;
 		} struc;
 		struct clas { 
-			char *label;
+			//char *label;
 			int nfields;
 			Field **f;
 		} clas;
 		struct func {
-			char *label;
+			//char *label;
 			struct NType *retType;
 			struct NType *args;
 		} func;
@@ -69,7 +64,7 @@ typedef struct NType {
 			int nelems;
 			struct NType **elems;
 		} touple;
-      struct NType *p;		/* pointer type, points at another type */
+      struct NType *ptr;		/* pointer type, points at another type */
    } u;
 }NType;
 
@@ -88,28 +83,9 @@ typedef struct TreeNode {
    } u;
 } TreeNode;
 
-typedef struct Symbol{
-	int type;
-	char *label;
-	union{
-		struct IntegerType {
-			int value;
-		}intgr;
-		struct CharType {
-			char value;
-		}chr;
-		struct FloatType {
-			float value;
-		}flt;
-		struct StringType {
-			char *value;
-		}str;
-	}u;
-}Symbol;
-
 typedef struct SymbolTableEntry{
-	Symbol *symbol;
-	NType *type;
+	//Symbol *symbol;
+	NType *symbol;
 	struct SymbolTableEntry *next;
 }SymbolTableEntry;
 
