@@ -47,15 +47,15 @@ typedef struct NType {
    int base_type;
    union {
       struct array {
-         int size; /* allow for missing size, e.g. -1 */
-			struct NType *elemtype; /* pointer to c_type for elements in array,	follow it to find its base type, etc.*/
+         int size;
+			struct NType *elemtype; 
       } arry;
-      struct struc {		/* structs */
+      struct struc {		
          char *label;
 			int nfields;
          Field **f;
 		} struc;
-		struct clas {
+		struct clas { 
 			char *label;
 			int nfields;
 			Field **f;
@@ -69,7 +69,7 @@ typedef struct NType {
 			int nelems;
 			struct NType **elems;
 		} touple;
-      struct ctype *p;		/* pointer type, points at another type */
+      struct NType *p;		/* pointer type, points at another type */
    } u;
 }NType;
 
@@ -91,23 +91,32 @@ typedef struct TreeNode {
 typedef struct Symbol{
 	int type;
 	char *label;
-	/*union{
+	union{
 		struct IntegerType {
 			int value;
 		}intgr;
-	}u;*/
+		struct CharType {
+			char value;
+		}chr;
+		struct FloatType {
+			float value;
+		}flt;
+		struct StringType {
+			char *value;
+		}str;
+	}u;
 }Symbol;
 
 typedef struct SymbolTableEntry{
-	Symbol *s;
-	//Type *type;
+	Symbol *symbol;
+	NType *type;
 	struct SymbolTableEntry *next;
 }SymbolTableEntry;
 
 typedef struct SymbolTable{
 	int size;
 	int entries;
-	//Type *scope;
+	NType *scope;
 	struct SymbolTable *parent;
 	SymbolTableEntry **bucket;
 }SymbolTable;

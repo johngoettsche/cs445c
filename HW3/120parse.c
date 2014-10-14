@@ -351,6 +351,30 @@ SymbolTable *createGlobalSymbolTable(int size){
 	return symbolTable;
 }
 
+int hashSymbol(Symbol *symbol){
+	int i;
+	int sum = 0;
+	for(i = 0; i < strlen(symbol->label); i++){
+		sum += symbol[i];
+	}
+	return sum % SYMBOL_TABLE_SIZE;
+}
+
+int inSymbolTable(SymbolTable *symbolTable, Symbol *symbol){
+	
+}
+
+void addToSymbolTable(SymbolTable *symbolTable, Symbol *symbol){
+	SymbolTableEntry newEntry;
+	int hashvalue = hash(symbol);
+	if(symbolTable->bucket[hashvalue]->symbol == NULL)symbolTable->bucket[hashvalue]->symbol = symbol;
+	else {
+		
+		if((newEntry = (SymbolTableEntry *)calloc(1, sizeof(SymbolTableEntry))) == NULL) memoryError();
+		
+	}
+}
+
 void buildTypes(TreeNode *node){
 	if(node != NULL){
 		int n;
