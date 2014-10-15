@@ -355,23 +355,18 @@ SymbolTable *createGlobalSymbolTable(int size){
 	if((symbolTable = (SymbolTable *)calloc(1, sizeof(SymbolTable))) == NULL) memoryError();
 	symbolTable->size = size;
 	if((symbolTable->bucket = calloc(size, sizeof(SymbolTableEntry))) == NULL) memoryError();
-	printf("xx\n");
 	for(i = 0; i < size; i++){
 		symbolTable->bucket[i] = NULL;
 	}
-	printf("--\n");
 	return symbolTable;
 }
 
 int hashSymbol(NType *symbol, int size){
-printf("\n%d\n", size);
 	int i;
 	int sum = 0;
-	printf("%s", symbol->label);
 	for(i = 0; i < strlen(symbol->label); i++){
 		sum += symbol->label[i];
 	}
-	printf("b");
 	return sum % size;
 }
 
@@ -387,30 +382,32 @@ int inSymbolTable(SymbolTable *symbolTable, NType *symbol){
 }
 
 void addToSymbolTable(SymbolTable *symbolTable, NType *symbol){
-printf("a");
 	SymbolTableEntry *newEntry;
 	if((newEntry = (SymbolTableEntry *)calloc(1, sizeof(SymbolTableEntry))) == NULL) memoryError();
 	newEntry->symbol = symbol;
 	int hashvalue = hashSymbol(symbol, symbolTable->size);
-printf("b");
 	if(symbolTable->bucket[hashvalue] == NULL){
-		printf("C");
 		symbolTable->bucket[hashvalue] = newEntry;
 	}
 	else {
-		printf("c");
 		if(inSymbolTable(symbolTable, symbol) == 0){
-			printf("d");
 			newEntry->next = symbolTable->bucket[hashvalue];
 			symbolTable->bucket[hashvalue] = newEntry;
-			printf("g");
 		}else{
 			/* symbol used */
-			printf("h");
 			getErrorMessage(ER_USED_SYMBOL_LABEL);
 			yyerror(symbol->label);
 		}
 	}
+}
+
+NType *getOperatorType(int opr, NType *op1, NType *op2){
+	if(op1->base_type == op2->base_type)return getType(op1->base_type);
+		switch(op1->base_type){
+			case INT_TYPE :
+			
+				break;
+		}
 }
 
 void buildTypes(TreeNode *node){
@@ -822,10 +819,7 @@ assignment_expression:
 				node->type = getType(FUNC_TYPE);
 				node->type->u.func.retType = node->u.n.child[0]->type;
 				node->u.n.child[1]->type->base_type = node->u.n.child[0]->type->base_type;
-		printf("\n*****************\n");
 				addToSymbolTable(currentSymbolTable, node->u.n.child[1]->type);
-		printf("%s\n", node->u.n.child[1]->type->label);
-		printf("*****************\n");
 				//node->type.u.g.label = node->u.n.child[1]->type->u.dec**.label;
 				//node->type->u.f.args = node->u.n.child[2]->type->u.ini**.label;
 				//child 3 is func body
@@ -847,7 +841,6 @@ assignment_expression:
 				
 			case DECLARATORr1:
 				node->type = node->u.n.child[0]->type;
-				printf("%s\n", node->u.n.child[0]->type->label);
 				break;
 			case DECLARATORr2:
 				node->type = getType(POINTER_TYPE);
