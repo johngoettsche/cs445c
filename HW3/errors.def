@@ -17,7 +17,7 @@ unable to allocate memory.
 Token Not Supported
 is not supported in 120++.
 50021
-Template Error
+Version Error
 Templates are not supported in 120++.
 50022
 Syntax Error
@@ -25,3 +25,27 @@ Improper Syntax
 50023
 Symbol Error
 already defined.
+50024
+Version Error
+Static is not supported in 120++.
+50025
+Version Error
+Extern is not supported in 120++.
+50026
+Version Error
+Static is not supported in 120++.
+50027
+Version Error
+Auto is not supported in 120++.
+50028
+Version Error
+Register is not supported in 120++.
+50029
+Version Error
+Inline is not supported in 120++.
+50030
+Version Error
+Virtual is not supported in 120++.
+50031
+Version Error
+Explicit is not supported in 120++.

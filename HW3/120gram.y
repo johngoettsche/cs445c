@@ -247,7 +247,11 @@ unqualified_id:
 
 qualified_id:
 	nested_name_specifier unqualified_id						{ $$ = (TreeNode *)alacnary(QUALIFIED_IDr1, 2, $1, $2); }
-	| nested_name_specifier TEMPLATE unqualified_id			{ $$ = (TreeNode *)alacnary(QUALIFIED_IDr1, 3, $1, $2, $3); }
+	| nested_name_specifier TEMPLATE unqualified_id			{ exitStatus = 3;
+																				getErrorMessage(ER_TEMPLATE);
+																				yyerror(NULL);
+																				$$ = NULL;
+																			/* $$ = (TreeNode *)alacnary(QUALIFIED_IDr1, 3, $1, $2, $3);*/ }
 	;
 
 nested_name_specifier:
@@ -262,19 +266,35 @@ postfix_expression:
 	| postfix_expression '[' expression ']'					{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr2, 2, $1, $3); }
 	| postfix_expression '(' expression_list_opt ')'		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr3, 2, $1, $3); }
 	| postfix_expression '.' TEMPLATE COLONCOLON id_expression
-																			{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr4, 3, $1, $3, $4); }
-	| postfix_expression '.' TEMPLATE id_expression			{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr5, 3, $1, $3, $4); }
+																			{ exitStatus = 3;
+																				getErrorMessage(ER_TEMPLATE);
+																				yyerror(NULL);
+																				$$ = NULL;
+																			/*$$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr4, 3, $1, $3, $4);*/ }
+	| postfix_expression '.' TEMPLATE id_expression			{ exitStatus = 3;
+																				getErrorMessage(ER_TEMPLATE);
+																				yyerror(NULL);
+																				$$ = NULL;
+																			/*$$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr5, 3, $1, $3, $4); */}
 	| postfix_expression '.' COLONCOLON id_expression		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr6, 3, $1, $3, $4); }
 	| postfix_expression '.' id_expression						{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr7, 2, $1, $3); }
 	| postfix_expression ARROW TEMPLATE COLONCOLON id_expression
 																			{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr8, 5, $1, $2, $3, $4, $5); }
-	| postfix_expression ARROW TEMPLATE id_expression		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr9, 4, $1, $2, $3, $4); }
+	| postfix_expression ARROW TEMPLATE id_expression		{ exitStatus = 3;
+																				getErrorMessage(ER_TEMPLATE);
+																				yyerror(NULL);
+																				$$ = NULL;
+																			/*$$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr9, 4, $1, $2, $3, $4); */}
 	| postfix_expression ARROW COLONCOLON id_expression	{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr10, 4, $1, $2, $3, $4); }
 	| postfix_expression ARROW id_expression					{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr11, 3, $1, $2, $3); }
 	| postfix_expression PLUSPLUS									{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr12, 2, $1, $2); }
 	| postfix_expression MINUSMINUS								{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr13, 2, $1, $2); }
 	| DYNAMIC_CAST '<' type_id '>' '(' expression ')'		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr14, 3, $1, $3, $6); }
-	| STATIC_CAST '<' type_id '>' '(' expression ')'		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr15, 3, $1, $3, $6); }
+	| STATIC_CAST '<' type_id '>' '(' expression ')'		{ exitStatus = 2;
+																				getErrorMessage(ER_STATIC);
+																				yyerror(NULL);
+																				$$ = NULL;
+																			/* $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr15, 3, $1, $3, $6); */}
 	| REINTERPRET_CAST '<' type_id '>' '(' expression ')'	{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr16, 3, $1, $3, $6); }
 	| CONST_CAST '<' type_id '>' '(' expression ')'			{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr17, 3, $1, $3, $6); }
 	| TYPEID '(' expression ')'									{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr18, 2, $1, $3); }
@@ -571,17 +591,44 @@ decl_specifier_seq:
 	;
 
 storage_class_specifier:
-	AUTO																	{ $$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr1, 1, $1); }
-	| REGISTER															{ $$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr2, 1, $1); }
-	| STATIC																{ $$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr3, 1, $1); }
-	| EXTERN																{ $$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr4, 1, $1); }
-	| MUTABLE															{ $$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr5, 1, $1); }
+	AUTO																	{ getErrorMessage(ER_AUTO);
+																				yyerror(NULL);
+																				$$ = NULL;
+																				/*$$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr1, 1, $1); */}
+	| REGISTER															{ getErrorMessage(ER_REGISTER);
+																				yyerror(NULL);
+																				$$ = NULL;
+																				/*$$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr2, 1, $1); */}
+	| STATIC																{ exitStatus = 3;
+																				getErrorMessage(ER_STATIC);
+																				yyerror(NULL);
+																				$$ = NULL;
+																				/*$$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr3, 1, $1); */}
+	| EXTERN																{ exitStatus = 3;
+																				getErrorMessage(ER_EXTERN);
+																				yyerror(NULL);
+																				$$ = NULL;
+																				/*$$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr4, 1, $1); */}
+	| MUTABLE															{ exitStatus = 3;
+																				getErrorMessage(ER_MUTABLE);
+																				yyerror(NULL);
+																				$$ = NULL;
+																				/*$$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr5, 1, $1); */}
 	;
 
 function_specifier:
-	INLINE																{ $$ = (TreeNode *)alacnary(FUNCTION_SPECIFIERr1, 1, $1); }
-	| VIRTUAL															{ $$ = (TreeNode *)alacnary(FUNCTION_SPECIFIERr2, 1, $1); }
-	| EXPLICIT															{ $$ = (TreeNode *)alacnary(FUNCTION_SPECIFIERr3, 1, $1); }
+	INLINE																{ getErrorMessage(ER_INLINE);
+																				yyerror(NULL);
+																				$$ = NULL;
+																				/*$$ = (TreeNode *)alacnary(FUNCTION_SPECIFIERr1, 1, $1); */}
+	| VIRTUAL															{ getErrorMessage(ER_VIRTUAL);
+																				yyerror(NULL);
+																				$$ = NULL;
+																				/*$$ = (TreeNode *)alacnary(FUNCTION_SPECIFIERr2, 1, $1); */}
+	| EXPLICIT															{ getErrorMessage(ER_EXPLICIT);
+																				yyerror(NULL);
+																				$$ = NULL;
+																				/*$$ = (TreeNode *)alacnary(FUNCTION_SPECIFIERr3, 1, $1); */}
 	;
 
 type_specifier:
@@ -751,7 +798,8 @@ init_declarator_list:
 	;
 
 init_declarator:
-	declarator initializer_opt										{ $$ = (TreeNode *)alacnary(INIT_DECLARATORr1, 1, $1); }
+	declarator initializer_opt										{ $$ = (TreeNode *)alacnary(INIT_DECLARATORr1, 1, $1);
+																				/*$$ = (TreeNode *)alacnary(INIT_DECLARATORr1, 2, $1, $2);*/ }
 	;
 
 declarator:
