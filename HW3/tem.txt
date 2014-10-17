@@ -1,0 +1,6 @@
+void passTypeBelowPointer(NType *parent, NType *child){
+	if(child->base_type == POINTER_TYPE){
+		passTypeBelowPointer(parent, child->u.ptr);
+	} else {
+		child->base_type = parent->base_type;
+}

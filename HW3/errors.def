@@ -49,3 +49,6 @@ Virtual is not supported in 120++.
 50031
 Version Error
 Explicit is not supported in 120++.
+50032
+Type Error
+Boolean type expected.
