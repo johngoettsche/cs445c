@@ -52,3 +52,6 @@ Explicit is not supported in 120++.
 50032
 Type Error
 Boolean type expected.
+50033
+Type Error
+Integer type expected.

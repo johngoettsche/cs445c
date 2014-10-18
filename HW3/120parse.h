@@ -11,7 +11,7 @@ char *humanreadable(int);
 void printTree(TreeNode *, int);
 char *humanreadable(int);
 TreeNode *alacnary(int, int,...);
-void pasTypeBelowPointer(NType *, NType *);
+void passTypeBelowPointer(NType *, NType *);
 NType *getType(int);
 SymbolTable *createSymbolTable(SymbolTable, int);
 SymbolTable *createGlobalSymbolTable(int);

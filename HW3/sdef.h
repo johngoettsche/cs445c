@@ -40,6 +40,7 @@ typedef struct Field {			/* members (fields) of structs */
 typedef struct NType {
    int base_type;
 	char *label;
+	struct NType *pub;
    union {
       struct array {
          int size;
@@ -58,7 +59,7 @@ typedef struct NType {
 		struct func {
 			//char *label;
 			struct NType *retType;
-			struct NType *args;
+			struct Field *args;
 		} func;
 		struct touple {
 			int nelems;

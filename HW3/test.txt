@@ -1,4 +1,3 @@
-class foo{
-	private :
-		int bar;
-};
+int foo(){
+	int numbers[2] = { 1, 2 };
+}

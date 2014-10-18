@@ -62,7 +62,7 @@
 //#include "symbol.h"
 #include "errors.h"
 
-#define SYMBOL_TABLE_SIZE 31
+//#define SYMBOL_TABLE_SIZE 31
 
 extern int lineno;
 int yydebug=1;
@@ -72,8 +72,8 @@ int errors;
 ErrorMessage *e_message;
 TreeNode *root;
 extern int exitStatus;
-SymbolTable *globalSymbolTable;
-SymbolTable *currentSymbolTable;
+//SymbolTable *globalSymbolTable;
+//SymbolTable *currentSymbolTable;
 
 %}
 
@@ -1445,10 +1445,12 @@ int main(int argc, char **argv){
 			rv = yyparse();
 			switch(rv){
 				case 0 :
-					globalSymbolTable = (SymbolTable *)createGlobalSymbolTable(SYMBOL_TABLE_SIZE);
-					currentSymbolTable = globalSymbolTable;
+					printf("parse successful\n");
+					//globalSymbolTable = (SymbolTable *)createGlobalSymbolTable(SYMBOL_TABLE_SIZE);
+					//currentSymbolTable = globalSymbolTable;
 					buildTypes(root);
 					printTree(root, 0);
+					makeSymbolTables(root);
 					break;
 				case 1 :
 					if(exitStatus < 2) exitStatus = 2;

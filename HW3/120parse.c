@@ -321,7 +321,10 @@ char *humanreadable(int ncode){
 		case TOUPLE_TYPE : name =  "touple" ; break;
 		case UNKNOWN_TYPE : name =  "UNKNOWN TYPE" ; break;
 		case PROGRAM_TYPE : name =  "program" ; break;
-		case NOT_DEFINED : name =  "NOT DEFINED" ; break;
+		case PRIVATE_TYPE : name =  "private" ; break;
+		case PROTECTED_TYPE : name = "protected" ; break;
+		case PUBLIC_TYPE : name = "public" ; break;
+		case MEMBER_TYPE : name = "member" ; break;
 
 		default : name =  "Not Found"; break;
 	}
@@ -460,11 +463,40 @@ void buildTypes(TreeNode *node){
 			buildTypes(node->u.n.child[n]);
 		}
 		switch(node->u.n.rule){
+			case TYPEDEF_NAMEr1 :
+				node->type = getType(UNKNOWN_TYPE);
+				node->type->label = node->u.n.child[0]->u.t.token->text;
+				node->u.n.child[0]->type = node->type;
+				break;
+				
+			case NAMESPACE_NAMEr1 :
+				node->type = getType(UNKNOWN_TYPE);
+				node->type->label = node->u.n.child[0]->u.t.token->text;
+				node->u.n.child[0]->type = node->type;
+				break;
+				
+			case ORIGINAL_NAMESPACE_NAMEr1 :
+				node->type = getType(UNKNOWN_TYPE);
+				node->type->label = node->u.n.child[0]->u.t.token->text;
+				node->u.n.child[0]->type = node->type;
+				break;
+				
+			case CLASS_NAMEr1 :
+				node->type = getType(UNKNOWN_TYPE);
+				node->type->label = node->u.n.child[0]->u.t.token->text;
+				node->u.n.child[0]->type = node->type;
+				break;
+				
+			case ENUM_NAMEr1 :
+				node->type = getType(UNKNOWN_TYPE);
+				node->type->label = node->u.n.child[0]->u.t.token->text;
+				node->u.n.child[0]->type = node->type;
+				break;
+				
 			case IDENTIFIERr1 :
 				node->type = getType(UNKNOWN_TYPE);
 				node->type->label = node->u.n.child[0]->u.t.token->text;
 				node->u.n.child[0]->type = node->type;
-				/* ADD TO SYMBOL TABLE ??? */
 				break;
 				
 			case LITERALr1 :
@@ -561,18 +593,18 @@ void buildTypes(TreeNode *node){
 			case POSTFIX_EXPRESSIONr1 :
 				node->type = node->u.n.child[0]->type;
 			case POSTFIX_EXPRESSIONr2 :
-				node->type = node->u.n.child[0]->type;
+				if(node->u.n.child[1]->type->base_type != INT_TYPE){
+					getErrorMessage();
+					yyerror(NULL);
+				}
+				node->type = getType(ARRAY_TYPE);
 			case POSTFIX_EXPRESSIONr3 :
-				node->type = node->u.n.child[0]->type;
-			case POSTFIX_EXPRESSIONr4 :
 				node->type = node->u.n.child[0]->type;
 			case POSTFIX_EXPRESSIONr5 :
 				node->type = node->u.n.child[0]->type;
 			case POSTFIX_EXPRESSIONr6 :
 				node->type = node->u.n.child[0]->type;
 			case POSTFIX_EXPRESSIONr7 :
-				node->type = node->u.n.child[0]->type;
-			case POSTFIX_EXPRESSIONr8 :
 				node->type = node->u.n.child[0]->type;
 			case POSTFIX_EXPRESSIONr9 :
 				node->type = node->u.n.child[0]->type;
@@ -1253,6 +1285,7 @@ linkage_specification:
 			case INIT_DECLARATORr1 :
 				node->type = node->u.n.child[0]->type;
 				break;
+				
 			case DECLARATORr1:
 				node->type = node->u.n.child[0]->type;
 				break;
@@ -1260,6 +1293,7 @@ linkage_specification:
 				node->type = getType(POINTER_TYPE);
 				node->type->u.ptr = node->u.n.child[1]->type;
 				break;
+				
 			case DIRECT_DECLARATORr1:
 				node->type = node->u.n.child[0]->type;
 				break;
@@ -1435,48 +1469,30 @@ parameter_declaration_clause:
 			case PARAMETER_DECLARATIONr3 :
 				node->type = node->u.n.child[0]->type;
 				passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
-				//node->u.n.child[1]->type->base_type = node->u.n.child[0]->type->base_type;
 				break;
 			case PARAMETER_DECLARATIONr4 :
 				node->type = node->u.n.child[0]->type;
 				passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
-				//node->u.n.child[1]->type->base_type = node->u.n.child[0]->type->base_type;
 				break;
 				
 			case FUNCTION_DEFINITIONr1:
 				node->type = getType(FUNC_TYPE);
-				/* CREATE SCOPE */
 				node->type->u.func.retType = getType(VOID_TYPE);
 				passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
-				//node->u.n.child[1]->type = node->u.n.child[0]->type;
-				//node->type.u.g.label = node->u.n.child[0]->type->u.dec**.label;
-				//node->type->u.f.args = node->u.n.child[1]->type->u.ini**.label;
 				break;	
 			case FUNCTION_DEFINITIONr2:
 				node->type = getType(FUNC_TYPE);
 				node->type->label = node->u.n.child[1]->type->label;
 				node->type->u.func.retType = node->u.n.child[0]->type;
 				passTypeBelowPointer(node->type, node->u.n.child[1]->type);
-				//node->u.n.child[1]->type->base_type = node->u.n.child[0]->type->base_type;
-				//node->type.u.g.label = node->u.n.child[1]->type->u.dec**.label;
-				//node->type->u.f.args = node->u.n.child[2]->type->u.ini**.label;
-				//child 3 is func body
 				break;
 			case FUNCTION_DEFINITIONr3:
 				node->type = getType(FUNC_TYPE);
-				/* CREATE SCOPE */
 				passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
-				//node->type->u.func.retType = node->u.n.child[0]->type;
-				//node->type.u.g.label = node->u.n.child[1]->type->u.dec**.label;
-				//node->type->u.f.args = node->u.n.child[2]->type->u.ini**.label;
 				break;
 			case FUNCTION_DEFINITIONr4:
 				node->type = getType(FUNC_TYPE);
-				/* CREATE SCOPE */
 				passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
-				//node->type->u.func.retType = node->u.n.child[0]->type;
-				//node->type.u.g.label = node->u.n.child[1]->type->u.dec**.label;
-				//node->type->u.f.args = node->u.n.child[2]->type->u.ini**.label;
 				break;
 				
 			case FUNCTION_BODYr1 :
@@ -1501,57 +1517,114 @@ initializer_list:
 
 /*----------------------------------------------------------------------
  * Classes.
- *----------------------------------------------------------------------
+ *----------------------------------------------------------------------*/
 
+			case CLASS_SPECIFIERr1 :
+				node->type = node->u.n.child[0]->type;
+				break;
+ /*
 class_specifier:
 	class_head '{' member_specification_opt '}'				{ $$ = (TreeNode *)alacnary(CLASS_SPECIFIERr1, 2, $1, $3); }
-	;
+	;*/
 
+			case CLASS_HEADr1 :
+				node->type = node->u.n.child[0]->type;
+				node->type->label = node->u.n.child[1]->type->label;
+				node->u.n.child[1]->type = node->u.n.child[0]->type;
+				break;
+			case CLASS_HEADr2 :
+				node->type = node->u.n.child[0]->type;
+				node->type->label = node->u.n.child[1]->type->label;
+				node->u.n.child[1]->type = node->u.n.child[0]->type;
+				break;
+			case CLASS_HEADr3 :
+				node->type = node->u.n.child[0]->type;
+				node->type->label = node->u.n.child[2]->type->label;
+				node->u.n.child[2]->type = node->u.n.child[0]->type;
+				break;
+			case CLASS_HEADr4 :
+				node->type = node->u.n.child[0]->type;
+				node->type->label = node->u.n.child[2]->type->label;
+				node->u.n.child[2]->type = node->u.n.child[0]->type;
+				break;
+	/*
 class_head:
 	class_key class_name												{ $$ = (TreeNode *)alacnary(CLASS_HEADr1, 2, $1, $2); }
 	| class_key class_name base_clause							{ $$ = (TreeNode *)alacnary(CLASS_HEADr2, 3, $1, $2, $3); }
 	| class_key nested_name_specifier class_name				{ $$ = (TreeNode *)alacnary(CLASS_HEADr3, 3, $1, $2, $3); }
 	| class_key nested_name_specifier class_name base_clause
 																			{ $$ = (TreeNode *)alacnary(CLASS_HEADr4, 4, $1, $2, $3, $4); }
-	;
-
-class_key:
-	CLASS																	{ $$ = (TreeNode *)alacnary(CLASS_KEYr1, 1, $1); }
-	| STRUCT																{ $$ = (TreeNode *)alacnary(CLASS_KEYr2, 1, $1); }
-	| UNION																{ $$ = (TreeNode *)alacnary(CLASS_KEYr3, 1, $1); }
-	;
-
+	;*/
+			case CLASS_KEYr1 :
+				node->type = getType(CLASS_TYPE);
+				node->u.n.child[0]->type = node->type;
+				break;
+			case CLASS_KEYr2 :
+				node->type = getType(STRUCT_TYPE);
+				node->u.n.child[0]->type = node->type;
+				break;
+			case CLASS_KEYr3 :
+				node->type = getType(UNION_TYPE);
+				node->u.n.child[0]->type = node->type;
+				break;
+				
+			case MEMBER_SPECIFICATIONr1 :
+				node->type = getType(MEMBER_TYPE);
+				//node->type->pub = node->u.n.child[0]->type;
+				break;
+			case MEMBER_SPECIFICATIONr2 :
+				node->type = getType(MEMBER_TYPE);
+				node->type->pub = node->u.n.child[0]->type;
+				break;
+/*
 member_specification:
 	member_declaration member_specification_opt				{ $$ = (TreeNode *)alacnary(MEMBER_SPECIFICATIONr1, 2, $1, $2); }
 	| access_specifier ':' member_specification_opt			{ $$ = (TreeNode *)alacnary(MEMBER_SPECIFICATIONr2, 2, $1, $3); }
-	;
+	;*/
+	
+			case MEMBER_DECLARATIONr1 :
+				node->type = node->u.n.child[0]->type;
+				passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
+				break;
+			case MEMBER_DECLARATIONr2 :
+				node->type = node->u.n.child[0]->type;
+				break;
+			case MEMBER_DECLARATIONr3 :
+				node->type = node->u.n.child[0]->type;
+				break;
+			case MEMBER_DECLARATIONr4 :
+				node->type = getType(NULL_TYPE);
+				break;
+			case MEMBER_DECLARATIONr5 :
+				node->type = node->u.n.child[0]->type;
+				break;
+			case MEMBER_DECLARATIONr6 :
+				node->type = node->u.n.child[0]->type;
+				break;
+			case MEMBER_DECLARATIONr7 :
+				node->type = node->u.n.child[0]->type;
+				break;
 
-member_declaration:
-	decl_specifier_seq member_declarator_list ';'			{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATIONr1, 2, $1, $2); }
-	| decl_specifier_seq ';'										{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATIONr2, 1, $1); }
-	| member_declarator_list ';'									{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATIONr3, 1, $1); }
-	| ';'																	{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATIONr4, 0); }
-	| function_definition SEMICOLON_opt							{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATIONr5, 2, $1, $2); }
-	| qualified_id ';'												{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATIONr6, 1, $1); }
-	| using_declaration												{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATIONr7, 1, $1); }
-	| template_declaration											{ exitStatus = 3;
-																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
-																				$$ = NULL;
-																				/*$$ = alacnary(MEMBER_DECLARATIONr8, 1, $1); }
-	;
+			case MEMBER_DECLARATOR_LISTr1 :
+				node->type = node->u.n.child[0]->type;
+				break;
+			case MEMBER_DECLARATOR_LISTr2 :
+				node->type = getType(TOUPLE_TYPE);
+				break;
 
-member_declarator_list:
-	member_declarator													{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATOR_LISTr1, 1, $1); }
-	| member_declarator_list ',' member_declarator			{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATOR_LISTr1, 2, $1, $3); }
-	;
-
-member_declarator:
-	declarator															{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATORr1, 1, $1); }
-	| declarator pure_specifier									{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATORr2, 2, $1, $2); }
-	| declarator constant_initializer							{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATORr3, 2, $1, $2); }
-	| identifier ':' constant_expression						{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATORr4, 2, $1, $3); }
-	;
+			case MEMBER_DECLARATORr1 :
+				
+				node->type = node->u.n.child[0]->type;
+				break;
+			case MEMBER_DECLARATORr2 :
+				node->type = node->u.n.child[0]->type;
+				break;
+			case MEMBER_DECLARATORr3 :
+				node->type = node->u.n.child[0]->type;
+				break;
+			case MEMBER_DECLARATORr4 :
+				node->type = node->u.n.child[0]->type;
+				break;
 
 /*
  * This rule need a hack for working around the ``= 0'' pure specifier.
@@ -1599,13 +1672,20 @@ base_specifier:
 																		{ $$ = (TreeNode *)alacnary(BASE_SPECIFIERr11, 4, $1, $2, $3, $4); }
 	| access_specifier nested_name_specifier_opt class_name
 																		{ $$ = (TreeNode *)alacnary(BASE_SPECIFIERr12, 3, $1, $2, $3); }
-	;
-
-access_specifier:
-	PRIVATE															{ $$ = (TreeNode *)alacnary(ACCESS_SPECIFIERr1, 1, $1); }
-	| PROTECTED														{ $$ = (TreeNode *)alacnary(ACCESS_SPECIFIERr2, 1, $1); }
-	| PUBLIC															{ $$ = (TreeNode *)alacnary(ACCESS_SPECIFIERr3, 1, $1); }
-	;
+	;*/
+	
+			case ACCESS_SPECIFIERr1 :
+				node->type = getType(PRIVATE_TYPE);
+				node->u.n.child[0]->type = node->type;
+				break;
+			case ACCESS_SPECIFIERr2 :
+				node->type = getType(PROTECTED_TYPE);
+				node->u.n.child[0]->type = node->type;
+				break;
+			case ACCESS_SPECIFIERr3 :
+				node->type = getType(PUBLIC_TYPE);
+				node->u.n.child[0]->type = node->type;
+				break;
 
 /*----------------------------------------------------------------------
  * Special member functions.
@@ -1831,11 +1911,15 @@ direct_abstract_declarator_opt:
 			case CTOR_INITIALIZER_OPTr2 :
 				node->type = node->u.n.child[0]->type;
 				break;
+				
+			case MEMBER_SPECIFICATION_OPTr1 :
+				node->type = getType(NULL_TYPE);
+				break;
+			case MEMBER_SPECIFICATION_OPTr2 :
+				node->type = node->u.n.child[0]->type;
+				node->type->pub = node->u.n.child[0]->type->pub;  
+				break;
 /*
-member_specification_opt:
-	/* epsilon 													{ $$ = (TreeNode *)alacnary(MEMBER_SPECIFICATION_OPTr1, 0); }
-	| member_specification										{ $$ = (TreeNode *)alacnary(MEMBER_SPECIFICATION_OPTr2, 1, $1); }
-	;
 
 conversion_declarator_opt:
 	/* epsilon 													{ $$ = (TreeNode *)alacnary(CONVERSION_DECLARATOR_OPTr1, 0); }
