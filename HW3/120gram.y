@@ -796,12 +796,12 @@ init_declarator_list:
 	init_declarator													{ $$ = (TreeNode *)alacnary(INIT_DECLARATOR_LISTr1, 1, $1); }
 	| init_declarator_list ',' init_declarator				{ $$ = (TreeNode *)alacnary(INIT_DECLARATOR_LISTr2, 2, $1, $3); }
 	;
-
+/********************************************************************************************************************/
 init_declarator:
-	declarator initializer_opt										{ $$ = (TreeNode *)alacnary(INIT_DECLARATORr1, 1, $1);
-																				/*$$ = (TreeNode *)alacnary(INIT_DECLARATORr1, 2, $1, $2);*/ }
+	declarator initializer_opt										{/* $$ = (TreeNode *)alacnary(INIT_DECLARATORr1, 1, $1);*/
+																				$$ = (TreeNode *)alacnary(INIT_DECLARATORr1, 2, $1, $2); }
 	;
-
+/********************************************************************************************************************/
 declarator:
 	direct_declarator													{ $$ = (TreeNode *)alacnary(DECLARATORr1, 1, $1); }
 	| ptr_operator declarator										{ $$ = (TreeNode *)alacnary(DECLARATORr2, 2, $1, $2); }
@@ -929,7 +929,7 @@ initializer_clause:
 
 initializer_list:
 	initializer_clause												{ $$ = (TreeNode *)alacnary(INITIALIZER_LISTr1, 1, $1); }
-	| initializer_list ',' initializer_clause					{ $$ = (TreeNode *)alacnary(INITIALIZER_LISTr1, 2, $1, $3); }
+	| initializer_list ',' initializer_clause					{ $$ = (TreeNode *)alacnary(INITIALIZER_LISTr2, 2, $1, $3); }
 	;
 
 /*----------------------------------------------------------------------

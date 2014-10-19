@@ -4987,8 +4987,8 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 801 "120gram.y"
-    { (yyval.n) = (TreeNode *)alacnary(INIT_DECLARATORr1, 1, (yyvsp[(1) - (2)].n));
-																				/*$$ = (TreeNode *)alacnary(INIT_DECLARATORr1, 2, $1, $2);*/ }
+    {/* $$ = (TreeNode *)alacnary(INIT_DECLARATORr1, 1, $1);*/
+																				(yyval.n) = (TreeNode *)alacnary(INIT_DECLARATORr1, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 265:
@@ -5408,7 +5408,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 932 "120gram.y"
-    { (yyval.n) = (TreeNode *)alacnary(INITIALIZER_LISTr1, 2, (yyvsp[(1) - (3)].n), (yyvsp[(3) - (3)].n)); }
+    { (yyval.n) = (TreeNode *)alacnary(INITIALIZER_LISTr2, 2, (yyvsp[(1) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 325:

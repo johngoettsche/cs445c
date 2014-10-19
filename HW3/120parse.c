@@ -445,12 +445,33 @@ NType *getOperatorType(int opr, NType *op1, NType *op2){
 }
 
 void passTypeBelowPointer(NType *source, NType *dest){
+	printf("passTypeBelowPointer\n");
 	if(dest->base_type == POINTER_TYPE){
 	//printf("***************\n");
 	//printf("%s\n", humanreadable(dest->u.ptr->base_type));
 		passTypeBelowPointer(source, dest->u.ptr);
 	} else {
 		dest->base_type = source->base_type;
+		dest->pub = source->pub;
+	}
+}
+
+void addParamsToFunction(TreeNode *node, NType *param){
+	if(node != NULL){
+		printf("addParamsToFunction\n");
+		//printf("addParamsToFunction %s : %s : %s\n", node->type->label, humanreadable(param->base_type), param->label);
+		int e;
+		Field *newField;
+		if(param->base_type == TOUPLE_TYPE){
+			for(e = 0; e < param->u.touple.nelems; e++)
+				addParamsToFunction(node, param->u.touple.elems[e]);
+		} else {
+			newField = (Field *)calloc(1, sizeof(Field));
+			newField->name = param->label;
+			newField->elemtype = param;
+			node->type->u.func.nfields += 1;
+			node->type->u.func.args[node->type->u.func.nfields] = newField;
+		}
 	}
 }
 
@@ -464,170 +485,241 @@ void buildTypes(TreeNode *node){
 		}
 		switch(node->u.n.rule){
 			case TYPEDEF_NAMEr1 :
+				printf("typedef name1\n");
 				node->type = getType(UNKNOWN_TYPE);
 				node->type->label = node->u.n.child[0]->u.t.token->text;
 				node->u.n.child[0]->type = node->type;
 				break;
 				
 			case NAMESPACE_NAMEr1 :
+				printf("namespace name1\n");
 				node->type = getType(UNKNOWN_TYPE);
 				node->type->label = node->u.n.child[0]->u.t.token->text;
 				node->u.n.child[0]->type = node->type;
 				break;
 				
 			case ORIGINAL_NAMESPACE_NAMEr1 :
+				printf("original namespace name1\n");
 				node->type = getType(UNKNOWN_TYPE);
 				node->type->label = node->u.n.child[0]->u.t.token->text;
 				node->u.n.child[0]->type = node->type;
 				break;
 				
 			case CLASS_NAMEr1 :
+				printf("class name1\n");
 				node->type = getType(UNKNOWN_TYPE);
 				node->type->label = node->u.n.child[0]->u.t.token->text;
 				node->u.n.child[0]->type = node->type;
 				break;
 				
 			case ENUM_NAMEr1 :
+				printf("enum name1\n");
 				node->type = getType(UNKNOWN_TYPE);
 				node->type->label = node->u.n.child[0]->u.t.token->text;
 				node->u.n.child[0]->type = node->type;
 				break;
 				
 			case IDENTIFIERr1 :
+				printf("identifier1\n");
 				node->type = getType(UNKNOWN_TYPE);
 				node->type->label = node->u.n.child[0]->u.t.token->text;
 				node->u.n.child[0]->type = node->type;
 				break;
 				
 			case LITERALr1 :
+				printf("literal1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case LITERALr2 :
+				printf("literal2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case LITERALr3 :
+				printf("literal3\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case LITERALr4 :
+				printf("literal4\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case LITERALr5 :
+				printf("literal5\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 				
 			case INTEGER_LITERALr1 :
+				printf("integer literal1\n");
 				node->type = getType(INT_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case CHARACTER_LITERALr1 :
+				printf("character literal1\n");
 				node->type = getType(CHAR_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case FLOATING_LITERALr1 :
+				printf("floating literal1\n");
 				node->type = getType(FLOAT_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case STRING_LITERALr1 :
+				printf("string literal1\n");
 				node->type = getType(STR_TYPE_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case BOOLEAN_LITERALr1 :
+				printf("boolean literal1\n");
 				node->type = getType(BOOL_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case BOOLEAN_LITERALr2 :
+				printf("boolean literal2\n");
 				node->type = getType(BOOL_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 
 			case TRANSLATION_UNITr1 :
+				printf("translation unit1\n");
 				node->type = getType(PROGRAM_TYPE);
 				break;
 				
 			case PRIMARY_EXPRESSIONr1 :
+				printf("primary expression1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case PRIMARY_EXPRESSIONr2 :
+				printf("primary expression2\n");
 				/* GET TYPE FROM CURRENT CLASS */
 				break;
 			case PRIMARY_EXPRESSIONr3 :
+				printf("primary expression3\n");
 				node->type = node->u.n.child[1]->type;
 				break;
 			case PRIMARY_EXPRESSIONr4 :
+				printf("primary expression4\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 
 			case ID_EXPRESSIONr1 :
+				printf("id expression1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case ID_EXPRESSIONr2 :
+				printf("id expression2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 				
 			case UNQUALIFIED_IDr1 :
+				printf("unqualified id1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case UNQUALIFIED_IDr2 :
+				printf("unqualified id2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case UNQUALIFIED_IDr3 :
+				printf("unqualified id3\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case UNQUALIFIED_IDr4 :
+				printf("unqualified id4\n");
 				node->type = node->u.n.child[1]->type;
 				break;
 				
 			case QUALIFIED_IDr1 :
+				printf("qualified id1\n");
 				node->type = node->u.n.child[1]->type;
 				break;
 
 			case NESTED_NAME_SPECIFIERr1 :
+				printf("nested name specifier1\n");
 				node->type = node->u.n.child[0]->type;
+				break;
 			case NESTED_NAME_SPECIFIERr2 :
+				printf("nested name specifier2\n");
 				node->type = node->u.n.child[0]->type;
+				break;
 			case NESTED_NAME_SPECIFIERr3 :
+				printf("nested name specifier3\n");
 				node->type = node->u.n.child[0]->type;
+				break;
 			case NESTED_NAME_SPECIFIERr4 :
+				printf("nested name specifier4\n");
 				node->type = node->u.n.child[0]->type;
-
+				break;
+				
 			case POSTFIX_EXPRESSIONr1 :
+				printf("postfix expression1\n");
 				node->type = node->u.n.child[0]->type;
+				break;
 			case POSTFIX_EXPRESSIONr2 :
+				printf("postfix expression2\n");
 				if(node->u.n.child[1]->type->base_type != INT_TYPE){
 					getErrorMessage();
 					yyerror(NULL);
 				}
 				node->type = getType(ARRAY_TYPE);
+				break;
 			case POSTFIX_EXPRESSIONr3 :
+				printf("postfix expression3\n");
 				node->type = node->u.n.child[0]->type;
+				break;
 			case POSTFIX_EXPRESSIONr5 :
+				printf("postfix expression5\n");
 				node->type = node->u.n.child[0]->type;
+				break;
 			case POSTFIX_EXPRESSIONr6 :
+				printf("postfix expression6\n");
 				node->type = node->u.n.child[0]->type;
+				break;
 			case POSTFIX_EXPRESSIONr7 :
+				printf("postfix expression7\n");
 				node->type = node->u.n.child[0]->type;
+				break;
 			case POSTFIX_EXPRESSIONr9 :
+				printf("postfix expression9\n");
 				node->type = node->u.n.child[0]->type;
+				break;
 			case POSTFIX_EXPRESSIONr10 :
+				printf("postfix expression10\n");
 				node->type = node->u.n.child[0]->type;
+				break;
 			case POSTFIX_EXPRESSIONr11 :
+				printf("postfix expression11\n");
 				node->type = node->u.n.child[0]->type;
+				break;
 			case POSTFIX_EXPRESSIONr12 :
+				printf("postfix expression12\n");
 				node->type = node->u.n.child[0]->type;
+				break;
 			case POSTFIX_EXPRESSIONr13 :
+				printf("postfix expression13\n");
+				break;
 				node->type = node->u.n.child[0]->type;
 			case POSTFIX_EXPRESSIONr14 :
+				printf("postfix expression14\n");
 				node->type = node->u.n.child[2]->type;
+				break;
 			case POSTFIX_EXPRESSIONr15 :
+				printf("postfix expression15\n");
 				node->type = node->u.n.child[2]->type;
+				break;
 			case POSTFIX_EXPRESSIONr16 :
+				printf("postfix expression16\n");
 				node->type = node->u.n.child[2]->type;
+				break;
 			case POSTFIX_EXPRESSIONr17 :
+				printf("postfix expression17\n");
 				node->type = node->u.n.child[2]->type;
+				break;
 			case POSTFIX_EXPRESSIONr18 :
+				printf("postfix expression18\n");
 				node->type = node->u.n.child[2]->type;
+				break;
 			case POSTFIX_EXPRESSIONr19 :
+				printf("postfix expression19\n");
 				node->type = node->u.n.child[2]->type;
+				break;
 				/*
 postfix_expression:
 	primary_expression												{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr1, 1, $1); }
@@ -654,8 +746,10 @@ postfix_expression:
 	; */
 				
 			case EXPRESSION_LISTr1 :
+				printf("expression list1\n");
 				node->type = node->u.n.child[0]->type;
 			case EXPRESSION_LISTr2 :
+				printf("expression list2\n");
 				node->type = getType(TOUPLE_TYPE);
 				node->type->u.touple.nelems = 2;
 				node->type->u.touple.elems = calloc(2, sizeof(struct typeinfo *));
@@ -663,34 +757,44 @@ postfix_expression:
 				node->type->u.touple.elems[1] = node->u.n.child[1]->type;
 				
 			case UNARY_EXPRESSIONr1 :
+				printf("unary expression1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case UNARY_EXPRESSIONr2 :
+				printf("unary expression2\n");
 				node->type = node->u.n.child[1]->type;
 				break;
 			case UNARY_EXPRESSIONr3 :
+				printf("unary expression3\n");
 				node->type = node->u.n.child[1]->type;
 				break;
 			case UNARY_EXPRESSIONr4 :
+				printf("unary expression4\n");
 				node->type = getType(POINTER_TYPE);
 				break;
 			case UNARY_EXPRESSIONr5 :
+				printf("unary expression5\n");
 				//&//
 				/*node->type = node->u.n.child[1]->type;*/
 				break;
 			case UNARY_EXPRESSIONr6 :
+				printf("unary expression6\n");
 				node->type = node->u.n.child[1]->type;
 				break;
 			case UNARY_EXPRESSIONr7 :
+				printf("unary expression7\n");
 				node->type = getType(INT_TYPE);
 				break;
 			case UNARY_EXPRESSIONr8 :
+				printf("unary expression8\n");
 				node->type = getType(INT_TYPE);
 				break;
 			case UNARY_EXPRESSIONr9 :
+				printf("unary expression9\n");
 				node->type = node->u.n.child[1]->type;
 				break;
 			case UNARY_EXPRESSIONr10 :
+				printf("unary expression10\n");
 				node->type = getType(DECONSTRUCTOR_TYPE);
 				break;
 
@@ -795,32 +899,47 @@ exclusive_or_expression:
 inclusive_or_expression:
 	exclusive_or_expression											{ $$ = (TreeNode *)alacnary(INCLUSIVE_OR_EXPRESSIONr1, 1, $1); }
 	| inclusive_or_expression '|' exclusive_or_expression	{ $$ = (TreeNode *)alacnary(INCLUSIVE_OR_EXPRESSIONr2, 2, $1, $3); }
-	;
+	;*/
+			case LOGICAL_AND_EXPRESSIONr1 :
+				printf("logical and expression1\n");
+				node->type = getType(BOOL_TYPE);
+				break;
+			case LOGICAL_AND_EXPRESSIONr2 :
+				printf("logical and expression2\n");
+				node->type = getType(BOOL_TYPE);
+				break;
 
-logical_and_expression:
-	inclusive_or_expression											{ $$ = (TreeNode *)alacnary(LOGICAL_AND_EXPRESSIONr1, 1, $1); }
-	| logical_and_expression ANDAND inclusive_or_expression
-																			{ $$ = (TreeNode *)alacnary(LOGICAL_AND_EXPRESSIONr1, 3, $1, $2, $3); }
-	;
+			case LOGICAL_OR_EXPRESSIONr1 :
+				printf("logical or expression1\n");
+				node->type = getType(BOOL_TYPE);
+				break;
+			case LOGICAL_OR_EXPRESSIONr2 :
+				printf("logical or expression2\n");
+				node->type = getType(BOOL_TYPE);
+				break;
 
-logical_or_expression:
-	logical_and_expression											{ $$ = (TreeNode *)alacnary(LOGICAL_OR_EXPRESSIONr1, 1, $1); }
-	| logical_or_expression OROR logical_and_expression	{ $$ = (TreeNode *)alacnary(LOGICAL_OR_EXPRESSIONr2, 3, $1, $2, $3); }
-	;
+			case CONDITIONAL_EXPRESSIONr1 :
+				printf("conditional expression1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case CONDITIONAL_EXPRESSIONr2 :
+				printf("conditional expression2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
 
-conditional_expression:
-	logical_or_expression											{ $$ = (TreeNode *)alacnary(CONDITIONAL_EXPRESSIONr1, 1, $1); }
-	| logical_or_expression  '?' expression ':' assignment_expression
-																			{ $$ = (TreeNode *)alacnary(CONDITIONAL_EXPRESSIONr2, 3, $1, $3, $5); }
-	;
-
-assignment_expression:
-	conditional_expression											{ $$ = (TreeNode *)alacnary(ASSIGNMENT_EXPRESSIONr1, 1, $1); }
-	| logical_or_expression assignment_operator assignment_expression
-																			{ $$ = (TreeNode *)alacnary(ASSIGNMENT_EXPRESSIONr2, 3, $1, $2, $3); }
-	| throw_expression												{ $$ = (TreeNode *)alacnary(ASSIGNMENT_EXPRESSIONr3, 1, $1); }
-	;
-	
+			case ASSIGNMENT_EXPRESSIONr1 :
+				printf("assignment expression1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case ASSIGNMENT_EXPRESSIONr2 :
+				printf("assignment expression2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case ASSIGNMENT_EXPRESSIONr3 :
+				printf("assignment expression3\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+				/*
 assignment_operator:
 	'='																	{ $$ = (TreeNode *)alacnary(ASSIGNMENT_OPERATORr1, 0); }
 	| MULEQ																{ $$ = (TreeNode *)alacnary(ASSIGNMENT_OPERATORr2, 1, $1); }
@@ -849,27 +968,35 @@ constant_expression:
  *----------------------------------------------------------------------*/
 
 			case STATEMENTr1 :
+				printf("statement1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case STATEMENTr2 :
+				printf("statement2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case STATEMENTr3 :
+				printf("statement3\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case STATEMENTr4 :
+				printf("statement4\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case STATEMENTr5 :
+				printf("statement5\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case STATEMENTr6 :
+				printf("statement6\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case STATEMENTr7 :
+				printf("statement7\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case STATEMENTr8 :
+				printf("statement8\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			
@@ -883,21 +1010,30 @@ labeled_statement:
 	;*/
 	
 			case EXPRESSION_STATEMENTr1 :
+				printf("expression statement1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 
 			case COMPOUND_STATEMENTr1 :
+				printf("compound statement1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 
 			case STATEMENT_SEQr1 :
+				printf("statement seq1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case STATEMENT_SEQr2 :
+				printf("statement seq2\n");
 				node->type = getType(TOUPLE_TYPE);
+				node->type->u.touple.nelems = 2;
+				node->type->u.touple.elems = calloc(2, sizeof(struct typeinfo *));
+				node->type->u.touple.elems[0] = node->u.n.child[0]->type;
+				node->type->u.touple.elems[1] = node->u.n.child[1]->type;
 				break;
 	
 			case SELECTION_STATEMENTr1 :
+				printf("selection statement1\n");
 				if(node->u.n.child[1]->type->base_type != BOOL_TYPE){
 					exitStatus = 2;
 					getErrorMessage(ER_BOOL_EXPECTED);
@@ -905,6 +1041,7 @@ labeled_statement:
 				}
 				break;
 			case SELECTION_STATEMENTr2 :
+				printf("selection statement2\n");
 				if(node->u.n.child[1]->type->base_type != BOOL_TYPE){
 					exitStatus = 2;
 					getErrorMessage(ER_BOOL_EXPECTED);
@@ -912,7 +1049,7 @@ labeled_statement:
 				}
 				break;
 			case SELECTION_STATEMENTr3 :
-			
+				printf("selection statement3\n");
 				break;
 	/*
 
@@ -923,9 +1060,11 @@ selection_statement:
 	;*/
 
 			case CONDITIONr1 :
+				printf("condition1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case CONDITIONr2 :
+				printf("condition2\n");
 			/************************************/
 				node->type = node->u.n.child[0]->type;
 				break;
@@ -937,6 +1076,7 @@ condition:
 	;*/
 	
 			case ITERATION_STATEMENTr1 :
+				printf("iteration statement1\n");
 				if(node->u.n.child[1]->type->base_type != BOOL_TYPE){
 					exitStatus = 2;
 					getErrorMessage(ER_BOOL_EXPECTED);
@@ -944,6 +1084,7 @@ condition:
 				}
 				break;
 			case ITERATION_STATEMENTr2 :
+				printf("iteration statement2\n");
 				if(node->u.n.child[3]->type->base_type != BOOL_TYPE){
 					exitStatus = 2;
 					getErrorMessage(ER_BOOL_EXPECTED);
@@ -951,6 +1092,7 @@ condition:
 				}
 				break;
 			case ITERATION_STATEMENTr3 :
+				printf("iteration statement3\n");
 			
 				break;
 /*
@@ -975,6 +1117,7 @@ jump_statement:
 	;*/
 
 			case DECLARATION_STATEMENTr1 :
+				printf("declaration statement1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 	/*
@@ -987,9 +1130,11 @@ declaration_statement:
  *----------------------------------------------------------------------*/
 
 			case DECLARATION_SEQr1 :
+				printf("declaration seq1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case DECLARATION_SEQr2 :
+				printf("declaration seq2\n");
 			/*?????????*/
 				node->type = node->u.n.child[0]->type;
 				break;
@@ -1000,71 +1145,92 @@ declaration_seq:
 	;*/
 
 			case DECLARATIONr1 :
+				printf("declaration1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case DECLARATIONr2 :
+				printf("declaration2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case DECLARATIONr4 :
+				printf("declaration4\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case DECLARATIONr5 :
+				printf("declaration5\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case DECLARATIONr6 :
+				printf("declaration6\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case DECLARATIONr7 :
+				printf("declaration7\n");
 				node->type = node->u.n.child[0]->type;
 				break;
+				
 			case BLOCK_DECLARATIONr1 :
+				printf("block declaration1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case BLOCK_DECLARATIONr2 :
+				printf("block declaration2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case BLOCK_DECLARATIONr3 :
+				printf("block declaration3\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case BLOCK_DECLARATIONr4 :
+				printf("block declaration4\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case BLOCK_DECLARATIONr5 :
+				printf("block declaration5\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 				
 			case SIMPLE_DECLARATIONr1 :
+				printf("simple declaration1\n");
 				for(c = 0; c < node->u.n.children; c++){
-					//printf("%s\n", humanreadable(node->u.n.child[c]->type->base_type));
+					//printf("** %s : %s \n", humanreadable(node->u.n.child[c]->type->base_type), node->u.n.child[1]->type->label);
 				}
-				//printf("%s\n", humanreadable(node->u.n.child[0]->type->base_type));
 				node->type = node->u.n.child[0]->type;
+				node->type->label = node->u.n.child[1]->type->label;
 				passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
-				//node->u.n.child[1]->type->base_type = node->u.n.child[0]->type->base_type;
 				break;
 			case SIMPLE_DECLARATIONr2 :
+				printf("simple declaration2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 
 			case DECL_SPECIFIERr1:
+				printf("decl specifier1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case DECL_SPECIFIERr2:
+				printf("decl specifier2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case DECL_SPECIFIERr3:
+				printf("decl specifier3\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case DECL_SPECIFIERr4:
+				printf("decl specifier4\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case DECL_SPECIFIERr5:
+				printf("decl specifier5\n");
 				node->type = node->u.n.child[0]->type;
 				break;
+				
 			case DECL_SPECIFIER_SEQr1:
+				printf("decl specifier seq1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case DECL_SPECIFIER_SEQr2:
+				printf("decl specifier seq2\n");
 				node->type = getType(TOUPLE_TYPE);
 				node->type->u.touple.nelems = 2;
 				node->type->u.touple.elems = calloc(2, sizeof(struct typeinfo *));
@@ -1089,78 +1255,110 @@ function_specifier:
 
 			
 			case TYPE_SPECIFIERr1:
+				printf("type specifier1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case TYPE_SPECIFIERr2:
+				printf("type specifier2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case TYPE_SPECIFIERr3:
+				printf("type specifier3\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case TYPE_SPECIFIERr4:
+				printf("type specifier4\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case TYPE_SPECIFIERr5:
+				printf("type specifier5\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 				
+			case SIMPLE_TYPE_SPECIFIERr1:
+				printf("simple type specifier1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case SIMPLE_TYPE_SPECIFIERr2:
+				printf("simple type specifier2\n");
+				node->type = getType(TOUPLE_TYPE);
+				break;
+			case SIMPLE_TYPE_SPECIFIERr3:
+				printf("simple type specifier3\n");
+				node->type = getType(TOUPLE_TYPE);
+				break;
 			case SIMPLE_TYPE_SPECIFIERr4:
+				printf("simple type specifier4\n");
 				node->type = getType(CHAR_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case SIMPLE_TYPE_SPECIFIERr5:
+				printf("simple type specifier5\n");
 				node->type = getType(WCHAR_T_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case SIMPLE_TYPE_SPECIFIERr6:
+				printf("simple type specifier6\n");
 				node->type = getType(BOOL_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case SIMPLE_TYPE_SPECIFIERr7:
+				printf("simple type specifier7\n");
 				node->type = getType(SHORT_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case SIMPLE_TYPE_SPECIFIERr8:
+				printf("simple type specifier8\n");
 				//printf("%d\n", INT_TYPE);
 				node->type = getType(INT_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case SIMPLE_TYPE_SPECIFIERr9:
+				printf("simple type specifier9\n");
 				node->type = getType(LONG_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case SIMPLE_TYPE_SPECIFIERr10:
+				printf("simple type specifier10\n");
 				node->type = getType(SIGNED_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case SIMPLE_TYPE_SPECIFIERr11:
+				printf("simple type specifier11\n");
 				node->type = getType(UNSIGNED_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case SIMPLE_TYPE_SPECIFIERr12:
+				printf("simple type specifier12\n");
 				node->type = getType(FLOAT_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case SIMPLE_TYPE_SPECIFIERr13:
+				printf("simple type specifier13\n");
 				node->type = getType(DOUBLE_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case SIMPLE_TYPE_SPECIFIERr14:
+				printf("simple type specifier14\n");
 				node->type = getType(VOID_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case SIMPLE_TYPE_SPECIFIERr15:
+				printf("simple type specifier15\n");
 				node->type = getType(STR_TYPE_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			
 			case TYPE_NAMEr1:
+				printf("type name1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case TYPE_NAMEr2:
+				printf("type name2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case TYPE_NAMEr3: 
+				printf("type name3\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 				
@@ -1182,6 +1380,7 @@ elaborated_type_specifier:
 	;*/
 
 			case ENUM_SPECIFIERr1 :
+				printf("enum specifier1\n");
 				node->type = getType(ENUM_TYPE);
 				break;
 /*
@@ -1276,100 +1475,139 @@ linkage_specification:
  *----------------------------------------------------------------------*/
 
 			case INIT_DECLARATOR_LISTr1 :
+				printf("init declarator list1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case INIT_DECLARATOR_LISTr2 :
+				printf("init declarator list2\n");
 				node->type = getType(TOUPLE_TYPE);
+				node->type->u.touple.nelems = 2;
+				node->type->u.touple.elems = calloc(2, sizeof(struct typeinfo *));
+				node->type->u.touple.elems[0] = node->u.n.child[0]->type;
+				node->type->u.touple.elems[1] = node->u.n.child[1]->type;
 				break;
 
 			case INIT_DECLARATORr1 :
+				printf("init declarator1 \n");
 				node->type = node->u.n.child[0]->type;
 				break;
 				
 			case DECLARATORr1:
+				printf("declarator1 %\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case DECLARATORr2:
+				printf("declarator2\n");
 				node->type = getType(POINTER_TYPE);
 				node->type->u.ptr = node->u.n.child[1]->type;
 				break;
 				
 			case DIRECT_DECLARATORr1:
+				printf("direct declarator1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case DIRECT_DECLARATORr2:
+				printf("direct declarator2\n");
 				node->type = node->u.n.child[0]->type;
+				//node->type->temp = node->u.n.child[1]->type;
 				break;
 			case DIRECT_DECLARATORr3:
+				printf("direct declarator3\n");
 				node->type = node->u.n.child[0]->type;
+				//node->type->temp = node->u.n.child[1]->type;
 				break;
 			case DIRECT_DECLARATORr4:
+				printf("direct declarator4\n");
 				node->type = node->u.n.child[0]->type;
+				//node->type->temp = node->u.n.child[1]->type;
 				break;
 			case DIRECT_DECLARATORr5:
+				printf("direct declarator5\n");
 				node->type = node->u.n.child[0]->type;
+				//node->type->temp = node->u.n.child[1]->type;
 				break;
 			case DIRECT_DECLARATORr6:
 			/*????????*/
+				printf("direct declarator6\n");
 				node->type = node->u.n.child[0]->type;
+				//node->type->temp = node->u.n.child[1]->type;
 				break;
 			case DIRECT_DECLARATORr7:
 			/*????????*/
+				printf("direct declarator7\n");
 				node->type = node->u.n.child[2]->type;
+				//node->type->temp = node->u.n.child[3]->type;
 				break;
 			case DIRECT_DECLARATORr8:
 			/*????????*/
+				printf("direct declarator8\n");
 				node->type = node->u.n.child[0]->type;
+				//node->type->temp = node->u.n.child[3]->type;
 				break;
 			case DIRECT_DECLARATORr9:
 			/*????????*/
+				printf("direct declarator9\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case DIRECT_DECLARATORr10:
+				printf("direct declarator10\n");
 				node->type = node->u.n.child[1]->type;
 				break;
 				
 			case DECLARATOR_IDr1:
+				printf("declarator id1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case DECLARATOR_IDr2:
+				printf("declarator id2\n");
 				node->type = node->u.n.child[1]->type;
 				break;
 			case DECLARATOR_IDr3:
+				printf("declarator id3\n");
 			/*????????*/
 				node->type = node->u.n.child[2]->type;
 				break;
 			case DECLARATOR_IDr4:
+				printf("declarator id4\n");
 			/*????????*/
 				node->type = node->u.n.child[1]->type;
 				break;
 				
 			case PTR_OPERATORr1 :
+				printf("ptr operator1\n");
 				node->type = getType(POINTER_TYPE);
 				break;
 			case PTR_OPERATORr2 :
+				printf("ptr operator2\n");
 				node->type = getType(POINTER_TYPE);
 				break;
 			case PTR_OPERATORr3 :
+				printf("ptr operator3\n");
 				node->type = getType(ADDRESS_TYPE);
 				break;
 			case PTR_OPERATORr4 :
+				printf("ptr operator4\n");
 				node->type = getType(POINTER_TYPE);
 				break;
 			case PTR_OPERATORr5 :
+				printf("ptr operator5\n");
 				node->type = getType(POINTER_TYPE);
 				break;
 			case PTR_OPERATORr6 :
+				printf("ptr operator6\n");
 				node->type = getType(POINTER_TYPE);
 				break;
 			case PTR_OPERATORr7 :
+				printf("ptr operator7\n");
 				node->type = getType(POINTER_TYPE);
 				break;
 
 			case CV_QUALIFIER_SEQr1 :
+				printf("cv qualifier seq1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case CV_QUALIFIER_SEQr2 :
+				printf("cv qualifier seq2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 				
@@ -1414,18 +1652,23 @@ direct_abstract_declarator:
 	| '(' abstract_declarator ')'									{ $$ = (TreeNode *)alacnary(DIRECT_ABSTRACT_DECLARATORr6, 1, $2); }																		
 	;*/
 			case PARAMETER_DECLARATION_CLAUSEr1 :
+				printf("parameter declaration clause1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case PARAMETER_DECLARATION_CLAUSEr2 :
+				printf("parameter declaration clause2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case PARAMETER_DECLARATION_CLAUSEr3 :
+				printf("parameter declaration clause3\n");
 				node->type = getType(ELLIPSIS_TYPE);
 				break;
 			case PARAMETER_DECLARATION_CLAUSEr4 :
+				printf("parameter declaration clause4\n");
 				node->type = getType(NULL_TYPE);
 				break;
 			case PARAMETER_DECLARATION_CLAUSEr5 :
+				printf("parameter declaration clause5\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 	/*
@@ -1438,9 +1681,11 @@ parameter_declaration_clause:
 	;*/
 	
 			case PARAMETER_DECLARATION_LISTr1 :
+				printf("parameter declaration list1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case PARAMETER_DECLARATION_LISTr2 :
+				printf("parameter declaration list2\n");
 				node->type = getType(TOUPLE_TYPE);
 				node->type->u.touple.nelems = 2;
 				node->type->u.touple.elems = calloc(2, sizeof(struct typeinfo *));
@@ -1449,6 +1694,7 @@ parameter_declaration_clause:
 				break;
 	
 			case PARAMETER_DECLARATIONr1 :
+				printf("parameter declaration1\n");
 				if(node->u.n.child[1]->type->base_type == POINTER_TYPE){
 					node->type = node->u.n.child[1]->type;
 					passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
@@ -1458,6 +1704,7 @@ parameter_declaration_clause:
 				}
 				break;
 			case PARAMETER_DECLARATIONr2 :
+				printf("parameter declaration2\n");
 				if(node->u.n.child[1]->type->base_type == POINTER_TYPE){
 					node->type = node->u.n.child[1]->type;
 					passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
@@ -1467,59 +1714,87 @@ parameter_declaration_clause:
 				}
 				break;
 			case PARAMETER_DECLARATIONr3 :
+				printf("parameter declaration3\n");
 				node->type = node->u.n.child[0]->type;
 				passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
 				break;
 			case PARAMETER_DECLARATIONr4 :
+				printf("parameter declaration4\n");
 				node->type = node->u.n.child[0]->type;
 				passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
 				break;
 				
 			case FUNCTION_DEFINITIONr1:
+				printf("function definition1\n");
 				node->type = getType(FUNC_TYPE);
 				node->type->u.func.retType = getType(VOID_TYPE);
 				passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
 				break;	
 			case FUNCTION_DEFINITIONr2:
+				printf("function definition2\n");
 				node->type = getType(FUNC_TYPE);
 				node->type->label = node->u.n.child[1]->type->label;
 				node->type->u.func.retType = node->u.n.child[0]->type;
+				//addParamsToFunction(node, node->u.n.child[1]->type->temp);
+				printf("***********\n");
+				printf("function args: %d\n", node->type->u.func.nfields);
 				passTypeBelowPointer(node->type, node->u.n.child[1]->type);
+				//printf("function args: %d\n", node->type->u.func.nfields);
 				break;
 			case FUNCTION_DEFINITIONr3:
+				printf("function definition3\n");
 				node->type = getType(FUNC_TYPE);
 				passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
 				break;
 			case FUNCTION_DEFINITIONr4:
+				printf("function definition4\n");
 				node->type = getType(FUNC_TYPE);
+				//addParamsToFunction(node, node->u.n.child[1]->type->temp);
 				passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
 				break;
 				
 			case FUNCTION_BODYr1 :
+				printf("function body1\n");
 				node->type = getType(FUNC_TYPE);
 				break;
-				/*
-initializer:
-	'=' initializer_clause											{ $$ = (TreeNode *)alacnary(INITIALIZERr1, 1, $2); }
-	| '(' expression_list ')'										{ $$ = (TreeNode *)alacnary(INITIALIZERr2, 1, $2); }
-	;
-
-initializer_clause:
-	assignment_expression											{ $$ = (TreeNode *)alacnary(INITIALIZER_CLAUSEr1, 1, $1); }
-	| '{' initializer_list COMMA_opt '}'						{ $$ = (TreeNode *)alacnary(INITIALIZER_CLAUSEr2, 2, $2, $3); }
-	| '{' '}'															{ $$ = (TreeNode *)alacnary(INITIALIZER_CLAUSEr3, 0); }
-	;
-
-initializer_list:
-	initializer_clause												{ $$ = (TreeNode *)alacnary(INITIALIZER_LISTr1, 1, $1); }
-	| initializer_list ',' initializer_clause					{ $$ = (TreeNode *)alacnary(INITIALIZER_LISTr1, 2, $1, $3); }
-	;
+				
+			case INITIALIZERr1 :
+				printf("initializer1\n");
+				node->type = node->u.n.child[1]->type;
+				break;
+			case INITIALIZERr2 :
+				printf("initializer2\n");
+				node->type = node->u.n.child[1]->type;
+				break;
+				
+			case INITIALIZER_CLAUSEr1 :
+				printf("initializer clause1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case INITIALIZER_CLAUSEr2 :
+				printf("initializer clause2\n");
+				node->type = node->u.n.child[1]->type;
+				break;
+			case INITIALIZER_CLAUSEr3 :
+				printf("initializer clause3\n");
+				node->type = getType(NULL_TYPE);
+				break;
+				
+			case INITIALIZER_LISTr1 :
+				printf("initializer list1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case INITIALIZER_LISTr2 :
+				printf("initializer list2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
 
 /*----------------------------------------------------------------------
  * Classes.
  *----------------------------------------------------------------------*/
 
 			case CLASS_SPECIFIERr1 :
+				printf("type name1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
  /*
@@ -1528,21 +1803,25 @@ class_specifier:
 	;*/
 
 			case CLASS_HEADr1 :
+				printf("type head1\n");
 				node->type = node->u.n.child[0]->type;
 				node->type->label = node->u.n.child[1]->type->label;
 				node->u.n.child[1]->type = node->u.n.child[0]->type;
 				break;
 			case CLASS_HEADr2 :
+				printf("type head2\n");
 				node->type = node->u.n.child[0]->type;
 				node->type->label = node->u.n.child[1]->type->label;
 				node->u.n.child[1]->type = node->u.n.child[0]->type;
 				break;
 			case CLASS_HEADr3 :
+				printf("type head3\n");
 				node->type = node->u.n.child[0]->type;
 				node->type->label = node->u.n.child[2]->type->label;
 				node->u.n.child[2]->type = node->u.n.child[0]->type;
 				break;
 			case CLASS_HEADr4 :
+				printf("type head4\n");
 				node->type = node->u.n.child[0]->type;
 				node->type->label = node->u.n.child[2]->type->label;
 				node->u.n.child[2]->type = node->u.n.child[0]->type;
@@ -1556,23 +1835,28 @@ class_head:
 																			{ $$ = (TreeNode *)alacnary(CLASS_HEADr4, 4, $1, $2, $3, $4); }
 	;*/
 			case CLASS_KEYr1 :
+				printf("type key1\n");
 				node->type = getType(CLASS_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case CLASS_KEYr2 :
+				printf("type key2\n");
 				node->type = getType(STRUCT_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case CLASS_KEYr3 :
+				printf("type key3\n");
 				node->type = getType(UNION_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 				
 			case MEMBER_SPECIFICATIONr1 :
+				printf("member speccification1\n");
 				node->type = getType(MEMBER_TYPE);
 				//node->type->pub = node->u.n.child[0]->type;
 				break;
 			case MEMBER_SPECIFICATIONr2 :
+				printf("member speccification2\n");
 				node->type = getType(MEMBER_TYPE);
 				node->type->pub = node->u.n.child[0]->type;
 				break;
@@ -1583,46 +1867,62 @@ member_specification:
 	;*/
 	
 			case MEMBER_DECLARATIONr1 :
+				printf("member declaration1\n");
 				node->type = node->u.n.child[0]->type;
 				passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
 				break;
 			case MEMBER_DECLARATIONr2 :
+				printf("member declaration2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case MEMBER_DECLARATIONr3 :
+				printf("member declaration3\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case MEMBER_DECLARATIONr4 :
+				printf("member declaration4\n");
 				node->type = getType(NULL_TYPE);
 				break;
 			case MEMBER_DECLARATIONr5 :
+				printf("member declaration5\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case MEMBER_DECLARATIONr6 :
+				printf("member declaration6\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case MEMBER_DECLARATIONr7 :
+				printf("member declaration7\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 
 			case MEMBER_DECLARATOR_LISTr1 :
+				printf("member declarator list1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case MEMBER_DECLARATOR_LISTr2 :
+				printf("member declarator list2\n");
 				node->type = getType(TOUPLE_TYPE);
+				node->type->u.touple.nelems = 2;
+				node->type->u.touple.elems = calloc(2, sizeof(struct typeinfo *));
+				node->type->u.touple.elems[0] = node->u.n.child[0]->type;
+				node->type->u.touple.elems[1] = node->u.n.child[1]->type;
 				break;
 
 			case MEMBER_DECLARATORr1 :
-				
+				printf("member declaration1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case MEMBER_DECLARATORr2 :
+				printf("member declaration2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case MEMBER_DECLARATORr3 :
+				printf("member declaration3\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 			case MEMBER_DECLARATORr4 :
+				printf("member declaration4\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 
@@ -1675,14 +1975,17 @@ base_specifier:
 	;*/
 	
 			case ACCESS_SPECIFIERr1 :
+				printf("access specifier1\n");
 				node->type = getType(PRIVATE_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case ACCESS_SPECIFIERr2 :
+				printf("access specifier2\n");
 				node->type = getType(PROTECTED_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
 			case ACCESS_SPECIFIERr3 :
+				printf("access specifier3\n");
 				node->type = getType(PUBLIC_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
@@ -1819,9 +2122,11 @@ type_id_list:
 	;
 				*/
 			case DECLARATION_SEQ_OPTr1 :
+				printf("declaration seq opt1\n");
 				node->type = getType(NULL_TYPE);
 				break;
 			case DECLARATION_SEQ_OPTr2 :
+				printf("declaration seq opt2\n");
 			//printf("*");
 				node->type = node->u.n.child[0]->type;
 				break;
@@ -1833,9 +2138,11 @@ nested_name_specifier_opt:
 	;*/
 
 			case EXPRESSION_LIST_OPTr1 :
+				printf("expression list opt1\n");
 				node->type = getType(NULL_TYPE);
 				break;
 			case EXPRESSION_LIST_OPTr2 :
+				printf("expression list opt2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 	/*
@@ -1856,16 +2163,20 @@ new_declarator_opt:
 	;*/
 	
 			case EXPRESSION_OPTr1 :
+				printf("expression opt1\n");
 				node->type = getType(NULL_TYPE);
 				break;
 			case EXPRESSION_OPTr2 :
+				printf("expression opt2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 	
 			case STATEMENT_SEQ_OPTr1 :
+				printf("statement seq opt1\n");
 				node->type = getType(NULL_TYPE);
 				break;
 			case STATEMENT_SEQ_OPTr2 :
+				printf("statement seq opt2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 /*
@@ -1878,13 +2189,16 @@ condition_opt:
 enumerator_list_opt:
 	/* epsilon 													{ $$ = (TreeNode *)alacnary(ENUMERATOR_LIST_OPTr1, 0); }
 	| enumerator_list												{ $$ = (TreeNode *)alacnary(ENUMERATOR_LIST_OPTr2, 1, $1); }
-	;
-
-initializer_opt:
-	/* epsilon 													{ $$ = (TreeNode *)alacnary(INITIALIZER_OPTr1, 0); }
-	| initializer													{ $$ = (TreeNode *)alacnary(INITIALIZER_OPTr2, 1, $1); }
-	;
-
+	;*/
+			case INITIALIZER_OPTr1 :
+				printf("initializer opt1\n");
+				node->type = getType(NULL_TYPE);
+				break;
+			case INITIALIZER_OPTr2 :
+				printf("initializer opt\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+	/*
 constant_expression_opt:
 	/* epsilon 													{ $$ = (TreeNode *)alacnary(CONSTANT_EXPRESSION_OPTr1, 0); }
 	| constant_expression										{ $$ = (TreeNode *)alacnary(CONSTANT_EXPRESSION_OPTr2, 1, $1); }
@@ -1906,16 +2220,20 @@ direct_abstract_declarator_opt:
 	;*/
 	
 			case CTOR_INITIALIZER_OPTr1 :
+				printf("ctor initializer opt1\n");
 				node->type = getType(NULL_TYPE);
 				break;
 			case CTOR_INITIALIZER_OPTr2 :
+				printf("ctor initializer opt2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
 				
 			case MEMBER_SPECIFICATION_OPTr1 :
+				printf("member specification opt1\n");
 				node->type = getType(NULL_TYPE);
 				break;
 			case MEMBER_SPECIFICATION_OPTr2 :
+				printf("member specification opt2\n");
 				node->type = node->u.n.child[0]->type;
 				node->type->pub = node->u.n.child[0]->type->pub;  
 				break;
@@ -1934,12 +2252,16 @@ EXPORT_opt:
 handler_seq_opt:
 	/* epsilon 													{ $$ = (TreeNode *)alacnary(HANDLER_SEQ_OPTr1, 0); }
 	| handler_seq													{ $$ = (TreeNode *)alacnary(HANDLER_SEQ_OPTr2, 1, $1); }
-	;
-
-assignment_expression_opt:
-	/* epsilon 													{ $$ = (TreeNode *)alacnary(ASSIGNMENT_EXPRESSION_OPTr1, 0); }
-	| assignment_expression										{ $$ = (TreeNode *)alacnary(ASSIGNMENT_EXPRESSION_OPTr2, 1, $1); }
-	;
+	;*/
+			case ASSIGNMENT_EXPRESSION_OPTr1 :
+				printf("assignment expression opt1\n");
+				node->type = getType(NULL_TYPE);
+				break;
+			case ASSIGNMENT_EXPRESSION_OPTr2 :
+				printf("assignment expression opt2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+/*
 
 type_id_list_opt:
 	/* epsilon 													{ $$ = (TreeNode *)alacnary(TYPE_ID_LIST_OPTr1, 0); }

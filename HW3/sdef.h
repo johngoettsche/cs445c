@@ -41,6 +41,7 @@ typedef struct NType {
    int base_type;
 	char *label;
 	struct NType *pub;
+//	struct NType *temp;
    union {
       struct array {
          int size;
@@ -59,7 +60,8 @@ typedef struct NType {
 		struct func {
 			//char *label;
 			struct NType *retType;
-			struct Field *args;
+			int nfields;
+			struct Field **args;
 		} func;
 		struct touple {
 			int nelems;
