@@ -1445,11 +1445,13 @@ int main(int argc, char **argv){
 			rv = yyparse();
 			switch(rv){
 				case 0 :
-					printf("parse successful\n");
+					printf("*** parse successful ***\n");
 					//globalSymbolTable = (SymbolTable *)createGlobalSymbolTable(SYMBOL_TABLE_SIZE);
 					//currentSymbolTable = globalSymbolTable;
 					buildTypes(root);
+					printf("*** build types successful ***\n");
 					printTree(root, 0);
+					printf("*** print tree successful ***\n");
 					makeSymbolTables(root);
 					break;
 				case 1 :

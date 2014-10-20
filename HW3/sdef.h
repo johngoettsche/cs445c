@@ -41,7 +41,6 @@ typedef struct NType {
    int base_type;
 	char *label;
 	struct NType *pub;
-//	struct NType *temp;
    union {
       struct array {
          int size;
@@ -60,7 +59,7 @@ typedef struct NType {
 		struct func {
 			//char *label;
 			struct NType *retType;
-			int nfields;
+			int nargs;
 			struct Field **args;
 		} func;
 		struct touple {
@@ -88,7 +87,7 @@ typedef struct TreeNode {
 
 typedef struct SymbolTableEntry{
 	//Symbol *symbol;
-	NType *symbol;
+	NType *s;
 	struct SymbolTableEntry *next;
 }SymbolTableEntry;
 

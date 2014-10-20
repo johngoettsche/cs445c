@@ -350,9 +350,9 @@ TreeNode *alacnary(int prodRule, int children,...){
 	TreeNode *nd = (TreeNode *)calloc(1, sizeof(TreeNode));
 	if(!nd)memoryError();
 	
-	nd->symbol = (int)(prodRule / 100) * 100;
 	nd->u.n.rule = prodRule;
 	nd->u.n.children = children;
+	nd->symbol = (int)(prodRule / 100) * 100;
 	int c = 0;
 	va_list mylist;
 	va_start(mylist, children);
@@ -395,42 +395,42 @@ SymbolTable *createGlobalSymbolTable(int size){
 	return symbolTable;
 }
 
-int hashSymbol(NType *symbol, int size){
+int hashSymbol(NType *symb, int size){
 	int i;
 	int sum = 0;
-	for(i = 0; i < strlen(symbol->label); i++){
-		sum += symbol->label[i];
+	for(i = 0; i < strlen(symb->label); i++){
+		sum += symb->label[i];
 	}
 	return sum % size;
 }
 
-int inSymbolTable(SymbolTable *symbolTable, NType *symbol){
-	int hashvalue = hashSymbol(symbol, symbolTable->size);
-	if(symbolTable->bucket[hashvalue]->symbol == NULL) return 0;
+int inSymbolTable(SymbolTable *symbolTable, NType *symb){
+	int hashvalue = hashSymbol(symb, symbolTable->size);
+	if(symbolTable->bucket[hashvalue]->symb == NULL) return 0;
 	SymbolTableEntry *current = symbolTable->bucket[hashvalue];
 	while(current != NULL){
-		if(strcmp(current->symbol->label, symbol->label) == 0) return 1;
+		if(strcmp(current->symb->label, symb->label) == 0) return 1;
 		current = current->next;
 	}
 	return 0;
 }
 
-void addToSymbolTable(SymbolTable *symbolTable, NType *symbol){
+void addToSymbolTable(SymbolTable *symbolTable, NType *symb){
 	SymbolTableEntry *newEntry;
 	if((newEntry = (SymbolTableEntry *)calloc(1, sizeof(SymbolTableEntry))) == NULL) memoryError();
-	newEntry->symbol = symbol;
-	int hashvalue = hashSymbol(symbol, symbolTable->size);
+	newEntry->symb = symb;
+	int hashvalue = hashSymbol(symb, symbolTable->size);
 	if(symbolTable->bucket[hashvalue] == NULL){
 		symbolTable->bucket[hashvalue] = newEntry;
 	}
 	else {
-		if(inSymbolTable(symbolTable, symbol) == 0){
+		if(inSymbolTable(symbolTable, symb) == 0){
 			newEntry->next = symbolTable->bucket[hashvalue];
 			symbolTable->bucket[hashvalue] = newEntry;
 		}else{
 			/* symbol used */
 			getErrorMessage(ER_USED_SYMBOL_LABEL);
-			yyerror(symbol->label);
+			yyerror(symb->label);
 		}
 	}
 }
@@ -445,9 +445,8 @@ NType *getOperatorType(int opr, NType *op1, NType *op2){
 }
 
 void passTypeBelowPointer(NType *source, NType *dest){
-	printf("passTypeBelowPointer\n");
+	printf("*passTypeBelowPointer*\n");
 	if(dest->base_type == POINTER_TYPE){
-	//printf("***************\n");
 	//printf("%s\n", humanreadable(dest->u.ptr->base_type));
 		passTypeBelowPointer(source, dest->u.ptr);
 	} else {
@@ -458,7 +457,7 @@ void passTypeBelowPointer(NType *source, NType *dest){
 
 void addParamsToFunction(TreeNode *node, NType *param){
 	if(node != NULL){
-		printf("addParamsToFunction\n");
+		printf("*addParamsToFunction*\n");
 		//printf("addParamsToFunction %s : %s : %s\n", node->type->label, humanreadable(param->base_type), param->label);
 		int e;
 		Field *newField;
@@ -466,11 +465,15 @@ void addParamsToFunction(TreeNode *node, NType *param){
 			for(e = 0; e < param->u.touple.nelems; e++)
 				addParamsToFunction(node, param->u.touple.elems[e]);
 		} else {
-			newField = (Field *)calloc(1, sizeof(Field));
-			newField->name = param->label;
-			newField->elemtype = param;
-			node->type->u.func.nfields += 1;
-			node->type->u.func.args[node->type->u.func.nfields] = newField;
+			if(param != NULL){
+				newField = (Field *)calloc(1, sizeof(Field));
+				newField->name = param->label;
+				newField->elemtype = param;
+				node->type->u.func.nargs++;
+				node->type->u.func.args = realloc(node->type->u.func.args, node->type->u.func.nargs);
+				node->type->u.func.args[node->type->u.func.nargs] = newField;
+				printf("---adding to function: %s : %s : %s\n", node->type->label, humanreadable(param->base_type), param->label);
+			}
 		}
 	}
 }
@@ -508,8 +511,9 @@ void buildTypes(TreeNode *node){
 			case CLASS_NAMEr1 :
 				printf("class name1\n");
 				node->type = getType(UNKNOWN_TYPE);
-				node->type->label = node->u.n.child[0]->u.t.token->text;
 				node->u.n.child[0]->type = node->type;
+				node->type->label = node->u.n.child[0]->u.t.token->text;
+				//node->u.n.child[0]->type = node->type;
 				break;
 				
 			case ENUM_NAMEr1 :
@@ -581,6 +585,7 @@ void buildTypes(TreeNode *node){
 			case TRANSLATION_UNITr1 :
 				printf("translation unit1\n");
 				node->type = getType(PROGRAM_TYPE);
+				node->type->label = "program";
 				break;
 				
 			case PRIMARY_EXPRESSIONr1 :
@@ -1500,6 +1505,7 @@ linkage_specification:
 				printf("declarator2\n");
 				node->type = getType(POINTER_TYPE);
 				node->type->u.ptr = node->u.n.child[1]->type;
+				node->type->label = node->u.n.child[1]->type->label;
 				break;
 				
 			case DIRECT_DECLARATORr1:
@@ -1508,22 +1514,42 @@ linkage_specification:
 				break;
 			case DIRECT_DECLARATORr2:
 				printf("direct declarator2\n");
-				node->type = node->u.n.child[0]->type;
+				node->type = getType(FUNC_TYPE);
+				node->type->label = node->u.n.child[0]->type->label;
+				node->type->u.func.nargs = 0;
+				addParamsToFunction(node, node->u.n.child[1]->type);
+				passTypeBelowPointer(node->type, node->u.n.child[0]->type);
+				//node->type = node->u.n.child[0]->type;
 				//node->type->temp = node->u.n.child[1]->type;
 				break;
 			case DIRECT_DECLARATORr3:
 				printf("direct declarator3\n");
-				node->type = node->u.n.child[0]->type;
+				node->type = getType(FUNC_TYPE);
+				node->type->label = node->u.n.child[0]->type->label;
+				node->type->u.func.nargs = 0;
+				addParamsToFunction(node, node->u.n.child[1]->type);
+				passTypeBelowPointer(node->type, node->u.n.child[0]->type);
+				//node->type = node->u.n.child[0]->type;
 				//node->type->temp = node->u.n.child[1]->type;
 				break;
 			case DIRECT_DECLARATORr4:
 				printf("direct declarator4\n");
-				node->type = node->u.n.child[0]->type;
+				node->type = getType(FUNC_TYPE);
+				node->type->label = node->u.n.child[0]->type->label;
+				node->type->u.func.nargs = 0;
+				addParamsToFunction(node, node->u.n.child[1]->type);
+				passTypeBelowPointer(node->type, node->u.n.child[0]->type);
+				//node->type = node->u.n.child[0]->type;
 				//node->type->temp = node->u.n.child[1]->type;
 				break;
 			case DIRECT_DECLARATORr5:
 				printf("direct declarator5\n");
-				node->type = node->u.n.child[0]->type;
+				node->type = getType(FUNC_TYPE);
+				node->type->label = node->u.n.child[0]->type->label;
+				node->type->u.func.nargs = 0;
+				addParamsToFunction(node, node->u.n.child[1]->type);
+				passTypeBelowPointer(node->type, node->u.n.child[0]->type);
+				//node->type = node->u.n.child[0]->type;
 				//node->type->temp = node->u.n.child[1]->type;
 				break;
 			case DIRECT_DECLARATORr6:
@@ -1700,8 +1726,10 @@ parameter_declaration_clause:
 					passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
 				}else{
 					node->type = node->u.n.child[0]->type;
+					//node->type->label = node->u.n.child[1]->type->label;
 					node->u.n.child[1]->type->base_type = node->u.n.child[0]->type->base_type;
 				}
+				node->type->label = node->u.n.child[1]->type->label;
 				break;
 			case PARAMETER_DECLARATIONr2 :
 				printf("parameter declaration2\n");
@@ -1710,8 +1738,10 @@ parameter_declaration_clause:
 					passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
 				}else{
 					node->type = node->u.n.child[0]->type;
+					//node->type->label = node->u.n.child[1]->type->label;
 					node->u.n.child[1]->type->base_type = node->u.n.child[0]->type->base_type;
 				}
+				node->type->label = node->u.n.child[1]->type->label;
 				break;
 			case PARAMETER_DECLARATIONr3 :
 				printf("parameter declaration3\n");
@@ -1736,8 +1766,7 @@ parameter_declaration_clause:
 				node->type->label = node->u.n.child[1]->type->label;
 				node->type->u.func.retType = node->u.n.child[0]->type;
 				//addParamsToFunction(node, node->u.n.child[1]->type->temp);
-				printf("***********\n");
-				printf("function args: %d\n", node->type->u.func.nfields);
+				printf("function args: %d\n", node->type->u.func.nargs);
 				passTypeBelowPointer(node->type, node->u.n.child[1]->type);
 				//printf("function args: %d\n", node->type->u.func.nfields);
 				break;
@@ -2276,33 +2305,62 @@ type_id_list_opt:
 }
 
 void makeSymbolTables(TreeNode *node){
+	int p;
 	if(node != NULL){
-		switch(node->type->base_type) {
+		printf("%d %s\n", node->symbol, humanreadable(node->symbol));
+		switch(node->u.n.rule) {
 			case TRANSLATION_UNITr1 :
+				printf("creating global symbol table %s\n", node->type->label);
 				globalSymbolTable = (SymbolTable *)createGlobalSymbolTable(SYMBOL_TABLE_SIZE);
+				globalSymbolTable->entries = 0;
+				globalSymbolTable->scope = node->type;
+				printf("%s\n", globalSymbolTable->scope->label);
 				currentSymbolTable = globalSymbolTable;
 				break;
 		
-			case FUNCTION_DEFINITIONr1:
-				createSymbolTable(currentSymbolTable, SYMBOL_TABLE_SIZE);
+			case FUNCTION_DEFINITIONr1 :
+				printf("creating function symbol table\n");
+				currentSymbolTable = createSymbolTable(currentSymbolTable, SYMBOL_TABLE_SIZE);
+				currentSymbolTable->entries = 0;
+				currentSymbolTable->scope = node->type;
 				
 				break;	
-			case FUNCTION_DEFINITIONr2:
-				createSymbolTable(currentSymbolTable, SYMBOL_TABLE_SIZE);
+			case FUNCTION_DEFINITIONr2 :
+				printf("%s: %s %s\n", 
+						currentSymbolTable->scope->label, 
+						humanreadable(node->type->base_type), 
+						node->type->label);
+				addToSymbolTable(currentSymbolTable->parent, node->type);
+				printf("creating function symbol table\n");
+				currentSymbolTable = createSymbolTable(currentSymbolTable, SYMBOL_TABLE_SIZE);
+				currentSymbolTable->entries = 0;
+				currentSymbolTable->scope = node->type;
 				if(inSymbolTable(currentSymbolTable, node->type)){
 					exitStatus = 2;
 					getErrorMessage(ER_USED_SYMBOL_LABEL);
 					yyerror(node->type->label);
 				} else {
-					addToSymbolTable(currentSymbolTable, node->type);
+					for(p = 0; p < node->type->u.func.nargs; p++){
+						printf("%s: %s %s\n", 
+								currentSymbolTable->scope->label, 
+								humanreadable(node->type->u.func.args[p]->elemtype->base_type), 
+								node->type->u.func.args[p]->name);
+						addToSymbolTable(currentSymbolTable, node->type->u.func.args[p]->elemtype);
+					}
 				}
 				break;
-			case FUNCTION_DEFINITIONr3:
-				createSymbolTable(currentSymbolTable, SYMBOL_TABLE_SIZE);
+			case FUNCTION_DEFINITIONr3 :
+				printf("creating function symbol table\n");
+				currentSymbolTable = createSymbolTable(currentSymbolTable, SYMBOL_TABLE_SIZE);
+				currentSymbolTable->entries = 0;
+				currentSymbolTable->scope = node->type;
 				
 				break;
-			case FUNCTION_DEFINITIONr4:
-				createSymbolTable(currentSymbolTable, SYMBOL_TABLE_SIZE);
+			case FUNCTION_DEFINITIONr4 :
+				printf("creating function symbol table\n");
+				currentSymbolTable = createSymbolTable(currentSymbolTable, SYMBOL_TABLE_SIZE);
+				currentSymbolTable->entries = 0;
+				currentSymbolTable->scope = node->type;
 				
 				break;
 				/*
@@ -2311,6 +2369,10 @@ void makeSymbolTables(TreeNode *node){
 																			{ $$ = (TreeNode *)alacnary(FUNCTION_DEFINITIONr2, 4, $1, $2, $3, $4); }
 	| declarator function_try_block								{ $$ = (TreeNode *)alacnary(FUNCTION_DEFINITIONr3, 2, $1, $2); }
 	| decl_specifier_seq declarator function_try_block		{ $$ = (TreeNode *)alacnary(FUNCTION_DEFINITIONr4, 3, $1, $2, $3); }*/
+	
+			default : 
+				//printf("oops!\n");
+				break;
 		}
 		int n;
 		for(n = 0; n < node->u.n.children; n++){
