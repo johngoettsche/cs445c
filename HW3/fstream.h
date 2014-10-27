@@ -1,0 +1,4 @@
+class ifstream {
+   public:
+      ignore();
+   };

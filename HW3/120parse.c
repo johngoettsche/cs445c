@@ -23,6 +23,15 @@ extern int exitStatus;
 SymbolTable *currentSymbolTable;
 SymbolTable *globalSymbolTable;
 
+extern int using_namespace_std;
+extern int included_iostream;
+extern int included_cstdlib;
+extern int included_ctime; 
+extern int included_string;
+extern int included_fstream;
+extern int included_stdio; 
+extern int included_stdlib;
+
 char *humanreadable(int ncode){
 	if(ncode >= 1000 && ncode < 20000)ncode = (int)(ncode / 100) * 100;
 	char *name;
@@ -367,19 +376,22 @@ TreeNode *alacnary(int prodRule, int children,...){
 NType *getType(int tcode){
 	struct NType *ntype;
 	if((ntype = (NType *)calloc(1, sizeof(NType))) == NULL) memoryError();
-	//printf("%s\n", humanreadable(tcode));
 	ntype->base_type = tcode;
 	
 	return ntype;
 }
 
 SymbolTable *createSymbolTable(SymbolTable *parent, int size){
+	int i;
 	SymbolTable *symbolTable;
 	if((symbolTable = (SymbolTable *)calloc(1, sizeof(SymbolTable))) == NULL) memoryError();
 	symbolTable->parent = parent;
 	symbolTable->size = size;
+	symbolTable->entries = 0;
 	if((symbolTable->bucket = calloc(size, sizeof(SymbolTableEntry))) == NULL) memoryError();
-	
+	for(i = 0; i < size; i++){
+		symbolTable->bucket[i] = NULL;
+	}
 	return symbolTable;
 }
 
@@ -388,6 +400,7 @@ SymbolTable *createGlobalSymbolTable(int size){
 	SymbolTable *symbolTable;
 	if((symbolTable = (SymbolTable *)calloc(1, sizeof(SymbolTable))) == NULL) memoryError();
 	symbolTable->size = size;
+	symbolTable->entries = 0;
 	if((symbolTable->bucket = calloc(size, sizeof(SymbolTableEntry))) == NULL) memoryError();
 	for(i = 0; i < size; i++){
 		symbolTable->bucket[i] = NULL;
@@ -406,42 +419,55 @@ int hashSymbol(NType *symb, int size){
 
 int inSymbolTable(SymbolTable *symbolTable, NType *symb){
 	int hashvalue = hashSymbol(symb, symbolTable->size);
-	if(symbolTable->bucket[hashvalue]->symb == NULL) return 0;
 	SymbolTableEntry *current = symbolTable->bucket[hashvalue];
 	while(current != NULL){
 		if(strcmp(current->symb->label, symb->label) == 0) return 1;
 		current = current->next;
 	}
+	if(symbolTable->parent != NULL) 
+		if(inSymbolTable(symbolTable->parent, symb) == 1) return 1;
 	return 0;
 }
 
 void addToSymbolTable(SymbolTable *symbolTable, NType *symb){
+	printf("*addToSymbolTable*\n");
+	printf("%s\n", symbolTable->scope->label);
 	SymbolTableEntry *newEntry;
 	if((newEntry = (SymbolTableEntry *)calloc(1, sizeof(SymbolTableEntry))) == NULL) memoryError();
 	newEntry->symb = symb;
+	printf("%s\n", symb->label);
 	int hashvalue = hashSymbol(symb, symbolTable->size);
+	printf("b");
 	if(symbolTable->bucket[hashvalue] == NULL){
+		printf("c\n");
 		symbolTable->bucket[hashvalue] = newEntry;
-	}
-	else {
+		symbolTable->entries++;
+	} else {
+		printf("C");
 		if(inSymbolTable(symbolTable, symb) == 0){
+			printf("d");
 			newEntry->next = symbolTable->bucket[hashvalue];
 			symbolTable->bucket[hashvalue] = newEntry;
+			symbolTable->entries++;
 		}else{
+		
+			printf("D");
 			/* symbol used */
+			exitStatus = 3;
 			getErrorMessage(ER_USED_SYMBOL_LABEL);
 			yyerror(symb->label);
 		}
 	}
+	printf("\naddToSymbolTable: [%d]\n", symbolTable->entries);
 }
 
-NType *getOperatorType(int opr, NType *op1, NType *op2){
+NType *getOperatorType(NType *op1, NType *op2){
 	if(op1->base_type == op2->base_type)return getType(op1->base_type);
-		switch(op1->base_type){
-			case INT_TYPE :
-			
-				break;
-		}
+	else {
+		exitStatus = 3;
+		getErrorMessage(ER_TYPE_MISMATCH);
+		yyerror(NULL);
+	}
 }
 
 void passTypeBelowPointer(NType *source, NType *dest){
@@ -455,24 +481,70 @@ void passTypeBelowPointer(NType *source, NType *dest){
 	}
 }
 
+void passAccessBelow(NType *source, NType *dest){
+	printf("*passAccessBelow*\n");
+	if(dest != NULL){
+		dest->pub = source->pub;
+	}
+	if(dest->base_type == TOUPLE_TYPE){
+		passAccessBelow(source, dest->u.touple.elems[0]);
+		passAccessBelow(source, dest->u.touple.elems[1]);
+	} 
+}
+
 void addParamsToFunction(TreeNode *node, NType *param){
 	if(node != NULL){
 		printf("*addParamsToFunction*\n");
-		//printf("addParamsToFunction %s : %s : %s\n", node->type->label, humanreadable(param->base_type), param->label);
 		int e;
 		Field *newField;
 		if(param->base_type == TOUPLE_TYPE){
 			for(e = 0; e < param->u.touple.nelems; e++)
 				addParamsToFunction(node, param->u.touple.elems[e]);
 		} else {
-			if(param != NULL){
+			if(param->base_type != NULL_TYPE){
 				newField = (Field *)calloc(1, sizeof(Field));
 				newField->name = param->label;
 				newField->elemtype = param;
+				if(node->type->u.func.nargs == 0) node->type->u.func.args = calloc(10, sizeof(struct typeinfo *));
 				node->type->u.func.nargs++;
-				node->type->u.func.args = realloc(node->type->u.func.args, node->type->u.func.nargs);
-				node->type->u.func.args[node->type->u.func.nargs] = newField;
-				printf("---adding to function: %s : %s : %s\n", node->type->label, humanreadable(param->base_type), param->label);
+				if(node->type->u.func.nargs % 10 > 8)
+					node->type->u.func.args = realloc(node->type->u.func.args, ((int)(node->type->u.func.nargs / 10) + 20 ) * sizeof(struct typeinfo *));
+				node->type->u.func.args[node->type->u.func.nargs - 1] = newField;
+			}
+		}
+	}
+}
+
+void addMembersToClass(TreeNode *node, NType *member){
+	if(node != NULL){
+		printf("*addMembersToClass*\n");
+		int e;
+		Field *newField;
+		if(member->base_type == TOUPLE_TYPE){
+			for(e = 0; e < member->u.touple.nelems; e++)
+				addMembersToClass(node, member->u.touple.elems[e]);
+		} else {
+			if(member->base_type != NULL_TYPE){
+				if(node->type->u.clas.nfields == 0) {
+					node->type->u.clas.f = calloc(10, sizeof(struct typeinfo *));
+					//make default constructor
+					Field *constructorField = (Field *)calloc(1, sizeof(Field));
+					constructorField->name = node->type->label;
+					NType *constructor = getType(FUNC_TYPE);
+					constructor->label = node->type->label;
+					constructor->u.func.nargs = 0;
+					constructor->pub = PUBLIC_TYPE;
+					constructorField->elemtype = constructor;
+					node->type->u.clas.f[0] = constructorField;
+					node->type->u.clas.nfields++;
+				}
+				newField = (Field *)calloc(1, sizeof(Field));
+				newField->name = member->label;
+				newField->elemtype = member;
+				node->type->u.clas.nfields++;
+				if(node->type->u.clas.nfields % 10 > 8)
+					node->type->u.clas.f = realloc(node->type->u.clas.f, ((int)(node->type->u.clas.nfields / 10) + 20) * sizeof(struct typeinfo *));
+				node->type->u.clas.f[node->type->u.clas.nfields - 1] = newField;
 			}
 		}
 	}
@@ -488,6 +560,9 @@ void buildTypes(TreeNode *node){
 		}
 		switch(node->u.n.rule){
 			case TYPEDEF_NAMEr1 :
+				/*exitStatus = 3;
+				getErrorMessage(ER_NOT_SUPPORTED);
+				yyerror("typedef");*/
 				printf("typedef name1\n");
 				node->type = getType(UNKNOWN_TYPE);
 				node->type->label = node->u.n.child[0]->u.t.token->text;
@@ -856,21 +931,40 @@ pm_expression:
 	cast_expression													{ $$ = (TreeNode *)alacnary(PM_EXPRESSIONr1, 1, $1); }
 	| pm_expression DOTSTAR cast_expression					{ $$ = (TreeNode *)alacnary(PM_EXPRESSIONr2, 3, $1, $2, $3); }
 	| pm_expression ARROWSTAR cast_expression					{ $$ =(TreeNode *)alacnary(PM_EXPRESSIONr3, 3, $1, $2, $3); }
-	;
+	;*/
+	
+			case MULTIPLICATIVE_EXPRESSIONr1 :
+				printf("multiplicative_expression1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case MULTIPLICATIVE_EXPRESSIONr2 :
+				printf("multiplicative_expression2\n");
+				node->type = getOperatorType(node->u.n.child[0]->type, node->u.n.child[1]->type);
+				break;
+			case MULTIPLICATIVE_EXPRESSIONr3 :
+				printf("multiplicative_expression3\n");
+				node->type = getOperatorType(node->u.n.child[0]->type, node->u.n.child[1]->type);
+				break;
+			case MULTIPLICATIVE_EXPRESSIONr4 :
+				printf("multiplicative_expression4\n");
+				node->type = getOperatorType(node->u.n.child[0]->type, node->u.n.child[1]->type);
+				break;
 
-multiplicative_expression:
-	pm_expression														{ $$ = (TreeNode *)alacnary(MULTIPLICATIVE_EXPRESSIONr1, 1, $1); }
-	| multiplicative_expression '*' pm_expression			{ $$ = (TreeNode *)alacnary(MULTIPLICATIVE_EXPRESSIONr2, 2, $1, $3); }
-	| multiplicative_expression '/' pm_expression			{ $$ = (TreeNode *)alacnary(MULTIPLICATIVE_EXPRESSIONr3, 2, $1, $3); }
-	| multiplicative_expression '%' pm_expression			{ $$ = (TreeNode *)alacnary(MULTIPLICATIVE_EXPRESSIONr4, 2, $1, $3); }
-	;
+			case ADDITIVE_EXPRESSIONr1 :
+				printf("additive_expression1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case ADDITIVE_EXPRESSIONr2 :
+				printf("additive_expression2\n");
+				node->type = getOperatorType(node->u.n.child[0]->type, node->u.n.child[1]->type);
+				break;
+			case ADDITIVE_EXPRESSIONr3 :
+				printf("additive_expression3\n");
+				node->type = getOperatorType(node->u.n.child[0]->type, node->u.n.child[1]->type);
+				break;
+				
 
-additive_expression:
-	multiplicative_expression										{ $$ = (TreeNode *)alacnary(ADDITIVE_EXPRESSIONr1, 1, $1); }
-	| additive_expression '+' multiplicative_expression	{ $$ = (TreeNode *)alacnary(ADDITIVE_EXPRESSIONr2, 2, $1, $3); }
-	| additive_expression '-' multiplicative_expression	{ $$ = (TreeNode *)alacnary(ADDITIVE_EXPRESSIONr3, 2, $1, $3); }
-	;
-
+/*
 shift_expression:
 	additive_expression												{ $$ = (TreeNode *)alacnary(SHIFT_EXPRESSIONr1, 1, $1); }
 	| shift_expression SL additive_expression					{ $$ = (TreeNode *)alacnary(SHIFT_EXPRESSIONr2, 3, $1, $2, $3); }
@@ -1040,7 +1134,7 @@ labeled_statement:
 			case SELECTION_STATEMENTr1 :
 				printf("selection statement1\n");
 				if(node->u.n.child[1]->type->base_type != BOOL_TYPE){
-					exitStatus = 2;
+					exitStatus = 3;
 					getErrorMessage(ER_BOOL_EXPECTED);
 					yyerror(NULL);
 				}
@@ -1048,7 +1142,7 @@ labeled_statement:
 			case SELECTION_STATEMENTr2 :
 				printf("selection statement2\n");
 				if(node->u.n.child[1]->type->base_type != BOOL_TYPE){
-					exitStatus = 2;
+					exitStatus = 3;
 					getErrorMessage(ER_BOOL_EXPECTED);
 					yyerror(NULL);
 				}
@@ -1140,14 +1234,12 @@ declaration_statement:
 				break;
 			case DECLARATION_SEQr2 :
 				printf("declaration seq2\n");
-			/*?????????*/
-				node->type = node->u.n.child[0]->type;
+				node->type = getType(TOUPLE_TYPE);
+				node->type->u.touple.nelems = 2;
+				node->type->u.touple.elems = calloc(2, sizeof(struct typeinfo *));
+				node->type->u.touple.elems[0] = node->u.n.child[0]->type;
+				node->type->u.touple.elems[1] = node->u.n.child[1]->type;
 				break;
- /*
-declaration_seq:
-	declaration															{ $$ = (TreeNode *)alacnary(DECLARATION_SEQr1, 1, $1); }
-	| declaration_seq declaration									{ $$ = (TreeNode *)alacnary(DECLARATION_SEQr2, 2, $1, $2); }
-	;*/
 
 			case DECLARATIONr1 :
 				printf("declaration1\n");
@@ -1223,11 +1315,19 @@ declaration_seq:
 				break;
 			case DECL_SPECIFIERr4:
 				printf("decl specifier4\n");
-				node->type = node->u.n.child[0]->type;
+				exitStatus = 3;
+				getErrorMessage(ER_NOT_SUPPORTED);
+				yyerror("friend");
+				//node->type = node->u.n.child[0]->type;
+				exit(exitStatus);
 				break;
 			case DECL_SPECIFIERr5:
 				printf("decl specifier5\n");
-				node->type = node->u.n.child[0]->type;
+				exitStatus = 3;
+				getErrorMessage(ER_NOT_SUPPORTED);
+				yyerror("typedef");
+				//node->type = node->u.n.child[0]->type;
+				exit(exitStatus);
 				break;
 				
 			case DECL_SPECIFIER_SEQr1:
@@ -1314,7 +1414,6 @@ function_specifier:
 				break;
 			case SIMPLE_TYPE_SPECIFIERr8:
 				printf("simple type specifier8\n");
-				//printf("%d\n", INT_TYPE);
 				node->type = getType(INT_TYPE);
 				node->u.n.child[0]->type = node->type;
 				break;
@@ -1517,40 +1616,36 @@ linkage_specification:
 				node->type = getType(FUNC_TYPE);
 				node->type->label = node->u.n.child[0]->type->label;
 				node->type->u.func.nargs = 0;
+				//node->type->u.func.args = calloc(10, sizeof(struct typeinfo *));
 				addParamsToFunction(node, node->u.n.child[1]->type);
 				passTypeBelowPointer(node->type, node->u.n.child[0]->type);
-				//node->type = node->u.n.child[0]->type;
-				//node->type->temp = node->u.n.child[1]->type;
 				break;
 			case DIRECT_DECLARATORr3:
 				printf("direct declarator3\n");
 				node->type = getType(FUNC_TYPE);
 				node->type->label = node->u.n.child[0]->type->label;
 				node->type->u.func.nargs = 0;
+				//node->type->u.func.args = calloc(10, sizeof(struct typeinfo *));
 				addParamsToFunction(node, node->u.n.child[1]->type);
 				passTypeBelowPointer(node->type, node->u.n.child[0]->type);
-				//node->type = node->u.n.child[0]->type;
-				//node->type->temp = node->u.n.child[1]->type;
 				break;
 			case DIRECT_DECLARATORr4:
 				printf("direct declarator4\n");
 				node->type = getType(FUNC_TYPE);
 				node->type->label = node->u.n.child[0]->type->label;
 				node->type->u.func.nargs = 0;
+				//node->type->u.func.args = calloc(10, sizeof(struct typeinfo *));
 				addParamsToFunction(node, node->u.n.child[1]->type);
 				passTypeBelowPointer(node->type, node->u.n.child[0]->type);
-				//node->type = node->u.n.child[0]->type;
-				//node->type->temp = node->u.n.child[1]->type;
 				break;
 			case DIRECT_DECLARATORr5:
 				printf("direct declarator5\n");
 				node->type = getType(FUNC_TYPE);
 				node->type->label = node->u.n.child[0]->type->label;
 				node->type->u.func.nargs = 0;
+				//node->type->u.func.args = calloc(10, sizeof(struct typeinfo *));
 				addParamsToFunction(node, node->u.n.child[1]->type);
 				passTypeBelowPointer(node->type, node->u.n.child[0]->type);
-				//node->type = node->u.n.child[0]->type;
-				//node->type->temp = node->u.n.child[1]->type;
 				break;
 			case DIRECT_DECLARATORr6:
 			/*????????*/
@@ -1756,29 +1851,25 @@ parameter_declaration_clause:
 				
 			case FUNCTION_DEFINITIONr1:
 				printf("function definition1\n");
-				node->type = getType(FUNC_TYPE);
+				node->type = node->u.n.child[0]->type;
 				node->type->u.func.retType = getType(VOID_TYPE);
 				passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
 				break;	
 			case FUNCTION_DEFINITIONr2:
 				printf("function definition2\n");
-				node->type = getType(FUNC_TYPE);
-				node->type->label = node->u.n.child[1]->type->label;
+				node->type = node->u.n.child[1]->type;
 				node->type->u.func.retType = node->u.n.child[0]->type;
-				//addParamsToFunction(node, node->u.n.child[1]->type->temp);
-				printf("function args: %d\n", node->type->u.func.nargs);
 				passTypeBelowPointer(node->type, node->u.n.child[1]->type);
-				//printf("function args: %d\n", node->type->u.func.nfields);
 				break;
 			case FUNCTION_DEFINITIONr3:
 				printf("function definition3\n");
-				node->type = getType(FUNC_TYPE);
+				node->type = node->u.n.child[0]->type;
 				passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
 				break;
 			case FUNCTION_DEFINITIONr4:
 				printf("function definition4\n");
-				node->type = getType(FUNC_TYPE);
-				//addParamsToFunction(node, node->u.n.child[1]->type->temp);
+				node->type = node->u.n.child[1]->type;
+				node->type->u.func.retType = node->u.n.child[0]->type;
 				passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
 				break;
 				
@@ -1825,6 +1916,7 @@ parameter_declaration_clause:
 			case CLASS_SPECIFIERr1 :
 				printf("type name1\n");
 				node->type = node->u.n.child[0]->type;
+				addMembersToClass(node, node->u.n.child[1]->type);
 				break;
  /*
 class_specifier:
@@ -1881,13 +1973,24 @@ class_head:
 				
 			case MEMBER_SPECIFICATIONr1 :
 				printf("member speccification1\n");
-				node->type = getType(MEMBER_TYPE);
-				//node->type->pub = node->u.n.child[0]->type;
+				if(node->u.n.child[1]->type->base_type != NULL_TYPE){
+					node->type = getType(TOUPLE_TYPE);
+					node->type->u.touple.nelems = 2;
+					node->type->u.touple.elems = calloc(2, sizeof(struct typeinfo *));
+					printf("%s\n", node->u.n.child[0]->type->label);
+					printf("%s\n", node->u.n.child[1]->type->label);
+					node->type->u.touple.elems[0] = node->u.n.child[0]->type;
+					node->type->u.touple.elems[1] = node->u.n.child[1]->type;
+					passAccessBelow(node->u.n.child[0]->type, node->u.n.child[1]->type);
+				} else {
+					node->type = node->u.n.child[0]->type;
+				}
 				break;
 			case MEMBER_SPECIFICATIONr2 :
 				printf("member speccification2\n");
-				node->type = getType(MEMBER_TYPE);
-				node->type->pub = node->u.n.child[0]->type;
+				node->type = node->u.n.child[1]->type;
+				node->type->pub = node->u.n.child[0]->type->pub;
+				passAccessBelow(node->u.n.child[0]->type, node->u.n.child[1]->type);
 				break;
 /*
 member_specification:
@@ -1897,7 +2000,8 @@ member_specification:
 	
 			case MEMBER_DECLARATIONr1 :
 				printf("member declaration1\n");
-				node->type = node->u.n.child[0]->type;
+				//if(*********************************node->u.n.child[1]->label)
+				node->type = node->u.n.child[1]->type;
 				passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
 				break;
 			case MEMBER_DECLARATIONr2 :
@@ -2005,17 +2109,20 @@ base_specifier:
 	
 			case ACCESS_SPECIFIERr1 :
 				printf("access specifier1\n");
-				node->type = getType(PRIVATE_TYPE);
+				node->type = getType(UNKNOWN_TYPE);
+				node->type->pub = PRIVATE_TYPE;
 				node->u.n.child[0]->type = node->type;
 				break;
 			case ACCESS_SPECIFIERr2 :
 				printf("access specifier2\n");
-				node->type = getType(PROTECTED_TYPE);
+				node->type = getType(UNKNOWN_TYPE);
+				node->type->pub = PROTECTED_TYPE;
 				node->u.n.child[0]->type = node->type;
 				break;
 			case ACCESS_SPECIFIERr3 :
 				printf("access specifier3\n");
-				node->type = getType(PUBLIC_TYPE);
+				node->type = getType(UNKNOWN_TYPE);
+				node->type->pub = PUBLIC_TYPE;
 				node->u.n.child[0]->type = node->type;
 				break;
 
@@ -2264,7 +2371,7 @@ direct_abstract_declarator_opt:
 			case MEMBER_SPECIFICATION_OPTr2 :
 				printf("member specification opt2\n");
 				node->type = node->u.n.child[0]->type;
-				node->type->pub = node->u.n.child[0]->type->pub;  
+				//node->type->pub = node->u.n.child[0]->type->pub;  
 				break;
 /*
 
@@ -2304,76 +2411,134 @@ type_id_list_opt:
 	}
 }
 
+void addSimpleDeclarations(SymbolTable *currentSymbolTable, NType *current){
+	printf("**addSimpleDeclarations**\n");
+	if(current != NULL){
+		if(current->base_type == TOUPLE_TYPE){
+			addSimpleDeclarations(currentSymbolTable, current->u.touple.elems[0]);
+			addSimpleDeclarations(currentSymbolTable, current->u.touple.elems[1]);
+		} else {
+			printf("adding %s\n", current->label);
+			addToSymbolTable(currentSymbolTable, current);
+		}
+	}
+}
+
+void addFunctionBodySymbols(SymbolTable *currentSymbolTable, TreeNode *node){
+	//printf("**addFunctionBodySymbols**\n");
+	if(node != NULL){
+		printf("\t->%s : %s<-\n", humanreadable(node->symbol), node->type->label);
+		switch(node->u.n.rule) {
+			case SIMPLE_DECLARATIONr1 :
+				printf("simple declaration 1\n");
+				addSimpleDeclarations(currentSymbolTable, node->u.n.child[1]->type);
+				printf("simple declaration 1 complete\n");
+				break;
+			case SIMPLE_DECLARATIONr2 :
+				printf("simple declaration 2\n");
+				//addSimpleDeclarations(currentSymbolTable, node->u.n.child[1]->type);
+				printf("simple declaration 2 complete\n");
+				break;
+			
+			default :
+				break;
+		}
+		int n;
+		for(n = 0; n < node->u.n.children; n++){
+			addFunctionBodySymbols(currentSymbolTable, node->u.n.child[n]);
+		}
+	}
+}
+
 void makeSymbolTables(TreeNode *node){
 	int p;
 	if(node != NULL){
-		printf("%d %s\n", node->symbol, humanreadable(node->symbol));
+		printf("\t->%s : %s<-\n", humanreadable(node->symbol), node->type->label);
 		switch(node->u.n.rule) {
 			case TRANSLATION_UNITr1 :
-				printf("creating global symbol table %s\n", node->type->label);
+				printf("translation unit 1\n");
 				globalSymbolTable = (SymbolTable *)createGlobalSymbolTable(SYMBOL_TABLE_SIZE);
 				globalSymbolTable->entries = 0;
 				globalSymbolTable->scope = node->type;
-				printf("%s\n", globalSymbolTable->scope->label);
 				currentSymbolTable = globalSymbolTable;
+				printf("translation unit 1 complete\n");
 				break;
 		
 			case FUNCTION_DEFINITIONr1 :
-				printf("creating function symbol table\n");
+				printf("function definition 1\n");
+				addToSymbolTable(currentSymbolTable, node->type);
 				currentSymbolTable = createSymbolTable(currentSymbolTable, SYMBOL_TABLE_SIZE);
 				currentSymbolTable->entries = 0;
 				currentSymbolTable->scope = node->type;
-				
+				//add parameters
+				for(p = 0; p < node->type->u.func.nargs; p++){
+					addToSymbolTable(currentSymbolTable, node->type->u.func.args[p]->elemtype);
+				}
+				//add body variables
+				addFunctionBodySymbols(currentSymbolTable, node->u.n.child[2]);
+				printf("function definition 1 complete[%d]\n", currentSymbolTable->entries);
 				break;	
 			case FUNCTION_DEFINITIONr2 :
-				printf("%s: %s %s\n", 
-						currentSymbolTable->scope->label, 
-						humanreadable(node->type->base_type), 
-						node->type->label);
-				addToSymbolTable(currentSymbolTable->parent, node->type);
-				printf("creating function symbol table\n");
+				printf("function definition 2\n");
+				addToSymbolTable(currentSymbolTable, node->type);
 				currentSymbolTable = createSymbolTable(currentSymbolTable, SYMBOL_TABLE_SIZE);
 				currentSymbolTable->entries = 0;
 				currentSymbolTable->scope = node->type;
-				if(inSymbolTable(currentSymbolTable, node->type)){
-					exitStatus = 2;
-					getErrorMessage(ER_USED_SYMBOL_LABEL);
-					yyerror(node->type->label);
-				} else {
-					for(p = 0; p < node->type->u.func.nargs; p++){
-						printf("%s: %s %s\n", 
-								currentSymbolTable->scope->label, 
-								humanreadable(node->type->u.func.args[p]->elemtype->base_type), 
-								node->type->u.func.args[p]->name);
-						addToSymbolTable(currentSymbolTable, node->type->u.func.args[p]->elemtype);
-					}
+				//add parameters
+				for(p = 0; p < node->type->u.func.nargs; p++){
+					addToSymbolTable(currentSymbolTable, node->type->u.func.args[p]->elemtype);
 				}
+				//add body variables
+				addFunctionBodySymbols(currentSymbolTable, node->u.n.child[3]);
+				printf("function definition 2 complete [%d]\n", currentSymbolTable->entries);
 				break;
 			case FUNCTION_DEFINITIONr3 :
-				printf("creating function symbol table\n");
+				printf("function definition 3\n");
+				addToSymbolTable(currentSymbolTable, node->type);
 				currentSymbolTable = createSymbolTable(currentSymbolTable, SYMBOL_TABLE_SIZE);
 				currentSymbolTable->entries = 0;
 				currentSymbolTable->scope = node->type;
-				
+				//add parameters
+				for(p = 0; p < node->type->u.func.nargs; p++){
+					addToSymbolTable(currentSymbolTable, node->type->u.func.args[p]->elemtype);
+				}
+				//add body variables
+				addFunctionBodySymbols(currentSymbolTable, node->u.n.child[2]);
+				printf("function definition 3 complete[%d]\n", currentSymbolTable->entries);
 				break;
 			case FUNCTION_DEFINITIONr4 :
-				printf("creating function symbol table\n");
+				printf("function definition 4\n");
+				addToSymbolTable(currentSymbolTable, node->type);
 				currentSymbolTable = createSymbolTable(currentSymbolTable, SYMBOL_TABLE_SIZE);
 				currentSymbolTable->entries = 0;
 				currentSymbolTable->scope = node->type;
-				
+				//add parameters
+				for(p = 0; p < node->type->u.func.nargs; p++){
+					addToSymbolTable(currentSymbolTable, node->type->u.func.args[p]->elemtype);
+				}
+				//add body variables
+				addFunctionBodySymbols(currentSymbolTable, node->u.n.child[3]);
+				printf("function definition 4 complete[%d]\n", currentSymbolTable->entries);
 				break;
-				/*
-	declarator ctor_initializer_opt function_body			{ $$ = (TreeNode *)alacnary(FUNCTION_DEFINITIONr1, 3, $1, $2, $3); }
-	| decl_specifier_seq declarator ctor_initializer_opt function_body
-																			{ $$ = (TreeNode *)alacnary(FUNCTION_DEFINITIONr2, 4, $1, $2, $3, $4); }
-	| declarator function_try_block								{ $$ = (TreeNode *)alacnary(FUNCTION_DEFINITIONr3, 2, $1, $2); }
-	| decl_specifier_seq declarator function_try_block		{ $$ = (TreeNode *)alacnary(FUNCTION_DEFINITIONr4, 3, $1, $2, $3); }*/
-	
+
+			case CLASS_SPECIFIERr1 :
+				printf("class specifier 1\n");
+				addToSymbolTable(currentSymbolTable, node->type);
+				currentSymbolTable = createSymbolTable(currentSymbolTable, SYMBOL_TABLE_SIZE);
+				currentSymbolTable->entries = 0;
+				currentSymbolTable->scope = node->type;
+				//add members
+				for(p = 0; p < node->type->u.clas.nfields; p++)
+					addToSymbolTable(currentSymbolTable, node->type->u.clas.f[p]->elemtype);
+				printf("class specifier 1 complete[%d]\n", currentSymbolTable->entries);
+				currentSymbolTable = currentSymbolTable->parent;
+				break;
+				
 			default : 
 				//printf("oops!\n");
 				break;
 		}
+		//recursion
 		int n;
 		for(n = 0; n < node->u.n.children; n++){
 			makeSymbolTables(node->u.n.child[n]);

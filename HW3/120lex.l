@@ -58,6 +58,7 @@ FILE *saved_yyin;
 int exitStatus = 0;
 
 static int yywrap(void);
+void include();
 void handle_include();
 void pushTypeStack(int);
 void popTypeStack();
@@ -69,6 +70,7 @@ static int check_identifier(char *);
 static int alac(Token *);
 void lexerr(char *);
 
+int using_namespace_std = 0;
 int included_iostream = 0;
 int included_cstdlib = 0;
 int included_ctime = 0; 
@@ -76,6 +78,7 @@ int included_string = 0;
 int included_fstream = 0;
 int included_stdio = 0; 
 int included_stdlib = 0;
+int included_cmath = 0;
 int typedefMode = 0;
 int unionMode = 0;
 %}
@@ -95,11 +98,7 @@ stringtext				([^"])|(\\.)
 "/*"											{ skip_comment(); }
 "//"											{ skip_until_eol(); }
 
-"{"											{ /* struct{typename elementname}; currently not supported 
-													* in the grammar but supported in C++
-													if(topType->tcode == STRUCT)popTypeStack;
-													if(topType->tcode == UNION)popTypeStack;*/
-													return '{'; }
+"{"											{ return '{'; }
 "<%"											{ return '{'; }
 "}"											{ return '}'; }
 "%>"											{ return '}'; }
@@ -163,6 +162,7 @@ stringtext				([^"])|(\\.)
 ","											{ return ','; }
 "->*"											{ return alac((Token *)createToken(ARROWSTAR)); }
 "->"											{ return alac((Token *)createToken(ARROW)); }
+"using namespace std"					{ using_namespace_std = 1; }
 "asm"											{ return alac((Token *)createToken(ASM)); }
 "auto"										{ return alac((Token *)createToken(AUTO)); }
 "bool"										{ return alac((Token *)createToken(BOOL)); }
@@ -239,14 +239,24 @@ stringtext				([^"])|(\\.)
 													
 "#include"[ ]*\"[^\\"]+\"  			{ handle_include(); }
 
-"#include <iostream>"   				{ included_iostream = 1; }
-"#include <cstdlib>"    				{ included_cstdlib = 1; }
-"#include <ctime>"      				{ included_ctime = 1; }
-"#include <string>"     				{ included_string = 1; }
-"#include <string.h>"     				{ included_string = 1; }
-"#include <fstream>"    				{ included_fstream = 1; }
-"#include <stdio.h>"    				{ included_stdio = 1; }
-"#include <stdlib.h>"   				{ included_stdlib = 1; }
+"#include <iostream>"   				{ include();
+													included_iostream = 1; }
+"#include <cstdlib>"    				{ include();
+													included_cstdlib = 1; }
+"#include <ctime>"      				{ include();
+													included_ctime = 1; }
+"#include <string>"     				{ include();
+													included_string = 1; }
+"#include <string.h>"     				{ include();
+													included_string = 1; }
+"#include <fstream>"    				{ include();
+													included_fstream = 1; }
+"#include <stdio.h>"    				{ include();
+													included_stdio = 1; }
+"#include <stdlib.h>"   				{ include();
+													included_stdlib = 1; }
+"#include <cmath>"   				{ include();
+													included_cmath = 1; }
 
 [a-zA-Z_][a-zA-Z_0-9]*					{ return alac((Token *)createToken(check_identifier(yytext))); }
 
@@ -379,9 +389,34 @@ void handle_include()
    fname[strlen(fname)-1] = '\0';
    yyin = fopen(fname,"r");
    if (yyin == NULL) {
-     lexerr("cannot open include file");
-     exit(1);
+		getErrorMessage(ER_FILE_NOT_FOUND);
+		yyerror(fname);
+		exit(1);
    }
+	yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
+}
+
+void include()
+{
+	printf("\ninclude()\n");
+	pushFileStack();
+   lineno = 1;
+   saved_yyin = yyin;
+	
+	printf("a");
+   fname = strchr(yytext, '<')+1;
+	printf("b");
+   fname[strlen(fname)-1] = '\0';
+	fname = strcat(fname, ".h");
+	printf("\n** %s **\n", fname);
+   yyin = fopen(fname,"r");
+	printf("d");
+   if (yyin == NULL) {
+		getErrorMessage(ER_FILE_NOT_FOUND);
+		yyerror(fname);
+		exit(1);
+   }
+	printf("e\n");
 	yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
 }
 

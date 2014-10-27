@@ -40,24 +40,22 @@ typedef struct Field {			/* members (fields) of structs */
 typedef struct NType {
    int base_type;
 	char *label;
-	struct NType *pub;
+	int pub;
+	//struct NType *pub;
    union {
       struct array {
          int size;
 			struct NType *elemtype; 
       } arry;
       struct struc {		
-         //char *label;
 			int nfields;
          Field **f;
 		} struc;
 		struct clas { 
-			//char *label;
 			int nfields;
 			Field **f;
 		} clas;
 		struct func {
-			//char *label;
 			struct NType *retType;
 			int nargs;
 			struct Field **args;
@@ -87,7 +85,7 @@ typedef struct TreeNode {
 
 typedef struct SymbolTableEntry{
 	//Symbol *symbol;
-	NType *s;
+	NType *symb;
 	struct SymbolTableEntry *next;
 }SymbolTableEntry;
 

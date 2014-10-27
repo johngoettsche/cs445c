@@ -248,7 +248,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1685 of yacc.c  */
-#line 80 "120gram.y"
+#line 87 "120gram.y"
 
 	struct TreeNode *n;
 

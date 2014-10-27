@@ -55,3 +55,9 @@ Boolean type expected.
 50033
 Type Error
 Integer type expected.
+50033
+Type Mismatch Error
+Operand types do not match.
+50100
+File Not Found
+not found.
