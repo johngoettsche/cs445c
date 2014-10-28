@@ -22,6 +22,7 @@ getOperatorType(NType *, NType *);
 
 SymbolTable *createSymbolTable(SymbolTable, int);
 SymbolTable *createGlobalSymbolTable(int);
+SymbolTable *getSymbolTable(SymbolTable *, char *);
 int hashSymbol(NType *, int);
 int inSymbolTable(SymbolTable *, NType *);
 

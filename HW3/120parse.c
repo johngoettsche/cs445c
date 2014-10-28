@@ -334,6 +334,7 @@ char *humanreadable(int ncode){
 		case PROTECTED_TYPE : name = "protected" ; break;
 		case PUBLIC_TYPE : name = "public" ; break;
 		case MEMBER_TYPE : name = "member" ; break;
+		case STATEMENT_TYPE : name = "statement" ; break;
 
 		default : name =  "Not Found"; break;
 	}
@@ -344,14 +345,14 @@ void printTree(TreeNode *t, int depth){
 	char *text;
 	int i;
 	if(t->symbol >= 1000){
-		printf("%*s%s: %d", depth*2, " ", humanreadable(t->u.n.rule), t->u.n.children);
+		printf("%*s%s: %d", depth, " ", humanreadable(t->u.n.rule), t->u.n.children);
 		if(t->type->label != NULL) printf(" %s ", t->type->label);
 		printf(" - %s\n", humanreadable(t->type->base_type));
 		if(t->u.n.children > 0)
 			for(i=0; i<t->u.n.children; i++)
 				printTree(t->u.n.child[i], depth+1);
 	} else {
-		printf("%*s%s: %s - %s\n", depth*2, " ", humanreadable(t->symbol), t->u.t.token->text, humanreadable(t->type->base_type));
+		printf("%*s%s: %s - %s\n", depth, " ", humanreadable(t->symbol), t->u.t.token->text, humanreadable(t->type->base_type));
 	}
 }
 
@@ -383,9 +384,12 @@ NType *getType(int tcode){
 
 SymbolTable *createSymbolTable(SymbolTable *parent, int size){
 	int i;
+	parent->children++;
 	SymbolTable *symbolTable;
 	if((symbolTable = (SymbolTable *)calloc(1, sizeof(SymbolTable))) == NULL) memoryError();
 	symbolTable->parent = parent;
+	parent->child = realloc(parent->child, parent->children * sizeof(struct typeinfo *));
+	parent->child[parent->children -1] = symbolTable;
 	symbolTable->size = size;
 	symbolTable->entries = 0;
 	if((symbolTable->bucket = calloc(size, sizeof(SymbolTableEntry))) == NULL) memoryError();
@@ -406,6 +410,14 @@ SymbolTable *createGlobalSymbolTable(int size){
 		symbolTable->bucket[i] = NULL;
 	}
 	return symbolTable;
+}
+
+SymbolTable *getSymbolTable(SymbolTable *currentSymbolTable, char *tableName){
+	int c;
+	if(strcmp(currentSymbolTable->scope->label, tableName) == 0) return currentSymbolTable;
+	else for(c = 0; c < currentSymbolTable->children; c++)
+		getSymbolTable(currentSymbolTable->child[c], tableName);
+	return NULL;
 }
 
 int hashSymbol(NType *symb, int size){
@@ -430,28 +442,21 @@ int inSymbolTable(SymbolTable *symbolTable, NType *symb){
 }
 
 void addToSymbolTable(SymbolTable *symbolTable, NType *symb){
-	printf("*addToSymbolTable*\n");
-	printf("%s\n", symbolTable->scope->label);
+	printf("adding to symbol table %s:\n", symbolTable->scope->label);
 	SymbolTableEntry *newEntry;
 	if((newEntry = (SymbolTableEntry *)calloc(1, sizeof(SymbolTableEntry))) == NULL) memoryError();
 	newEntry->symb = symb;
-	printf("%s\n", symb->label);
+	printf("%s %s\n", humanreadable(symb->base_type), symb->label);
 	int hashvalue = hashSymbol(symb, symbolTable->size);
-	printf("b");
 	if(symbolTable->bucket[hashvalue] == NULL){
-		printf("c\n");
 		symbolTable->bucket[hashvalue] = newEntry;
 		symbolTable->entries++;
 	} else {
-		printf("C");
 		if(inSymbolTable(symbolTable, symb) == 0){
-			printf("d");
 			newEntry->next = symbolTable->bucket[hashvalue];
 			symbolTable->bucket[hashvalue] = newEntry;
 			symbolTable->entries++;
 		}else{
-		
-			printf("D");
 			/* symbol used */
 			exitStatus = 3;
 			getErrorMessage(ER_USED_SYMBOL_LABEL);
@@ -669,7 +674,9 @@ void buildTypes(TreeNode *node){
 				break;
 			case PRIMARY_EXPRESSIONr2 :
 				printf("primary expression2\n");
-				/* GET TYPE FROM CURRENT CLASS */
+				exitStatus = 3;
+				getErrorMessage(ER_NOT_SUPPORTED);
+				yyerror(node->type->label);
 				break;
 			case PRIMARY_EXPRESSIONr3 :
 				printf("primary expression3\n");
@@ -920,13 +927,32 @@ delete_expression:
 	| COLONCOLON DELETE cast_expression							{ $$ = (TreeNode *)alacnary(DELETE_EXPRESSIONr2, 3, $1, $2, $3); }
 	| DELETE '[' ']' cast_expression								{ $$ = (TreeNode *)alacnary(DELETE_EXPRESSIONr3, 2, $1, $4); }
 	| COLONCOLON DELETE '[' ']' cast_expression				{ $$ = (TreeNode *)alacnary(DELETE_EXPRESSIONr4, 3, $1, $2, $5); }
-	;
-
-cast_expression:
-	unary_expression													{ $$ = (TreeNode *)alacnary(CAST_EXPRESSIONr1, 1, $1); }
-	| '(' type_id ')' cast_expression							{ $$ = (TreeNode *)alacnary(CAST_EXPRESSIONr2, 2, $2, $4); }
-	;
-
+	;*/
+	
+			case CAST_EXPRESSIONr1 :
+				printf("cast_expression1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case CAST_EXPRESSIONr2 :
+				printf("cast_expression2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+	
+			case PM_EXPRESSIONr1 :
+				printf("pm_expression1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case PM_EXPRESSIONr2 :
+			/*????????????????*/
+				printf("pm_expression2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case PM_EXPRESSIONr3 :
+			/*????????????????*/
+				printf("pm_expression3\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+/*
 pm_expression:
 	cast_expression													{ $$ = (TreeNode *)alacnary(PM_EXPRESSIONr1, 1, $1); }
 	| pm_expression DOTSTAR cast_expression					{ $$ = (TreeNode *)alacnary(PM_EXPRESSIONr2, 3, $1, $2, $3); }
@@ -963,58 +989,97 @@ pm_expression:
 				node->type = getOperatorType(node->u.n.child[0]->type, node->u.n.child[1]->type);
 				break;
 				
+			case SHIFT_EXPRESSIONr1 :
+				printf("shift_expression1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case SHIFT_EXPRESSIONr2 :
+			/*??????????????????*/
+				printf("shift_expression2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case SHIFT_EXPRESSIONr3 :
+			/*??????????????????*/
+				printf("shift_expression3\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			
+			case RELATIONAL_EXPRESSIONr1 :
+				printf("relational_expression1\n");
+				node->type = getType(BOOL_TYPE);
+				break;
+			case RELATIONAL_EXPRESSIONr2 :
+			/*??????????????????*/
+				printf("relational_expression2\n");
+				node->type = getType(BOOL_TYPE);
+				break;
+			case RELATIONAL_EXPRESSIONr3 :
+			/*??????????????????*/
+				printf("relational_expression3\n");
+				node->type = getType(BOOL_TYPE);
+				break;
+			case RELATIONAL_EXPRESSIONr4 :
+			/*??????????????????*/
+				printf("relational_expression4\n");
+				node->type = getType(BOOL_TYPE);
+				break;
+				
+			case EQUALITY_EXPRESSIONr1 :
+				printf("equality_expression1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case EQUALITY_EXPRESSIONr2 :
+				printf("equality_expression2\n");
+				node->type = getType(BOOL_TYPE);
+				break;
+			case EQUALITY_EXPRESSIONr3 :
+				printf("equality_expression3\n");
+				node->type = getType(BOOL_TYPE);
+				break;
+				
+			case AND_EXPRESSIONr1 :
+				printf("and_expression1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case AND_EXPRESSIONr2 :
+				printf("and_expression2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+				
+			case EXCLUSIVE_OR_EXPRESSIONr1 :
+				printf("exclusive_or_expression1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case EXCLUSIVE_OR_EXPRESSIONr2 :
+				printf("exclusive_or_expression2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+				
+			case INCLUSIVE_OR_EXPRESSIONr1 :
+				printf("inclusive_or_expression1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case INCLUSIVE_OR_EXPRESSIONr2 :
+				printf("inclusive_or_expression2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
 
-/*
-shift_expression:
-	additive_expression												{ $$ = (TreeNode *)alacnary(SHIFT_EXPRESSIONr1, 1, $1); }
-	| shift_expression SL additive_expression					{ $$ = (TreeNode *)alacnary(SHIFT_EXPRESSIONr2, 3, $1, $2, $3); }
-	| shift_expression SR additive_expression					{ $$ = (TreeNode *)alacnary(SHIFT_EXPRESSIONr3, 3, $1, $2, $3); }
-	;
-
-relational_expression:
-	shift_expression													{ $$ = (TreeNode *)alacnary(RELATIONAL_EXPRESSIONr1, 1, $1); }
-	| relational_expression '<' shift_expression				{ $$ = (TreeNode *)alacnary(RELATIONAL_EXPRESSIONr2, 2, $1, $3); }
-	| relational_expression '>' shift_expression				{ $$ = (TreeNode *)alacnary(RELATIONAL_EXPRESSIONr3, 2, $1, $3); }
-	| relational_expression LTEQ shift_expression			{ $$ = (TreeNode *)alacnary(RELATIONAL_EXPRESSIONr4, 3, $1, $2, $3); }
-	| relational_expression GTEQ shift_expression			{ $$ = (TreeNode *)alacnary(RELATIONAL_EXPRESSIONr5, 3, $1, $2, $3); }
-	;
-
-equality_expression:
-	relational_expression											{ $$ = (TreeNode *)alacnary(EQUALITY_EXPRESSIONr1, 1, $1); }
-	| equality_expression EQ relational_expression			{ $$ = (TreeNode *)alacnary(EQUALITY_EXPRESSIONr2, 3, $1, $2, $3); }
-	| equality_expression NOTEQ relational_expression		{ $$ = (TreeNode *)alacnary(EQUALITY_EXPRESSIONr3, 1, $1, $2, $3); }
-	;
-
-and_expression:
-	equality_expression												{ $$ = (TreeNode *)alacnary(AND_EXPRESSIONr1, 1, $1); }
-	| and_expression '&' equality_expression					{ $$ = (TreeNode *)alacnary(AND_EXPRESSIONr2, 2, $1, $3); }
-	;
-
-exclusive_or_expression:
-	and_expression														{ $$ = (TreeNode *)alacnary(EXCLUSIVE_OR_EXPRESSIONr1, 1, $1); }
-	| exclusive_or_expression '^' and_expression				{ $$ = (TreeNode *)alacnary(EXCLUSIVE_OR_EXPRESSIONr2, 2, $1, $3); }
-	;
-
-inclusive_or_expression:
-	exclusive_or_expression											{ $$ = (TreeNode *)alacnary(INCLUSIVE_OR_EXPRESSIONr1, 1, $1); }
-	| inclusive_or_expression '|' exclusive_or_expression	{ $$ = (TreeNode *)alacnary(INCLUSIVE_OR_EXPRESSIONr2, 2, $1, $3); }
-	;*/
 			case LOGICAL_AND_EXPRESSIONr1 :
 				printf("logical and expression1\n");
-				node->type = getType(BOOL_TYPE);
+				node->type = node->u.n.child[0]->type;
 				break;
 			case LOGICAL_AND_EXPRESSIONr2 :
 				printf("logical and expression2\n");
-				node->type = getType(BOOL_TYPE);
+				node->type = node->u.n.child[0]->type;
 				break;
 
 			case LOGICAL_OR_EXPRESSIONr1 :
 				printf("logical or expression1\n");
-				node->type = getType(BOOL_TYPE);
+				node->type = node->u.n.child[0]->type;
 				break;
 			case LOGICAL_OR_EXPRESSIONr2 :
 				printf("logical or expression2\n");
-				node->type = getType(BOOL_TYPE);
+				node->type = node->u.n.child[0]->type;
 				break;
 
 			case CONDITIONAL_EXPRESSIONr1 :
@@ -1051,16 +1116,21 @@ assignment_operator:
 	| ANDEQ																{ $$ = (TreeNode *)alacnary(ASSIGNMENT_OPERATORr9, 1, $1); }
 	| XOREQ																{ $$ = (TreeNode *)alacnary(ASSIGNMENT_OPERATORr10, 1, $1); }
 	| OREQ																{ $$ = (TreeNode *)alacnary(ASSIGNMENT_OPERATORr11, 1, $1); }
-	;
-
-expression:
-	assignment_expression											{ $$ = (TreeNode *)alacnary(EXPRESSIONr1, 1, $1); }
-	| expression ',' assignment_expression						{ $$ = (TreeNode *)alacnary(EXPRESSIONr2, 2, $1, $3); }
-	;
-
-constant_expression:
-	conditional_expression											{ $$ = (TreeNode *)alacnary(CONSTANT_EXPRESSIONr1, 1, $1); }
-	;
+	;*/
+	
+			case EXPRESSIONr1 :
+				printf("expression1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case EXPRESSIONr2 :
+				printf("expression2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+				
+			case CONSTANT_EXPRESSIONr1 :
+				printf("constant_expression1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
 
 /*----------------------------------------------------------------------
  * Statements.
@@ -1130,33 +1200,6 @@ labeled_statement:
 				node->type->u.touple.elems[0] = node->u.n.child[0]->type;
 				node->type->u.touple.elems[1] = node->u.n.child[1]->type;
 				break;
-	
-			case SELECTION_STATEMENTr1 :
-				printf("selection statement1\n");
-				if(node->u.n.child[1]->type->base_type != BOOL_TYPE){
-					exitStatus = 3;
-					getErrorMessage(ER_BOOL_EXPECTED);
-					yyerror(NULL);
-				}
-				break;
-			case SELECTION_STATEMENTr2 :
-				printf("selection statement2\n");
-				if(node->u.n.child[1]->type->base_type != BOOL_TYPE){
-					exitStatus = 3;
-					getErrorMessage(ER_BOOL_EXPECTED);
-					yyerror(NULL);
-				}
-				break;
-			case SELECTION_STATEMENTr3 :
-				printf("selection statement3\n");
-				break;
-	/*
-
-selection_statement:
-	IF '(' condition ')' statement								{ $$ = (TreeNode *)alacnary(SELECTION_STATEMENTr1, 3, $1, $3, $5); }
-	| IF '(' condition ')' statement ELSE statement			{ $$ = (TreeNode *)alacnary(SELECTION_STATEMENTr2, 5, $1, $3, $5, $6, $7); }
-	| SWITCH '(' condition ')' statement						{ $$ = (TreeNode *)alacnary(SELECTION_STATEMENTr3, 3, $1, $3, $5); }
-	;*/
 
 			case CONDITIONr1 :
 				printf("condition1\n");
@@ -1164,15 +1207,34 @@ selection_statement:
 				break;
 			case CONDITIONr2 :
 				printf("condition2\n");
-			/************************************/
-				node->type = node->u.n.child[0]->type;
+				node->type = getOperatorType(node->u.n.child[0]->type,node->u.n.child[2]->type);
 				break;
-	/*
-condition:
-	expression															{ $$ = (TreeNode *)alacnary(CONDITIONr1, 1, $1); }
-	| type_specifier_seq declarator '=' assignment_expression
-																			{ $$ = (TreeNode *)alacnary(CONDITIONr2, 3, $1, $2, $4); }
-	;*/
+				
+			case SELECTION_STATEMENTr1 :
+				printf("selection_statement1\n");
+				node->type = getType(STATEMENT_TYPE);
+				if(node->u.n.child[1]->type->base_type != BOOL_TYPE || node->u.n.child[1]->type->base_type != INT_TYPE){
+					exitStatus = 3;
+					getErrorMessage(ER_BOOL_EXPECTED);
+					yyerror(NULL);
+				}
+				//node->type = node->u.n.child[0]->type;
+				break;
+			case SELECTION_STATEMENTr2 :
+				printf("selection_statement2\n");
+				node->type = getType(STATEMENT_TYPE);
+				if(node->u.n.child[1]->type->base_type != BOOL_TYPE || node->u.n.child[1]->type->base_type != INT_TYPE){
+					exitStatus = 3;
+					getErrorMessage(ER_BOOL_EXPECTED);
+					yyerror(NULL);
+				}
+				//node->type = node->u.n.child[0]->type;
+				break;
+			case SELECTION_STATEMENTr3 :
+				printf("selection_statement3\n");
+				node->type = getType(STATEMENT_TYPE);
+				//node->type = node->u.n.child[0]->type;
+				break;
 	
 			case ITERATION_STATEMENTr1 :
 				printf("iteration statement1\n");
@@ -1185,7 +1247,7 @@ condition:
 			case ITERATION_STATEMENTr2 :
 				printf("iteration statement2\n");
 				if(node->u.n.child[3]->type->base_type != BOOL_TYPE){
-					exitStatus = 2;
+					exitStatus = 3;
 					getErrorMessage(ER_BOOL_EXPECTED);
 					yyerror(NULL);
 				}
@@ -1219,10 +1281,6 @@ jump_statement:
 				printf("declaration statement1\n");
 				node->type = node->u.n.child[0]->type;
 				break;
-	/*
-declaration_statement:
-	block_declaration													{ $$ = (TreeNode *)alacnary(DECLARATION_STATEMENTr1, 1, $1); }
-	;
 
 /*----------------------------------------------------------------------
  * Declarations.
@@ -1237,6 +1295,9 @@ declaration_statement:
 				node->type = getType(TOUPLE_TYPE);
 				node->type->u.touple.nelems = 2;
 				node->type->u.touple.elems = calloc(2, sizeof(struct typeinfo *));
+				/*if(node->u.n.child[0]->type->base_type == CLASS_TYPE) {
+					node->u.n.child[1]->type = node->u.n.child[0]->type;
+				}*/
 				node->type->u.touple.elems[0] = node->u.n.child[0]->type;
 				node->type->u.touple.elems[1] = node->u.n.child[1]->type;
 				break;
@@ -1614,36 +1675,36 @@ linkage_specification:
 			case DIRECT_DECLARATORr2:
 				printf("direct declarator2\n");
 				node->type = getType(FUNC_TYPE);
+				node->type->u.func.parent = NULL;
 				node->type->label = node->u.n.child[0]->type->label;
 				node->type->u.func.nargs = 0;
-				//node->type->u.func.args = calloc(10, sizeof(struct typeinfo *));
 				addParamsToFunction(node, node->u.n.child[1]->type);
 				passTypeBelowPointer(node->type, node->u.n.child[0]->type);
 				break;
 			case DIRECT_DECLARATORr3:
 				printf("direct declarator3\n");
 				node->type = getType(FUNC_TYPE);
+				node->type->u.func.parent = NULL;
 				node->type->label = node->u.n.child[0]->type->label;
 				node->type->u.func.nargs = 0;
-				//node->type->u.func.args = calloc(10, sizeof(struct typeinfo *));
 				addParamsToFunction(node, node->u.n.child[1]->type);
 				passTypeBelowPointer(node->type, node->u.n.child[0]->type);
 				break;
 			case DIRECT_DECLARATORr4:
 				printf("direct declarator4\n");
 				node->type = getType(FUNC_TYPE);
+				node->type->u.func.parent = NULL;
 				node->type->label = node->u.n.child[0]->type->label;
 				node->type->u.func.nargs = 0;
-				//node->type->u.func.args = calloc(10, sizeof(struct typeinfo *));
 				addParamsToFunction(node, node->u.n.child[1]->type);
 				passTypeBelowPointer(node->type, node->u.n.child[0]->type);
 				break;
 			case DIRECT_DECLARATORr5:
 				printf("direct declarator5\n");
 				node->type = getType(FUNC_TYPE);
+				node->type->u.func.parent = NULL;
 				node->type->label = node->u.n.child[0]->type->label;
 				node->type->u.func.nargs = 0;
-				//node->type->u.func.args = calloc(10, sizeof(struct typeinfo *));
 				addParamsToFunction(node, node->u.n.child[1]->type);
 				passTypeBelowPointer(node->type, node->u.n.child[0]->type);
 				break;
@@ -1654,16 +1715,17 @@ linkage_specification:
 				//node->type->temp = node->u.n.child[1]->type;
 				break;
 			case DIRECT_DECLARATORr7:
-			/*????????*/
 				printf("direct declarator7\n");
-				node->type = node->u.n.child[2]->type;
-				//node->type->temp = node->u.n.child[3]->type;
+				node->type = getType(FUNC_TYPE);
+				node->type->u.func.parent = node->u.n.child[0]->u.t.token->text;
+				node->type->label = node->u.n.child[2]->type->label;
+				node->type->u.func.nargs = 0;
+				addParamsToFunction(node, node->u.n.child[3]->type);
 				break;
 			case DIRECT_DECLARATORr8:
 			/*????????*/
 				printf("direct declarator8\n");
 				node->type = node->u.n.child[0]->type;
-				//node->type->temp = node->u.n.child[3]->type;
 				break;
 			case DIRECT_DECLARATORr9:
 			/*????????*/
@@ -1731,28 +1793,52 @@ linkage_specification:
 				printf("cv qualifier seq2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
-				
 				/*
-cv_qualifier:
-	CONST																	{ $$ = (TreeNode *)alacnary(CV_QUALIFIERr1, 1, $1); }
-	| VOLATILE															{ $$ = (TreeNode *)alacnary(CV_QUALIFIERr2, 1, $1); }
-	;
-
-declarator_id:
-	id_expression														{ $$ = (TreeNode *)alacnary(DECLARATOR_IDr1, 1, $1); }
-	| COLONCOLON id_expression										{ $$ = (TreeNode *)alacnary(DECLARATOR_IDr2, 2, $1, $2); }
-	| COLONCOLON nested_name_specifier type_name				{ $$ = (TreeNode *)alacnary(DECLARATOR_IDr3, 3, $1, $2, $3); }
-	| COLONCOLON type_name											{ $$ = (TreeNode *)alacnary(DECLARATOR_IDr4, 2, $1, $2); }
-	;
-
+			case DECLARATOR_IDr1 :
+				printf("declarator_id1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case DECLARATOR_IDr2 :
+				printf("declarator_id2\n");
+				node->type = node->u.n.child[1]->type;
+				break;
+			case DECLARATOR_IDr3 :
+				printf("declarator_id3\n");
+				node->type = node->u.n.child[1]->type;
+				break;
+			case DECLARATOR_IDr4 :
+				printf("declarator_id4\n");
+				node->type = node->u.n.child[1]->type;
+				break;*/
+				
+			case TYPE_IDr1 :
+				printf("type_id1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+				/*
 type_id:
 	type_specifier_seq abstract_declarator_opt				{ $$ = (TreeNode *)alacnary(TYPE_IDr1, 2, $1, $2); }
-	;
-
+	;*/
+	
+			case TYPE_SPECIFIER_SEQr1 :
+				printf("type_specifier_id1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+/*
 type_specifier_seq:
 	type_specifier type_specifier_seq_opt						{ $$ = (TreeNode *)alacnary(TYPE_SPECIFIER_SEQr1, 2, $1, $2); }
-	;
+	;*/
+	
+			case ABSTRACT_DECLARATORr1 :
+				printf("abstract_declarator1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+			case ABSTRACT_DECLARATORr2 :
+				printf("abstract_declarator2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
 
+/*
 abstract_declarator:
 	ptr_operator abstract_declarator_opt						{ $$ = (TreeNode *)alacnary(ABSTRACT_DECLARATORr1, 2, $1, $2); }
 	| direct_abstract_declarator									{ $$ = (TreeNode *)alacnary(ABSTRACT_DECLARATORr2, 1, $1); }
@@ -1880,11 +1966,11 @@ parameter_declaration_clause:
 				
 			case INITIALIZERr1 :
 				printf("initializer1\n");
-				node->type = node->u.n.child[1]->type;
+				node->type = node->u.n.child[0]->type;
 				break;
 			case INITIALIZERr2 :
 				printf("initializer2\n");
-				node->type = node->u.n.child[1]->type;
+				node->type = node->u.n.child[0]->type;
 				break;
 				
 			case INITIALIZER_CLAUSEr1 :
@@ -1918,10 +2004,6 @@ parameter_declaration_clause:
 				node->type = node->u.n.child[0]->type;
 				addMembersToClass(node, node->u.n.child[1]->type);
 				break;
- /*
-class_specifier:
-	class_head '{' member_specification_opt '}'				{ $$ = (TreeNode *)alacnary(CLASS_SPECIFIERr1, 2, $1, $3); }
-	;*/
 
 			case CLASS_HEADr1 :
 				printf("type head1\n");
@@ -1947,14 +2029,7 @@ class_specifier:
 				node->type->label = node->u.n.child[2]->type->label;
 				node->u.n.child[2]->type = node->u.n.child[0]->type;
 				break;
-	/*
-class_head:
-	class_key class_name												{ $$ = (TreeNode *)alacnary(CLASS_HEADr1, 2, $1, $2); }
-	| class_key class_name base_clause							{ $$ = (TreeNode *)alacnary(CLASS_HEADr2, 3, $1, $2, $3); }
-	| class_key nested_name_specifier class_name				{ $$ = (TreeNode *)alacnary(CLASS_HEADr3, 3, $1, $2, $3); }
-	| class_key nested_name_specifier class_name base_clause
-																			{ $$ = (TreeNode *)alacnary(CLASS_HEADr4, 4, $1, $2, $3, $4); }
-	;*/
+
 			case CLASS_KEYr1 :
 				printf("type key1\n");
 				node->type = getType(CLASS_TYPE);
@@ -1992,15 +2067,9 @@ class_head:
 				node->type->pub = node->u.n.child[0]->type->pub;
 				passAccessBelow(node->u.n.child[0]->type, node->u.n.child[1]->type);
 				break;
-/*
-member_specification:
-	member_declaration member_specification_opt				{ $$ = (TreeNode *)alacnary(MEMBER_SPECIFICATIONr1, 2, $1, $2); }
-	| access_specifier ':' member_specification_opt			{ $$ = (TreeNode *)alacnary(MEMBER_SPECIFICATIONr2, 2, $1, $3); }
-	;*/
 	
 			case MEMBER_DECLARATIONr1 :
 				printf("member declaration1\n");
-				//if(*********************************node->u.n.child[1]->label)
 				node->type = node->u.n.child[1]->type;
 				passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
 				break;
@@ -2066,11 +2135,12 @@ member_specification:
  
 pure_specifier:
 	'=' '0'															{ $$ = (TreeNode *)alacnary(PURE_SPECIFIERr1, 0); }
-	;
-
-constant_initializer:
-	'=' constant_expression										{ $$ = (TreeNode *)alacnary(CONSTANT_INITIALIZERr1, 1, $2); }
-	;
+	;*/
+	
+			case CONSTANT_INITIALIZERr1 :
+				printf("constant_initializer1\n");
+				node->type = node->u.n.child[1]->type;
+				break;
 
 /*----------------------------------------------------------------------
  * Derived classes.
@@ -2281,23 +2351,34 @@ nested_name_specifier_opt:
 				printf("expression list opt2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
-	/*
+				
+			case NEW_PLACEMENT_OPTr1 :
+				printf("new_placement_opt1\n");
+				node->type = getType(NULL_TYPE);
+				break;
+			case NEW_PLACEMENT_OPTr2 :
+				printf("new_placement_opt2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+				
+			case NEW_INITIALIZER_OPTr1 :
+				printf("new_initializer_opt1\n");
+				node->type = getType(NULL_TYPE);
+				break;
+			case NEW_INITIALIZER_OPTr2 :
+				printf("new_initializer_opt2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+				
+			case NEW_DECLARATOR_OPTr1 :
+				printf("new_declarator_opt1\n");
+				node->type = getType(NULL_TYPE);
+				break;
+			case NEW_DECLARATOR_OPTr2 :
+				printf("new_declarator_opt2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
 
-new_placement_opt:
-	/* epsilon 													{ $$ = (TreeNode *)alacnary(NEW_PLACEMENT_OPTr1, 0); }
-	| new_placement												{ $$ = (TreeNode *)alacnary(NEW_PLACEMENT_OPTr2, 1, $1); }
-	;
-
-new_initializer_opt:
-	/* epsilon 													{ $$ = (TreeNode *)alacnary(NEW_INITIALIZER_OPTr1, 0); }
-	| new_initializer												{ $$ = (TreeNode *)alacnary(NEW_INITIALIZER_OPTr2, 1, $1); }
-	;
-
-new_declarator_opt:
-	/* epsilon 													{ $$ = (TreeNode *)alacnary(NEW_DECLARATOR_OPTr1, 0); }
-	| new_declarator												{ $$ = (TreeNode *)alacnary(NEW_DECLARATOR_OPTr2, 1, $1); }
-	;*/
-	
 			case EXPRESSION_OPTr1 :
 				printf("expression opt1\n");
 				node->type = getType(NULL_TYPE);
@@ -2315,17 +2396,25 @@ new_declarator_opt:
 				printf("statement seq opt2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
-/*
+				
+			case CONDITION_OPTr1 :
+				printf("condition_opt1\n");
+				node->type = getType(NULL_TYPE);
+				break;
+			case CONDITION_OPTr2 :
+				printf("condition_opt2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+				
+			case ENUMERATOR_LIST_OPTr1 :
+				printf("enumorator_list_opt1\n");
+				node->type = getType(NULL_TYPE);
+				break;
+			case ENUMERATOR_LIST_OPTr2 :
+				printf("enumorator_list_opt2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
 
-condition_opt:
-	/* epsilon 													{ $$ = (TreeNode *)alacnary(CONDITION_OPTr1, 0); }
-	| condition														{ $$ = (TreeNode *)alacnary(CONDITION_OPTr2, 1, $1); }
-	;
-
-enumerator_list_opt:
-	/* epsilon 													{ $$ = (TreeNode *)alacnary(ENUMERATOR_LIST_OPTr1, 0); }
-	| enumerator_list												{ $$ = (TreeNode *)alacnary(ENUMERATOR_LIST_OPTr2, 1, $1); }
-	;*/
 			case INITIALIZER_OPTr1 :
 				printf("initializer opt1\n");
 				node->type = getType(NULL_TYPE);
@@ -2334,27 +2423,43 @@ enumerator_list_opt:
 				printf("initializer opt\n");
 				node->type = node->u.n.child[0]->type;
 				break;
-	/*
-constant_expression_opt:
-	/* epsilon 													{ $$ = (TreeNode *)alacnary(CONSTANT_EXPRESSION_OPTr1, 0); }
-	| constant_expression										{ $$ = (TreeNode *)alacnary(CONSTANT_EXPRESSION_OPTr2, 1, $1); }
-	;
+				
+			case CONSTANT_EXPRESSION_OPTr1 :
+				printf("constant_expression_opt1\n");
+				node->type = getType(NULL_TYPE);
+				break;
+			case CONSTANT_EXPRESSION_OPTr2 :
+				printf("constant_expression_opt1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+				
+			case ABSTRACT_DECLARATOR_OPTr1 :
+				printf("abstract_declarator_opt1\n");
+				node->type = getType(NULL_TYPE);
+				break;
+			case ABSTRACT_DECLARATOR_OPTr2 :
+				printf("abstract_declarator_opt1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+				
+			case TYPE_SPECIFIER_SEQ_OPTr1 :
+				printf("type_specifier_opt1\n");
+				node->type = getType(NULL_TYPE);
+				break;
+			case TYPE_SPECIFIER_SEQ_OPTr2 :
+				printf("type_specifier_opt1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+				
+			case DIRECT_ABSTRACT_DECLARATOR_OPTr1 :
+				printf("direct_abstract_declarator_opt1\n");
+				node->type = getType(NULL_TYPE);
+				break;
+			case DIRECT_ABSTRACT_DECLARATOR_OPTr2 :
+				printf("direct_abstract_declarator_opt1\n");
+				node->type = node->u.n.child[0]->type;
+				break;
 
-abstract_declarator_opt:
-	/* epsilon 													{ $$ = (TreeNode *)alacnary(ABSTRACT_DECLARATOR_OPTr1, 0); }
-	| abstract_declarator										{ $$ = (TreeNode *)alacnary(ABSTRACT_DECLARATOR_OPTr2, 1, $1); }
-	;
-
-type_specifier_seq_opt:
-	/* epsilon 													{ $$ = (TreeNode *)alacnary(TYPE_SPECIFIER_SEQ_OPTr1, 0); }
-	| type_specifier_seq											{ $$ = (TreeNode *)alacnary(TYPE_SPECIFIER_SEQ_OPTr2, 1, $1); }
-	;
-
-direct_abstract_declarator_opt:
-	/* epsilon 													{ $$ = (TreeNode *)alacnary(DIRECT_ABSTRACT_DECLARATOR_OPTr1, 0); }
-	| direct_abstract_declarator								{ $$ = (TreeNode *)alacnary(DIRECT_ABSTRACT_DECLARATOR_OPTr2, 1, $1); }
-	;*/
-	
 			case CTOR_INITIALIZER_OPTr1 :
 				printf("ctor initializer opt1\n");
 				node->type = getType(NULL_TYPE);
@@ -2373,22 +2478,34 @@ direct_abstract_declarator_opt:
 				node->type = node->u.n.child[0]->type;
 				//node->type->pub = node->u.n.child[0]->type->pub;  
 				break;
-/*
+				
+			case CONVERSION_DECLARATOR_OPTr1 :
+				printf("conversion_declarator_opt1\n");
+				node->type = getType(NULL_TYPE);
+				break;
+			case CONVERSION_DECLARATOR_OPTr2 :
+				printf("conversion_declarator_opt2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+				
+			case EXPORT_OPTr1 :
+				printf("export_opt1\n");
+				node->type = getType(NULL_TYPE);
+				break;
+			case EXPORT_OPTr2 :
+				printf("export_opt2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
+				
+			case HANDLER_SEQ_OPTr1 :
+				printf("handler_seq_opt1\n");
+				node->type = getType(NULL_TYPE);
+				break;
+			case HANDLER_SEQ_OPTr2 :
+				printf("handler_seq_opt2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
 
-conversion_declarator_opt:
-	/* epsilon 													{ $$ = (TreeNode *)alacnary(CONVERSION_DECLARATOR_OPTr1, 0); }
-	| conversion_declarator										{ $$ = (TreeNode *)alacnary(CONVERSION_DECLARATOR_OPTr2, 1, $1); }
-	;
-
-EXPORT_opt:
-	/* epsilon 													{ $$ = (TreeNode *)alacnary(EXPORT_OPTr1, 0); }
-	| EXPORT															{ $$ = (TreeNode *)alacnary(EXPORT_OPTr2, 1, $1); }
-	;
-
-handler_seq_opt:
-	/* epsilon 													{ $$ = (TreeNode *)alacnary(HANDLER_SEQ_OPTr1, 0); }
-	| handler_seq													{ $$ = (TreeNode *)alacnary(HANDLER_SEQ_OPTr2, 1, $1); }
-	;*/
 			case ASSIGNMENT_EXPRESSION_OPTr1 :
 				printf("assignment expression opt1\n");
 				node->type = getType(NULL_TYPE);
@@ -2397,13 +2514,15 @@ handler_seq_opt:
 				printf("assignment expression opt2\n");
 				node->type = node->u.n.child[0]->type;
 				break;
-/*
-
-type_id_list_opt:
-	/* epsilon 													{ $$ = (TreeNode *)alacnary(TYPE_ID_LIST_OPTr1, 0); }
-	| type_id_list													{ $$ = (TreeNode *)alacnary(TYPE_ID_LIST_OPTr2, 1, $1); }
-	;
-				*/
+				
+			case TYPE_ID_LIST_OPTr1 :
+				printf("type_id_opt1\n");
+				node->type = getType(NULL_TYPE);
+				break;
+			case TYPE_ID_LIST_OPTr2 :
+				printf("type_id_opt2\n");
+				node->type = node->u.n.child[0]->type;
+				break;
 
 			default:
 				node->type = getType(UNKNOWN_TYPE);
@@ -2451,9 +2570,10 @@ void addFunctionBodySymbols(SymbolTable *currentSymbolTable, TreeNode *node){
 }
 
 void makeSymbolTables(TreeNode *node){
+	SymbolTable *oldSymbolTable;
 	int p;
 	if(node != NULL){
-		printf("\t->%s : %s<-\n", humanreadable(node->symbol), node->type->label);
+		//printf("\t->%s : %s<-\n", humanreadable(node->symbol), node->type->label);
 		switch(node->u.n.rule) {
 			case TRANSLATION_UNITr1 :
 				printf("translation unit 1\n");
@@ -2463,9 +2583,49 @@ void makeSymbolTables(TreeNode *node){
 				currentSymbolTable = globalSymbolTable;
 				printf("translation unit 1 complete\n");
 				break;
+				/*
+			case SELECTION_STATEMENTr1 :
+				printf("selection statement 1\n");
+				if(node->u.n.child[1]->type->base_type != BOOL_TYPE || node->u.n.child[1]->type->base_type != INT_TYPE){
+					exitStatus = 3;
+					getErrorMessage(ER_BOOL_EXPECTED);
+					yyerror(NULL);
+				}
+				break;
+			case SELECTION_STATEMENTr2 :
+				printf("selection statement 2\n");
+				if(node->u.n.child[1]->type->base_type != BOOL_TYPE || node->u.n.child[1]->type->base_type != INT_TYPE){
+					exitStatus = 3;
+					getErrorMessage(ER_BOOL_EXPECTED);
+					yyerror(NULL);
+				}
+				break;
+			case SELECTION_STATEMENTr3 :
+				printf("selection statement 3\n");
+					if(node->u.n.child[1]->type->base_type != ENUM_TYPE || node->u.n.child[1]->type->base_type != INT_TYPE){
+					exitStatus = 3;
+					getErrorMessage(ER_BOOL_EXPECTED);
+					yyerror(NULL);
+				}
+				break;
+				
+			case CONDITIONr2 :
+				printf("condition2\n");
+				//node->type = getOperatorType(node->u.n.child[1]->type,node->u.n.child[2]->type);
+				break;
+	/*
+condition:
+	expression															{ $$ = (TreeNode *)alacnary(CONDITIONr1, 1, $1); }
+	| type_specifier_seq declarator '=' assignment_expression
+																			{ $$ = (TreeNode *)alacnary(CONDITIONr2, 3, $1, $2, $4); }
+	;*/
 		
 			case FUNCTION_DEFINITIONr1 :
 				printf("function definition 1\n");
+				oldSymbolTable = currentSymbolTable;
+				if(node->type->base_type == FUNC_TYPE)
+					currentSymbolTable = getSymbolTable(globalSymbolTable, node->type->u.func.parent);
+				if(currentSymbolTable == NULL) currentSymbolTable = oldSymbolTable;;
 				addToSymbolTable(currentSymbolTable, node->type);
 				currentSymbolTable = createSymbolTable(currentSymbolTable, SYMBOL_TABLE_SIZE);
 				currentSymbolTable->entries = 0;
@@ -2476,6 +2636,7 @@ void makeSymbolTables(TreeNode *node){
 				}
 				//add body variables
 				addFunctionBodySymbols(currentSymbolTable, node->u.n.child[2]);
+				currentSymbolTable = oldSymbolTable;
 				printf("function definition 1 complete[%d]\n", currentSymbolTable->entries);
 				break;	
 			case FUNCTION_DEFINITIONr2 :

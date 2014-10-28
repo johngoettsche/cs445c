@@ -56,6 +56,7 @@ typedef struct NType {
 			Field **f;
 		} clas;
 		struct func {
+			char *parent;
 			struct NType *retType;
 			int nargs;
 			struct Field **args;
@@ -95,6 +96,8 @@ typedef struct SymbolTable{
 	NType *scope;
 	struct SymbolTable *parent;
 	SymbolTableEntry **bucket;
+	int children;
+	struct SymbolTable **child;
 }SymbolTable;
 
 typedef struct ErrorMessage{
