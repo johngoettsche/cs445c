@@ -62,16 +62,18 @@
 //#include "symbol.h"
 #include "errors.h"
 
-//#define SYMBOL_TABLE_SIZE 31
+#define SYMBOL_TABLE_SIZE 31
 
 extern int lineno;
-int yydebug=1;
+int yydebug=0;
 FILE *yyin;
 char *fname;
 int errors;
 ErrorMessage *e_message;
 TreeNode *root;
 extern int exitStatus;
+SymbolTable *currentSymbolTable;
+SymbolTable *globalSymbolTable;
 
 extern int using_namespace_std;
 extern int included_iostream;
@@ -286,7 +288,11 @@ postfix_expression:
 	| postfix_expression '.' COLONCOLON id_expression		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr6, 3, $1, $3, $4); }
 	| postfix_expression '.' id_expression						{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr7, 2, $1, $3); }
 	| postfix_expression ARROW TEMPLATE COLONCOLON id_expression
-																			{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr8, 5, $1, $2, $3, $4, $5); }
+																			{ exitStatus = 3;
+																				getErrorMessage(ER_TEMPLATE);
+																				yyerror(NULL);
+																				$$ = NULL;
+																			/*$$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr8, 5, $1, $2, $3, $4, $5);*/ }
 	| postfix_expression ARROW TEMPLATE id_expression		{ exitStatus = 3;
 																				getErrorMessage(ER_TEMPLATE);
 																				yyerror(NULL);
@@ -1443,7 +1449,7 @@ int main(int argc, char **argv){
 			fname = argv[f];
 			FILE *infile = fopen(fname, "r");
 			yyin = infile;
-			lineno = 1;
+			lineno = 0;
 			if(!yyin){
 				printf("Error reading file %s\n", argv[f]);
 				exit(1);
@@ -1452,13 +1458,18 @@ int main(int argc, char **argv){
 			switch(rv){
 				case 0 :
 					printf("*** parse successful ***\n");
-					//globalSymbolTable = (SymbolTable *)createGlobalSymbolTable(SYMBOL_TABLE_SIZE);
-					//currentSymbolTable = globalSymbolTable;
+					printTree(root, 0, 0);
 					buildTypes(root);
 					printf("*** build types successful ***\n");
-					printTree(root, 0);
-					printf("*** print tree successful ***\n");
+					globalSymbolTable = (SymbolTable *)createGlobalSymbolTable(SYMBOL_TABLE_SIZE);
+					//globalSymbolTable->entries = 0;
+					currentSymbolTable = globalSymbolTable;
+					//printTree(root, 0, 1);
+					//printf("*** print tree successful ***\n");
 					makeSymbolTables(root);
+					printf("*** make symbol tables successful ***\n");
+					printTree(root, 0, 1);
+					printf("*** print tree successful ***\n");
 					break;
 				case 1 :
 					if(exitStatus < 2) exitStatus = 2;

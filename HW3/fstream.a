@@ -1,0 +1,10 @@
+class ifstream {
+   public:
+		open(char *);
+		close()
+      ignore();
+		get();
+		getline(char *);
+		eof();
+		peek();
+   };

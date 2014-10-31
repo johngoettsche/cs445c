@@ -162,7 +162,7 @@ stringtext				([^"])|(\\.)
 ","											{ return ','; }
 "->*"											{ return alac((Token *)createToken(ARROWSTAR)); }
 "->"											{ return alac((Token *)createToken(ARROW)); }
-"using namespace std"					{ using_namespace_std = 1; }
+"using namespace std;"					{ using_namespace_std = 1; }
 "asm"											{ return alac((Token *)createToken(ASM)); }
 "auto"										{ return alac((Token *)createToken(AUTO)); }
 "bool"										{ return alac((Token *)createToken(BOOL)); }
@@ -319,7 +319,10 @@ Token *createToken(int tcode){
 	strcpy(filename, fname);
    token->filename =filename;
 	
-	if(tcode == INTEGER) token->ival = atoi(token->text);
+	if(tcode == INTEGER){ 
+		token->ival = atoi(token->text);
+		printf("*** %d ***\n", token->ival);
+	}
    if(tcode == STRING){
       token->ival = length;
       int *st = (int *)calloc(length, sizeof(int));
@@ -407,7 +410,7 @@ void include()
    fname = strchr(yytext, '<')+1;
 	printf("b");
    fname[strlen(fname)-1] = '\0';
-	fname = strcat(fname, ".h");
+	fname = strcat(fname, ".a");
 	printf("\n** %s **\n", fname);
    yyin = fopen(fname,"r");
 	printf("d");

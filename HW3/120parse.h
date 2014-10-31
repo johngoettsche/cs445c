@@ -8,7 +8,7 @@
 
 /* prototypes */
 char *humanreadable(int);
-void printTree(TreeNode *, int);
+void printTree(TreeNode *, int, int);
 char *humanreadable(int);
 TreeNode *alacnary(int, int,...);
 
