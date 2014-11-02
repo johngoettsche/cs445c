@@ -239,23 +239,23 @@ stringtext				([^"])|(\\.)
 													
 "#include"[ ]*\"[^\\"]+\"  			{ handle_include(); }
 
-"#include <iostream>"   				{ include();
+"#include"[ ]*"<iostream>"   			{ include();
 													included_iostream = 1; }
-"#include <cstdlib>"    				{ include();
+"#include"[ ]*"<cstdlib>"    			{ include();
 													included_cstdlib = 1; }
-"#include <ctime>"      				{ include();
+"#include"[ ]*"<ctime>"      			{ include();
 													included_ctime = 1; }
-"#include <string>"     				{ include();
+"#include"[ ]*"<string>"     			{ include();
 													included_string = 1; }
-"#include <string.h>"     				{ include();
+"#include"[ ]*"<string.h>"     		{ include();
 													included_string = 1; }
-"#include <fstream>"    				{ include();
+"#include"[ ]*"<fstream>"    			{ include();
 													included_fstream = 1; }
-"#include <stdio.h>"    				{ include();
+"#include"[ ]*"<stdio.h>"    			{ include();
 													included_stdio = 1; }
-"#include <stdlib.h>"   				{ include();
+"#include"[ ]*"<stdlib.h>"   			{ include();
 													included_stdlib = 1; }
-"#include <cmath>"   				{ include();
+"#include"[ ]*"<cmath>"   				{ include();
 													included_cmath = 1; }
 
 [a-zA-Z_][a-zA-Z_0-9]*					{ return alac((Token *)createToken(check_identifier(yytext))); }
@@ -321,7 +321,7 @@ Token *createToken(int tcode){
 	
 	if(tcode == INTEGER){ 
 		token->ival = atoi(token->text);
-		printf("*** %d ***\n", token->ival);
+		//printf("*** %d ***\n", token->ival);
 	}
    if(tcode == STRING){
       token->ival = length;
@@ -401,25 +401,19 @@ void handle_include()
 
 void include()
 {
-	printf("\ninclude()\n");
 	pushFileStack();
-   lineno = 1;
-   saved_yyin = yyin;
+	lineno = 1;
+	saved_yyin = yyin;
 	
-	printf("a");
-   fname = strchr(yytext, '<')+1;
-	printf("b");
-   fname[strlen(fname)-1] = '\0';
+	fname = strchr(yytext, '<')+1;
+	fname[strlen(fname)-1] = '\0';
 	fname = strcat(fname, ".a");
-	printf("\n** %s **\n", fname);
-   yyin = fopen(fname,"r");
-	printf("d");
-   if (yyin == NULL) {
+	yyin = fopen(fname,"r");
+	if (yyin == NULL) {
 		getErrorMessage(ER_FILE_NOT_FOUND);
 		yyerror(fname);
 		exit(1);
    }
-	printf("e\n");
 	yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
 }
 

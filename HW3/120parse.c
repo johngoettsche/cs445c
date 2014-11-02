@@ -337,6 +337,8 @@ char *humanreadable(int ncode){
 		case MEMBER_TYPE : name = "member" ; break;
 		case OPERATOR_TYPE : name = "operator" ; break;
 		case STATEMENT_TYPE : name = "statement" ; break;
+		case ADDRESS_TYPE : name = "address" ; break;
+		case STREAM_TYPE : name = "stream" ; break;
 
 		default : name =  "Not Found"; break;
 	}
@@ -390,6 +392,7 @@ NType *getType(int tcode){
 }
 
 SymbolTable *createSymbolTable(SymbolTable *parent, int size){
+	printf("\t*createSymbolTable*\n");
 	int i;
 	parent->children++;
 	SymbolTable *symbolTable;
@@ -407,6 +410,7 @@ SymbolTable *createSymbolTable(SymbolTable *parent, int size){
 }
 
 SymbolTable *createGlobalSymbolTable(int size){
+	printf("\t*createGlobalSymbolTable*\n");
 	int i;
 	SymbolTable *symbolTable;
 	if((symbolTable = (SymbolTable *)calloc(1, sizeof(SymbolTable))) == NULL) memoryError();
@@ -423,9 +427,12 @@ SymbolTable *createGlobalSymbolTable(int size){
 
 SymbolTable *getSymbolTable(SymbolTable *currentSymbolTable, char *tableName){
 	int c;
+	SymbolTable *symbolTable;
 	if(strcmp(currentSymbolTable->scope->label, tableName) == 0) return currentSymbolTable;
-	else for(c = 0; c < currentSymbolTable->children; c++)
-		getSymbolTable(currentSymbolTable->child[c], tableName);
+	else for(c = 0; c < currentSymbolTable->children; c++){
+		symbolTable = getSymbolTable(currentSymbolTable->child[c], tableName);
+		if(symbolTable != NULL) return symbolTable;
+	}
 	return NULL;
 }
 
@@ -508,6 +515,62 @@ void addToSymbolTable(SymbolTable *symbolTable, NType *symb){
 	printf("\naddToSymbolTable: [%d]\n", symbolTable->entries);
 }
 
+void addLibrariesData(){
+	NType *tempType;
+	if(included_iostream){
+		if(using_namespace_std){
+			tempType = (NType *)getType(STREAM_TYPE);
+			tempType->label = "cin";
+			addToSymbolTable(globalSymbolTable, tempType);
+			tempType = (NType *)getType(STREAM_TYPE);
+			tempType->label = "cout";
+			addToSymbolTable(globalSymbolTable, tempType);
+			tempType = (NType *)getType(STREAM_TYPE);
+			tempType->label = "endl";
+			addToSymbolTable(globalSymbolTable, tempType);
+		}
+		tempType = (NType *)getType(STREAM_TYPE);
+		tempType->label = "std::cin";
+		addToSymbolTable(globalSymbolTable, tempType);
+		tempType = (NType *)getType(STREAM_TYPE);
+		tempType->label = "std::cout";
+		addToSymbolTable(globalSymbolTable, tempType);
+		tempType = (NType *)getType(STREAM_TYPE);
+		tempType->label = "std::endl";
+		addToSymbolTable(globalSymbolTable, tempType);
+	}
+	if(included_cstdlib){
+		if(using_namespace_std){
+		
+		}
+	}
+	if(included_ctime){
+		if(using_namespace_std){
+		
+		}
+	}
+	if(included_string){
+		if(using_namespace_std){
+
+		}
+	}
+	if(included_fstream){
+		if(using_namespace_std){
+		
+		}
+	}
+	if(included_stdio){
+		if(using_namespace_std){
+		
+		}
+	}
+	if(included_stdlib){
+		if(using_namespace_std){
+		
+		}
+	}
+}
+
 NType *getOperatorType(NType *op1, NType *op2){
 	printf("\t%s : %s\n", humanreadable(op1->base_type), humanreadable(op2->base_type));
 	if(op1->base_type == op2->base_type)return getType(op1->base_type);
@@ -516,6 +579,12 @@ NType *getOperatorType(NType *op1, NType *op2){
 		getErrorMessage(ER_TYPE_MISMATCH);
 		yyerror(NULL);
 	}
+}
+
+NType *checkType(NType *op1, NType *op2){
+	printf("\t%s : %s\n", humanreadable(op1->base_type), humanreadable(op2->base_type));
+	if(op1->base_type == op2->base_type)return getType(op1->base_type);
+	else return NULL;
 }
 
 void copyType(NType *source, NType *dest){
@@ -565,6 +634,19 @@ void passTypeBelowPointer(NType *source, NType *dest){
 	} else {
 		dest->base_type = source->base_type;
 		dest->pub = source->pub;
+	}
+}
+
+void passTypeToDeclarationList(NType *source, TreeNode *dest){
+	printf("*passTypeToDeclarationList*\n");
+	if(dest != NULL){
+		if(dest->type->base_type == TOUPLE_TYPE){
+			passTypeToDeclarationList(source, dest->u.n.child[0]);
+			passTypeToDeclarationList(source, dest->u.n.child[1]);
+		} else {
+			dest->type->base_type = source->base_type;
+			dest->type->pub = source->pub;
+		}
 	}
 }
 
@@ -944,11 +1026,12 @@ postfix_expression:
 			case UNARY_EXPRESSIONr4 :
 				printf("unary expression4\n");
 				node->type = getType(POINTER_TYPE);
+				node->type->u.ptr = node->u.n.child[0]->type;
 				break;
 			case UNARY_EXPRESSIONr5 :
 				printf("unary expression5\n");
-				//&//
-				/*node->type = node->u.n.child[1]->type;*/
+				node->type = getType(ADDRESS_TYPE);
+				node->type->u.ptr = node->u.n.child[0]->type;
 				break;
 			case UNARY_EXPRESSIONr6 :
 				printf("unary expression6\n");
@@ -1427,7 +1510,8 @@ pm_expression:
 				break;
 			case JUMP_STATEMENTr3 :
 				printf("jump_statement3");
-				node->type = getType(STATEMENT_TYPE);
+				node->type = node->u.n.child[1]->type;
+				node->u.n.child[0]->type = node->type;
 				break;
 			case JUMP_STATEMENTr4 :
 				printf("jump_statement4");
@@ -1513,13 +1597,34 @@ pm_expression:
 				if(node->u.n.child[1]->type->base_type == ARRAY_TYPE){
 					node->type = node->u.n.child[1]->type;
 					node->type->u.arry.elemtype = node->u.n.child[0]->type;
-				}else{
+				} else if(node->u.n.child[1]->type->base_type == TOUPLE_TYPE){
 					node->type = node->u.n.child[0]->type;
-					if((node->type->ref= calloc(strlen(node->u.n.child[0]->type->label), sizeof(char))) == NULL) memoryError();
-					strcpy(node->type->ref, node->u.n.child[0]->type->label);
+					if(node->u.n.child[0]->type->label != NULL){
+						printf("|");
+						if((node->type->ref = calloc(strlen(node->u.n.child[0]->type->label), sizeof(char))) == NULL) memoryError();
+						printf("|");
+						strcpy(node->type->ref, node->u.n.child[0]->type->label);
+						printf("|");
+					}
 					node->type->label = node->u.n.child[1]->type->label;
+					passTypeToDeclarationList(node->u.n.child[0]->type, node->u.n.child[1]);
+				} else {
+					printf("-");
+					node->type = node->u.n.child[0]->type;
+					printf("-");
+					if(node->u.n.child[0]->type->label != NULL){
+						printf("|");
+						if((node->type->ref = calloc(strlen(node->u.n.child[0]->type->label), sizeof(char))) == NULL) memoryError();
+						printf("|");
+						strcpy(node->type->ref, node->u.n.child[0]->type->label);
+						printf("|");
+					}
+					node->type->label = node->u.n.child[1]->type->label;
+					printf("-");
 					passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
+					printf("-");
 					printf("\t%s\n", node->type->ref);
+					printf("-");
 				}
 				break;
 			case SIMPLE_DECLARATIONr2 :
@@ -2082,7 +2187,6 @@ parameter_declaration_clause:
 					passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
 				}else{
 					node->type = node->u.n.child[0]->type;
-					//node->type->label = node->u.n.child[1]->type->label;
 					node->u.n.child[1]->type->base_type = node->u.n.child[0]->type->base_type;
 				}
 				node->type->label = node->u.n.child[1]->type->label;
@@ -2094,7 +2198,6 @@ parameter_declaration_clause:
 					passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
 				}else{
 					node->type = node->u.n.child[0]->type;
-					//node->type->label = node->u.n.child[1]->type->label;
 					node->u.n.child[1]->type->base_type = node->u.n.child[0]->type->base_type;
 				}
 				node->type->label = node->u.n.child[1]->type->label;
@@ -2102,7 +2205,7 @@ parameter_declaration_clause:
 			case PARAMETER_DECLARATIONr3 :
 				printf("parameter declaration3\n");
 				node->type = node->u.n.child[0]->type;
-				passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
+				//passTypeBelowPointer(node->u.n.child[0]->type, node->u.n.child[1]->type);
 				break;
 			case PARAMETER_DECLARATIONr4 :
 				printf("parameter declaration4\n");
@@ -2723,7 +2826,9 @@ void addSimpleDeclarations(SymbolTable *currentSymbolTable, NType *current){
 
 void addFunctionBodySymbols(SymbolTable *currentSymbolTable, TreeNode *node){
 	//printf("**addFunctionBodySymbols**\n");
+	SymbolTable *oldSymbolTable;
 	NType *tempType;
+	int i;
 	if(node != NULL){
 		printf("\t->%s : %s<-\n", humanreadable(node->symbol), node->type->label);
 		switch(node->u.n.rule) {
@@ -2739,7 +2844,7 @@ void addFunctionBodySymbols(SymbolTable *currentSymbolTable, TreeNode *node){
 						node->u.n.child[1]->type->ref = node->type->label;
 					}
 				}
-				printf("\t%s\n", node->type->ref);
+				//printf("\t%s\n", node->type->ref);
 				addSimpleDeclarations(currentSymbolTable, node->u.n.child[1]->type);
 				printf("simple declaration 1 complete\n");
 				break;
@@ -2751,36 +2856,182 @@ void addFunctionBodySymbols(SymbolTable *currentSymbolTable, TreeNode *node){
 			
 			case POSTFIX_EXPRESSIONr7 :
 				printf("postfix expression 7\n");
-				printf("\t%s\n", humanreadable(node->type->base_type));
-				printf("\tlabel: %s\n", node->type->label);
-				printf("\tref: %s\n", node->type->ref);
+				oldSymbolTable = currentSymbolTable;
 				if(node->type->base_type == UNKNOWN_TYPE){
 					printf("-");
+					//get function's class
 					tempType = getClass(currentSymbolTable, node->type->ref);
-					printf("\t%s\n", humanreadable(tempType->cType->base_type));
 					if(tempType != NULL) {
-						printf("\t%s\n", tempType->cType->label);
-						printf("\t%d\n", tempType->cType->u.clas.nfields);
-						printf("\t%s\n", tempType->cType->symbTable->scope->label);
-						
-						//tempType = getSymbolFromTable(tempType->cType->u.clas.symbTable, tempType);
-						//tempType = getSymbolFromTable(tempType->cType->u.clas.symbTable, tempType->cType);
-						printf("|");
-						if(tempType != NULL) printf("function found");
-						else printf("function not found\n");
-						printf("|");
+						copyType(tempType, node->u.n.child[0]->type);
+						//get function from class symbol table
+						if(tempType->cType->symbTable == NULL){
+							currentSymbolTable = getSymbolTable(globalSymbolTable, tempType->cType->label);
+							if(currentSymbolTable != NULL){
+								tempType->cType->symbTable = currentSymbolTable;
+								tempType = getSymbolFromTable(currentSymbolTable, node->type);
+								currentSymbolTable = oldSymbolTable;
+							} else {
+								exitStatus = 3;
+								getErrorMessage(ER_FUNC_NOT_DEFINED);
+								yyerror(node->type->ref);
+							}
+						} else {
+							tempType = getSymbolFromTable(tempType->cType->symbTable, node->type);
+						}
+						if(tempType != NULL){
+							copyType(tempType, node->type);
+						} else {
+							exitStatus = 3;
+							getErrorMessage(ER_FUNC_NOT_DEFINED);
+							yyerror(node->type->ref);
+						}
 					} else {
-						printf("class not found\n");
-						/* error */
-					}
-					if(tempType != NULL) {
-						printf("+");
-						node->type = tempType;
-					} else {
-						printf("function not found\n");
-						/* error */
+						exitStatus = 3;
+						getErrorMessage(ER_CLASS_NOT_DEFINED);
+						yyerror(node->type->ref);
 					}
 				}
+				break;
+				
+			case UNARY_EXPRESSIONr4 :
+				printf("unary expression4\n");
+				tempType = getSymbolFromTable(currentSymbolTable, node->type->u.ptr);
+				if(tempType != NULL) {
+					copyType(tempType, node->type->u.ptr);
+				}
+				break;
+			case UNARY_EXPRESSIONr5 :
+				printf("unary expression5\n");
+				tempType = getSymbolFromTable(currentSymbolTable, node->type->u.ptr);
+				if(tempType != NULL) {
+					copyType(tempType, node->type->u.ptr);
+				}
+				break;
+				
+			case JUMP_STATEMENTr3 :
+				printf("jump_statement 3");
+				tempType = getSymbolFromTable(currentSymbolTable, node->type);
+				if(tempType != NULL){
+					if(node->type->base_type == UNKNOWN_TYPE) {
+						copyType(tempType, node->type);
+					} 
+				} else {
+					exitStatus = 3;
+					getErrorMessage(ER_FUNC_NOT_DEFINED);
+					yyerror(node->type->label);
+				}
+				tempType = checkType(currentSymbolTable->scope->u.func.retType, node->type);
+				if(tempType == NULL){
+					exitStatus = 3;
+					getErrorMessage(ER_RETURN_TYPE);
+					yyerror(NULL);
+				}
+				break;
+				
+			case SELECTION_STATEMENTr3 :
+				printf("selection_statement 3\n");
+				node->type = getType(STATEMENT_TYPE);
+				tempType = getSymbolFromTable(currentSymbolTable, node->u.n.child[1]->type);
+				if(tempType != NULL){
+					if(node->u.n.child[1]->type->base_type == UNKNOWN_TYPE){
+						copyType(tempType, node->u.n.child[1]->type);
+					}
+				} else {
+					exitStatus = 3;
+					getErrorMessage(ER_FUNC_NOT_DEFINED);
+					yyerror(node->type->label);
+				}
+				if(node->u.n.child[1]->type->base_type != INT_TYPE && node->u.n.child[1]->type->base_type != ENUM_TYPE){
+					exitStatus = 3;
+					getErrorMessage(ER_INT_EXPECTED);
+					yyerror(NULL);
+				}
+				break;
+			
+			case EXPRESSION_STATEMENTr1 :
+				printf("expression_statement 1\n");
+				if(node->u.n.child[0]->type->base_type == UNKNOWN_TYPE){
+					tempType = getSymbolFromTable(currentSymbolTable, node->u.n.child[0]->type);
+					if(tempType != NULL){
+						copyType(tempType, node->u.n.child[0]->type);
+					} else {
+						exitStatus = 3;
+						getErrorMessage(ER_FUNC_NOT_DEFINED);
+						yyerror(node->type->label);
+					}
+				}
+				break;
+			
+				
+			case RELATIONAL_EXPRESSIONr2 :
+			case RELATIONAL_EXPRESSIONr3 :
+			case RELATIONAL_EXPRESSIONr4 :
+			case RELATIONAL_EXPRESSIONr5 :
+			case EQUALITY_EXPRESSIONr2 :
+			case EQUALITY_EXPRESSIONr3 :
+				printf("relational_expression\n");
+				if(node->u.n.child[0]->type->base_type == UNKNOWN_TYPE){
+					tempType = getSymbolFromTable(currentSymbolTable, node->u.n.child[0]->type);
+					if(tempType != NULL){
+						copyType(tempType, node->u.n.child[0]->type);
+					} else {
+						exitStatus = 3;
+						getErrorMessage(ER_FUNC_NOT_DEFINED);
+						yyerror(node->type->label);
+					}
+				}
+				tempType = getOperatorType(node->u.n.child[0]->type, node->u.n.child[1]->type);
+				break;
+				
+			case EXPRESSIONr1 :
+				printf("expression 1\n");
+				if(node->u.n.child[0]->type->base_type == UNKNOWN_TYPE){
+					printf("\t%s\n", humanreadable(node->u.n.child[0]->type->base_type));
+					tempType = getSymbolFromTable(currentSymbolTable, node->u.n.child[0]->type);
+					printf("\t%s\n", humanreadable(tempType->base_type));
+					if(tempType != NULL){
+						copyType(tempType, node->u.n.child[0]->type);
+					} else {
+						exitStatus = 3;
+						getErrorMessage(ER_FUNC_NOT_DEFINED);
+						yyerror(node->type->label);
+					}
+				}
+				break;
+				
+			case IDENTIFIERr1 :
+				printf("identifier 1\n");
+				if(node->u.n.child[0]->type->base_type == UNKNOWN_TYPE){
+					printf("\t%s\n", humanreadable(node->u.n.child[0]->type->base_type));
+					tempType = getSymbolFromTable(currentSymbolTable, node->u.n.child[0]->type);
+					printf("\t%s\n", humanreadable(tempType->base_type));
+					if(tempType != NULL){
+						copyType(tempType, node->u.n.child[0]->type);
+					} else {
+						exitStatus = 3;
+						getErrorMessage(ER_FUNC_NOT_DEFINED);
+						yyerror(node->type->label);
+					}
+				}
+				break;
+			
+			case ASSIGNMENT_EXPRESSIONr2 :
+				printf("assignment_expression 2\n");
+				for(i = 0; i < 3; i++){
+					if(node->u.n.child[i]->type->base_type == UNKNOWN_TYPE){
+						printf("\t%s\n", humanreadable(node->u.n.child[i]->type->base_type));
+						tempType = getSymbolFromTable(currentSymbolTable, node->u.n.child[i]->type);
+						printf("\t%s\n", humanreadable(tempType->base_type));
+						if(tempType != NULL){
+							copyType(tempType, node->u.n.child[i]->type);
+						} else {
+							exitStatus = 3;
+							getErrorMessage(ER_FUNC_NOT_DEFINED);
+							yyerror(node->type->label);
+						}
+					}
+				}
+				tempType = getOperatorType(node->u.n.child[0]->type, node->u.n.child[2]->type);
 				break;
 				
 			default :
@@ -2886,7 +3137,6 @@ void makeSymbolTables(TreeNode *node){
 				if(currentSymbolTable == NULL) currentSymbolTable = oldSymbolTable;
 				addToSymbolTable(currentSymbolTable, node->type);
 				currentSymbolTable = createSymbolTable(currentSymbolTable, currentSymbolTable->size);
-				currentSymbolTable->entries = 0;
 				currentSymbolTable->scope = node->type;
 				node->type->symbTable = currentSymbolTable;
 				//add parameters
@@ -2902,7 +3152,6 @@ void makeSymbolTables(TreeNode *node){
 				printf("function definition 2\n");
 				addToSymbolTable(currentSymbolTable, node->type);
 				currentSymbolTable = createSymbolTable(currentSymbolTable, currentSymbolTable->size);
-				currentSymbolTable->entries = 0;
 				currentSymbolTable->scope = node->type;
 				node->type->symbTable = currentSymbolTable;
 				//add parameters
@@ -2918,7 +3167,6 @@ void makeSymbolTables(TreeNode *node){
 				printf("function definition 3\n");
 				addToSymbolTable(currentSymbolTable, node->type);
 				currentSymbolTable = createSymbolTable(currentSymbolTable, currentSymbolTable->size);
-				currentSymbolTable->entries = 0;
 				currentSymbolTable->scope = node->type;
 				node->type->symbTable = currentSymbolTable;
 				//add parameters
@@ -2933,7 +3181,6 @@ void makeSymbolTables(TreeNode *node){
 				printf("function definition 4\n");
 				addToSymbolTable(currentSymbolTable, node->type);
 				currentSymbolTable = createSymbolTable(currentSymbolTable, currentSymbolTable->size);
-				currentSymbolTable->entries = 0;
 				currentSymbolTable->scope = node->type;
 				node->type->symbTable = currentSymbolTable;
 				//add parameters

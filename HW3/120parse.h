@@ -12,10 +12,14 @@ void printTree(TreeNode *, int, int);
 char *humanreadable(int);
 TreeNode *alacnary(int, int,...);
 
+void addLibrariesData();
 void addParamsToFunction(TreeNode, NType);
 void addMembersToClass(TreeNode *, NType *);
 
 void passTypeBelowPointer(NType *, NType *);
+
+void passTypeToDeclarationList(NType *, TreeNode *);
+
 void passAccessBelow(NType *, NType *);
 NType *getType(int);
 getOperatorType(NType *, NType *);

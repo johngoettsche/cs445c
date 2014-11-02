@@ -14,4 +14,10 @@ class cmath{
 		double asinh(double);
 		double atanh(double);
 		double exp(double);
+		double log(double);
+		double log10(double);
+		double pow(double, double);
+		double sqrt(double);
+		double abs(double);
+		
 };

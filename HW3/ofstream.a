@@ -1,0 +1,5 @@
+class ofstream{
+	public :
+		void open();
+		void close();
+};

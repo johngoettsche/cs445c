@@ -1,8 +1,7 @@
-class foo{
-	public :
-		int a;
-}
+ 
+ #include <fstream> 
+ using namespace std;
 int main(){
-	foo b;
-	b.a = 5;
+	cout << "hello" << endl;
+	return 1;
 } 

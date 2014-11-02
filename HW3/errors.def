@@ -54,10 +54,19 @@ Type Error
 Boolean type expected.
 50033
 Type Error
-Integer type expected.
+Enumerator or integer type expected.
 50034
 Type Mismatch Error
 Operand types do not match.
+50035
+Undefined Class Error
+class is not defined.
+50036
+Undefined Function or Variable
+function or variable is not defined in this scope.
+50037
+Inappropriate Return Type
+type in return statement does not match function return type;
 50100
 File Not Found
 not found.

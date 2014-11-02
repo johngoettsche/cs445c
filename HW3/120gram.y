@@ -1462,10 +1462,10 @@ int main(int argc, char **argv){
 					buildTypes(root);
 					printf("*** build types successful ***\n");
 					globalSymbolTable = (SymbolTable *)createGlobalSymbolTable(SYMBOL_TABLE_SIZE);
-					//globalSymbolTable->entries = 0;
 					currentSymbolTable = globalSymbolTable;
-					//printTree(root, 0, 1);
-					//printf("*** print tree successful ***\n");
+					addLibrariesData();
+					printTree(root, 0, 1);
+					printf("*** print tree successful ***\n");
 					makeSymbolTables(root);
 					printf("*** make symbol tables successful ***\n");
 					printTree(root, 0, 1);

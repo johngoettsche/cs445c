@@ -1,9 +1,9 @@
 class string {
 	public :
-		c_str();
-		length();
-		size();
-		empty();
-		at(int);
-		find(string);
+		char **c_str();
+		int length();
+		int size();
+		bool empty();
+		char *at(int);
+		int find(string);
 };

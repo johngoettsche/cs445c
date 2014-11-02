@@ -20,7 +20,7 @@ all: 120
 
 120lex.o: 120gram.h
 
-120parse.o: 120parse.c 
+120parse.o: 120parse.c 120parse.h
 	$(CC) -c 120parse.c
 
 errors.o: errors.h errors.c
