@@ -88,7 +88,7 @@ extern int included_stdlib;
 %}
 
 %union{
-	TreeNode *n;
+	struct TreeNode *n;
 }
 
 %token <n> IDENTIFIER INTEGER FLOATING CHARACTER STRING

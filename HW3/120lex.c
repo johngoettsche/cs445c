@@ -860,7 +860,7 @@ FILE *saved_yyin;
 int exitStatus = 0;
 
 static int yywrap(void);
-void include();
+void include_lib();
 void handle_include();
 void pushTypeStack(int);
 void popTypeStack();
@@ -1836,103 +1836,104 @@ YY_RULE_SETUP
 case 134:
 YY_RULE_SETUP
 #line 242 "120lex.l"
-{ include();
+{ include_lib();
+													printf("iostream included\n");
 													included_iostream = 1; }
 	YY_BREAK
 case 135:
 YY_RULE_SETUP
-#line 244 "120lex.l"
-{ include();
+#line 245 "120lex.l"
+{ include_lib();
 													included_cstdlib = 1; }
 	YY_BREAK
 case 136:
 YY_RULE_SETUP
-#line 246 "120lex.l"
-{ include();
+#line 247 "120lex.l"
+{ include_lib();
 													included_ctime = 1; }
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
-#line 248 "120lex.l"
-{ include();
+#line 249 "120lex.l"
+{ include_lib();
 													included_string = 1; }
 	YY_BREAK
 case 138:
 YY_RULE_SETUP
-#line 250 "120lex.l"
-{ include();
+#line 251 "120lex.l"
+{ include_lib();
 													included_string = 1; }
 	YY_BREAK
 case 139:
 YY_RULE_SETUP
-#line 252 "120lex.l"
-{ include();
+#line 253 "120lex.l"
+{ include_lib();
 													included_fstream = 1; }
 	YY_BREAK
 case 140:
 YY_RULE_SETUP
-#line 254 "120lex.l"
-{ include();
+#line 255 "120lex.l"
+{ include_lib();
 													included_stdio = 1; }
 	YY_BREAK
 case 141:
 YY_RULE_SETUP
-#line 256 "120lex.l"
-{ include();
+#line 257 "120lex.l"
+{ include_lib();
 													included_stdlib = 1; }
 	YY_BREAK
 case 142:
 YY_RULE_SETUP
-#line 258 "120lex.l"
-{ include();
+#line 259 "120lex.l"
+{ include_lib();
 													included_cmath = 1; }
 	YY_BREAK
 case 143:
 YY_RULE_SETUP
-#line 261 "120lex.l"
+#line 262 "120lex.l"
 { return alac((Token *)createToken(check_identifier(yytext))); }
 	YY_BREAK
 case 144:
 YY_RULE_SETUP
-#line 263 "120lex.l"
+#line 264 "120lex.l"
 { return alac((Token *)createToken(INTEGER)); }
 	YY_BREAK
 case 145:
 YY_RULE_SETUP
-#line 264 "120lex.l"
+#line 265 "120lex.l"
 { return alac((Token *)createToken(INTEGER)); }
 	YY_BREAK
 case 146:
 YY_RULE_SETUP
-#line 265 "120lex.l"
+#line 266 "120lex.l"
 { return alac((Token *)createToken(INTEGER)); }
 	YY_BREAK
 case 147:
 YY_RULE_SETUP
-#line 267 "120lex.l"
+#line 268 "120lex.l"
 { return alac((Token *)createToken(FLOATING)); }
 	YY_BREAK
 case 148:
 YY_RULE_SETUP
-#line 268 "120lex.l"
+#line 269 "120lex.l"
 { return alac((Token *)createToken(FLOATING)); }
 	YY_BREAK
 case 149:
 /* rule 149 can match eol */
 YY_RULE_SETUP
-#line 270 "120lex.l"
+#line 271 "120lex.l"
 { return alac((Token *)createToken(CHARACTER)); }
 	YY_BREAK
 case 150:
 /* rule 150 can match eol */
 YY_RULE_SETUP
-#line 271 "120lex.l"
+#line 272 "120lex.l"
 { return alac((Token *)createToken(CHARACTER)); }
 	YY_BREAK
 case 151:
 /* rule 151 can match eol */
 YY_RULE_SETUP
-#line 272 "120lex.l"
+#line 273 "120lex.l"
 { exitStatus =1;
 													getErrorMessage(ER_MALF_CHAR); 
 													lexerr(NULL); }
@@ -1940,7 +1941,7 @@ YY_RULE_SETUP
 case 152:
 /* rule 152 can match eol */
 YY_RULE_SETUP
-#line 275 "120lex.l"
+#line 276 "120lex.l"
 { exitStatus =1;
 													getErrorMessage(ER_MALF_CHAR); 
 													lexerr(NULL); }
@@ -1948,19 +1949,19 @@ YY_RULE_SETUP
 case 153:
 /* rule 153 can match eol */
 YY_RULE_SETUP
-#line 278 "120lex.l"
+#line 279 "120lex.l"
 { return alac((Token *)createToken(STRING)); }
 	YY_BREAK
 case 154:
 /* rule 154 can match eol */
 YY_RULE_SETUP
-#line 279 "120lex.l"
+#line 280 "120lex.l"
 { return alac((Token *)createToken(STRING)); }
 	YY_BREAK
 case 155:
 /* rule 155 can match eol */
 YY_RULE_SETUP
-#line 280 "120lex.l"
+#line 281 "120lex.l"
 { exitStatus =1;
 													getErrorMessage(ER_STRING_CLOSE);
 													lexerr(NULL); }
@@ -1968,20 +1969,20 @@ YY_RULE_SETUP
 case 156:
 /* rule 156 can match eol */
 YY_RULE_SETUP
-#line 283 "120lex.l"
+#line 284 "120lex.l"
 { exitStatus =1;
 													getErrorMessage(ER_STRING_CLOSE);
 													lexerr(NULL); }
 	YY_BREAK
 case 157:
 YY_RULE_SETUP
-#line 287 "120lex.l"
+#line 288 "120lex.l"
 { exitStatus =1;
 													getErrorMessage(ER_UNREC_TOKEN);
 													lexerr(NULL); }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 291 "120lex.l"
+#line 292 "120lex.l"
 { popFileStack();
 													yypop_buffer_state();
 													if ( !YY_CURRENT_BUFFER ) {
@@ -1991,10 +1992,10 @@ case YY_STATE_EOF(INITIAL):
 	YY_BREAK
 case 158:
 YY_RULE_SETUP
-#line 297 "120lex.l"
+#line 298 "120lex.l"
 ECHO;
 	YY_BREAK
-#line 1998 "<stdout>"
+#line 1999 "<stdout>"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2990,7 +2991,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 297 "120lex.l"
+#line 298 "120lex.l"
 
 
 
@@ -3085,9 +3086,10 @@ void handle_include()
 	pushFileStack();
    lineno = 1;
    saved_yyin = yyin;
-	
-   fname = strchr(yytext, '\"')+1;
-   fname[strlen(fname)-1] = '\0';
+	fname = calloc(strlen(yytext), sizeof(char));
+	strcpy(fname, yytext);
+   fname = strchr(fname, '\"') + 1;
+   fname[strlen(fname) - 1] = '\0';
    yyin = fopen(fname,"r");
    if (yyin == NULL) {
 		getErrorMessage(ER_FILE_NOT_FOUND);
@@ -3097,15 +3099,16 @@ void handle_include()
 	yypush_buffer_state(yy_create_buffer(yyin,YY_BUF_SIZE));
 }
 
-void include()
+void include_lib()
 {
 	pushFileStack();
 	lineno = 1;
 	saved_yyin = yyin;
-	
-	fname = strchr(yytext, '<')+1;
-	fname[strlen(fname)-1] = '\0';
-	fname = strcat(fname, ".a");
+	fname = calloc(strlen(yytext), sizeof(char));
+	strcpy(fname, yytext);
+	fname = strchr(fname, '<') + 1;
+	fname[strlen(fname) - 1] = '\0';
+	fname = strcat(fname, ".lb");
 	yyin = fopen(fname,"r");
 	if (yyin == NULL) {
 		getErrorMessage(ER_FILE_NOT_FOUND);

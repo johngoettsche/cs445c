@@ -8,28 +8,21 @@
 
 /* prototypes */
 char *humanreadable(int);
-void printTree(TreeNode *, int, int);
-char *humanreadable(int);
-TreeNode *alacnary(int, int,...);
-
+void printTree(TreeNode *t, int depth, int b);
+TreeNode *alacnary(int prodRule, int children,...);
+NType *getType(int tcode);
+SymbolTable *createSymbolTable(SymbolTable *parent, int size);
+SymbolTable *createGlobalSymbolTable(int size);
+SymbolTable *getSymbolTable(SymbolTable *currentSymbolTable, char *tableName);
+int hashSymbol(NType *symb, int size);
+int inSymbolTable(SymbolTable *symbolTable, NType *symb);
+NType *getSymbolFromTable(SymbolTable *symbolTable, NType *symb);
+NType *getClass(SymbolTable* symbolTable, char *clas);
+void addToSymbolTable(SymbolTable *symbolTable, NType *symb);
 void addLibrariesData();
-void addParamsToFunction(TreeNode, NType);
-void addMembersToClass(TreeNode *, NType *);
-
-void passTypeBelowPointer(NType *, NType *);
-
-void passTypeToDeclarationList(NType *, TreeNode *);
-
-void passAccessBelow(NType *, NType *);
-NType *getType(int);
-getOperatorType(NType *, NType *);
-
-SymbolTable *createSymbolTable(SymbolTable, int);
-SymbolTable *createGlobalSymbolTable(int);
-SymbolTable *getSymbolTable(SymbolTable *, char *);
-int hashSymbol(NType *, int);
-int inSymbolTable(SymbolTable *, NType *);
-
-void addSimpleDeclarations(SymbolTable *, NType *);
-void addFunctionBodySymbols(SymbolTable *, TreeNode *);
-void addToSymbolTable(SymbolTable *, NType *);
+NType *getOperatorType(NType *op1, NType *op2);
+NType *checkType(NType *op1, NType *op2);
+void copyType(NType *source, NType *dest);
+void addSimpleDeclarations(SymbolTable *currentSymbolTable, NType *current);
+void addFunctionBodySymbols(SymbolTable *currentSymbolTable, TreeNode *node);
+void makeSymbolTables(TreeNode *node);

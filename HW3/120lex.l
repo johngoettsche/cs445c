@@ -58,7 +58,7 @@ FILE *saved_yyin;
 int exitStatus = 0;
 
 static int yywrap(void);
-void include();
+void include_lib();
 void handle_include();
 void pushTypeStack(int);
 void popTypeStack();
@@ -239,23 +239,23 @@ stringtext				([^"])|(\\.)
 													
 "#include"[ ]*\"[^\\"]+\"  			{ handle_include(); }
 
-"#include"[ ]*"<iostream>"   			{ include();
+"#include"[ ]*"<iostream>"   			{ include_lib();
 													included_iostream = 1; }
-"#include"[ ]*"<cstdlib>"    			{ include();
+"#include"[ ]*"<cstdlib>"    			{ include_lib();
 													included_cstdlib = 1; }
-"#include"[ ]*"<ctime>"      			{ include();
+"#include"[ ]*"<ctime>"      			{ include_lib();
 													included_ctime = 1; }
-"#include"[ ]*"<string>"     			{ include();
+"#include"[ ]*"<string>"     			{ include_lib();
 													included_string = 1; }
-"#include"[ ]*"<string.h>"     		{ include();
+"#include"[ ]*"<string.h>"     		{ include_lib();
 													included_string = 1; }
-"#include"[ ]*"<fstream>"    			{ include();
+"#include"[ ]*"<fstream>"    			{ include_lib();
 													included_fstream = 1; }
-"#include"[ ]*"<stdio.h>"    			{ include();
+"#include"[ ]*"<stdio.h>"    			{ include_lib();
 													included_stdio = 1; }
-"#include"[ ]*"<stdlib.h>"   			{ include();
+"#include"[ ]*"<stdlib.h>"   			{ include_lib();
 													included_stdlib = 1; }
-"#include"[ ]*"<cmath>"   				{ include();
+"#include"[ ]*"<cmath>"   				{ include_lib();
 													included_cmath = 1; }
 
 [a-zA-Z_][a-zA-Z_0-9]*					{ return alac((Token *)createToken(check_identifier(yytext))); }
@@ -387,9 +387,10 @@ void handle_include()
 	pushFileStack();
    lineno = 1;
    saved_yyin = yyin;
-	
-   fname = strchr(yytext, '\"')+1;
-   fname[strlen(fname)-1] = '\0';
+	fname = calloc(strlen(yytext), sizeof(char));
+	strcpy(fname, yytext);
+   fname = strchr(fname, '\"') + 1;
+   fname[strlen(fname) - 1] = '\0';
    yyin = fopen(fname,"r");
    if (yyin == NULL) {
 		getErrorMessage(ER_FILE_NOT_FOUND);
@@ -399,15 +400,16 @@ void handle_include()
 	yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
 }
 
-void include()
+void include_lib()
 {
 	pushFileStack();
 	lineno = 1;
 	saved_yyin = yyin;
-	
-	fname = strchr(yytext, '<')+1;
-	fname[strlen(fname)-1] = '\0';
-	fname = strcat(fname, ".a");
+	fname = calloc(strlen(yytext), sizeof(char));
+	strcpy(fname, yytext);
+	fname = strchr(fname, '<') + 1;
+	fname[strlen(fname) - 1] = '\0';
+	fname = strcat(fname, ".lb");
 	yyin = fopen(fname,"r");
 	if (yyin == NULL) {
 		getErrorMessage(ER_FILE_NOT_FOUND);

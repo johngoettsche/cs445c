@@ -55,7 +55,7 @@ typedef struct NType {
 			//struct SymbolTable *symbTable;
 		} struc;
 		struct clas { 
-			int nfields;
+		   int nfields;
 			Field **f;
 			//struct SymbolTable *symbTable;
 		} clas;
