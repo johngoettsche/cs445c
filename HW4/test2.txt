@@ -1,0 +1,15 @@
+"this is a \'test\'"
+switch(a)
+case 1 :
+   printf("\tstuff");
+	x = "\0some stuff";
+   printf("%d\n", str);
+	break;
+case 2 :
+   while(n <= 5){
+	   a = 12.3
+		b = 'c'
+		d = 
+	}
+if (x == 5)
+	

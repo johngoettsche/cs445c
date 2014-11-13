@@ -1,0 +1,1592 @@
+iostream included
+*** parse successful ***
+ program: 1
+ declaration_seq_opt: 1
+  declaration_seq: 2
+   declaration_seq: 2
+    declaration_seq: 1
+     declaration: 1
+      block_declaration: 1
+       simple_declaration: 1
+        decl_specifier_seq: 1
+         decl_specifier: 1
+          type_specifier: 1
+           class_specifier: 2
+            class_head: 2
+             class_key: 1
+              CLASS: class
+             class_name: 1
+              CLASS_NAME: ifstream
+            member_specification_opt: 1
+             member_specification: 2
+              access_specifier: 1
+               PUBLIC: public
+              member_specification_opt: 1
+               member_specification: 2
+                member_declaration: 2
+                 decl_specifier_seq: 1
+                  decl_specifier: 1
+                   type_specifier: 1
+                    simple_type_specifier: 1
+                     VOID: void
+                 member_declarator_list: 1
+                  member_declarator: 1
+                   declarator: 1
+                    direct_declarator: 2
+                     direct_declarator: 1
+                      declarator_id: 1
+                       id_expression: 1
+                        unqualified_id: 1
+                         identifier: 1
+                          IDENTIFIER: open
+                     parameter_declaration_clause: 0
+                member_specification_opt: 1
+                 member_specification: 2
+                  member_declaration: 2
+                   decl_specifier_seq: 1
+                    decl_specifier: 1
+                     type_specifier: 1
+                      simple_type_specifier: 1
+                       VOID: void
+                   member_declarator_list: 1
+                    member_declarator: 1
+                     declarator: 1
+                      direct_declarator: 2
+                       direct_declarator: 1
+                        declarator_id: 1
+                         id_expression: 1
+                          unqualified_id: 1
+                           identifier: 1
+                            IDENTIFIER: close
+                       parameter_declaration_clause: 0
+                  member_specification_opt: 1
+                   member_specification: 2
+                    member_declaration: 2
+                     decl_specifier_seq: 1
+                      decl_specifier: 1
+                       type_specifier: 1
+                        simple_type_specifier: 1
+                         CHAR: char
+                     member_declarator_list: 1
+                      member_declarator: 1
+                       declarator: 2
+                        ptr_operator: 0
+                        declarator: 1
+                         direct_declarator: 2
+                          direct_declarator: 1
+                           declarator_id: 1
+                            id_expression: 1
+                             unqualified_id: 1
+                              identifier: 1
+                               IDENTIFIER: get
+                          parameter_declaration_clause: 0
+                    member_specification_opt: 1
+                     member_specification: 2
+                      member_declaration: 2
+                       decl_specifier_seq: 1
+                        decl_specifier: 1
+                         type_specifier: 1
+                          simple_type_specifier: 1
+                           VOID: void
+                       member_declarator_list: 1
+                        member_declarator: 1
+                         declarator: 1
+                          direct_declarator: 2
+                           direct_declarator: 1
+                            declarator_id: 1
+                             id_expression: 1
+                              unqualified_id: 1
+                               identifier: 1
+                                IDENTIFIER: ignore
+                           parameter_declaration_clause: 0
+                      member_specification_opt: 1
+                       member_specification: 2
+                        member_declaration: 2
+                         decl_specifier_seq: 1
+                          decl_specifier: 1
+                           type_specifier: 1
+                            simple_type_specifier: 1
+                             VOID: void
+                         member_declarator_list: 1
+                          member_declarator: 1
+                           declarator: 1
+                            direct_declarator: 2
+                             direct_declarator: 1
+                              declarator_id: 1
+                               id_expression: 1
+                                unqualified_id: 1
+                                 identifier: 1
+                                  IDENTIFIER: getline
+                             parameter_declaration_clause: 1
+                              parameter_declaration_list: 2
+                               parameter_declaration_list: 1
+                                parameter_declaration: 2
+                                 decl_specifier_seq: 1
+                                  decl_specifier: 1
+                                   type_specifier: 1
+                                    simple_type_specifier: 1
+                                     CHAR: char
+                                 abstract_declarator_opt: 1
+                                  abstract_declarator: 2
+                                   ptr_operator: 0
+                                   abstract_declarator_opt: 1
+                                    abstract_declarator: 2
+                                     ptr_operator: 0
+                                     abstract_declarator_opt: 0
+                               parameter_declaration: 2
+                                decl_specifier_seq: 1
+                                 decl_specifier: 1
+                                  type_specifier: 1
+                                   simple_type_specifier: 1
+                                    INT: int
+                                abstract_declarator_opt: 0
+                        member_specification_opt: 1
+                         member_specification: 2
+                          member_declaration: 2
+                           decl_specifier_seq: 1
+                            decl_specifier: 1
+                             type_specifier: 1
+                              simple_type_specifier: 1
+                               BOOL: bool
+                           member_declarator_list: 1
+                            member_declarator: 1
+                             declarator: 1
+                              direct_declarator: 2
+                               direct_declarator: 1
+                                declarator_id: 1
+                                 id_expression: 1
+                                  unqualified_id: 1
+                                   identifier: 1
+                                    IDENTIFIER: eof
+                               parameter_declaration_clause: 0
+                          member_specification_opt: 1
+                           member_specification: 2
+                            member_declaration: 2
+                             decl_specifier_seq: 1
+                              decl_specifier: 1
+                               type_specifier: 1
+                                simple_type_specifier: 1
+                                 CHAR: char
+                             member_declarator_list: 1
+                              member_declarator: 1
+                               declarator: 2
+                                ptr_operator: 0
+                                declarator: 1
+                                 direct_declarator: 2
+                                  direct_declarator: 1
+                                   declarator_id: 1
+                                    id_expression: 1
+                                     unqualified_id: 1
+                                      identifier: 1
+                                       IDENTIFIER: peek
+                                  parameter_declaration_clause: 0
+                            member_specification_opt: 0
+    declaration: 1
+     block_declaration: 1
+      simple_declaration: 1
+       decl_specifier_seq: 1
+        decl_specifier: 1
+         type_specifier: 1
+          class_specifier: 2
+           class_head: 2
+            class_key: 1
+             CLASS: class
+            class_name: 1
+             CLASS_NAME: ofstream
+           member_specification_opt: 1
+            member_specification: 2
+             access_specifier: 1
+              PUBLIC: public
+             member_specification_opt: 1
+              member_specification: 2
+               member_declaration: 2
+                decl_specifier_seq: 1
+                 decl_specifier: 1
+                  type_specifier: 1
+                   simple_type_specifier: 1
+                    VOID: void
+                member_declarator_list: 1
+                 member_declarator: 1
+                  declarator: 1
+                   direct_declarator: 2
+                    direct_declarator: 1
+                     declarator_id: 1
+                      id_expression: 1
+                       unqualified_id: 1
+                        identifier: 1
+                         IDENTIFIER: open
+                    parameter_declaration_clause: 0
+               member_specification_opt: 1
+                member_specification: 2
+                 member_declaration: 2
+                  decl_specifier_seq: 1
+                   decl_specifier: 1
+                    type_specifier: 1
+                     simple_type_specifier: 1
+                      VOID: void
+                  member_declarator_list: 1
+                   member_declarator: 1
+                    declarator: 1
+                     direct_declarator: 2
+                      direct_declarator: 1
+                       declarator_id: 1
+                        id_expression: 1
+                         unqualified_id: 1
+                          identifier: 1
+                           IDENTIFIER: close
+                      parameter_declaration_clause: 0
+                 member_specification_opt: 0
+   declaration: 1
+    function_definition: 4
+     decl_specifier_seq: 1
+      decl_specifier: 1
+       type_specifier: 1
+        simple_type_specifier: 1
+         INT: int
+     declarator: 1
+      direct_declarator: 2
+       direct_declarator: 1
+        declarator_id: 1
+         id_expression: 1
+          unqualified_id: 1
+           identifier: 1
+            IDENTIFIER: main
+       parameter_declaration_clause: 0
+     ctor_initializer_opt: 0
+     function_body: 1
+      compound_statement: 1
+       statement_seq_opt: 1
+        statement_seq: 2
+         statement_seq: 1
+          statement: 1
+           expression_statement: 1
+            expression_opt: 1
+             expression: 1
+              assignment_expression: 1
+               conditional_expression: 1
+                logical_or_expression: 1
+                 logical_and_expression: 1
+                  inclusive_or_expression: 1
+                   exclusive_or_expression: 1
+                    and_expression: 1
+                     equality_expression: 1
+                      relational_expression: 1
+                       shift_expression: 3
+                        shift_expression: 3
+                         shift_expression: 1
+                          additive_expression: 1
+                           multiplicative_expression: 1
+                            pm_expression: 1
+                             cast_expression: 1
+                              unary_expression: 1
+                               postfix_expression: 1
+                                primary_expression: 1
+                                 id_expression: 1
+                                  unqualified_id: 1
+                                   identifier: 1
+                                    IDENTIFIER: cout
+                         SL: <<
+                         additive_expression: 1
+                          multiplicative_expression: 1
+                           pm_expression: 1
+                            cast_expression: 1
+                             unary_expression: 1
+                              postfix_expression: 1
+                               primary_expression: 1
+                                literal: 1
+                                 string_literal: 1
+                                  STRING: "hello"
+                        SL: <<
+                        additive_expression: 1
+                         multiplicative_expression: 1
+                          pm_expression: 1
+                           cast_expression: 1
+                            unary_expression: 1
+                             postfix_expression: 1
+                              primary_expression: 1
+                               id_expression: 1
+                                unqualified_id: 1
+                                 identifier: 1
+                                  IDENTIFIER: endl
+         statement: 1
+          jump_statement: 2
+           RETURN: return
+           expression_opt: 1
+            expression: 1
+             assignment_expression: 1
+              conditional_expression: 1
+               logical_or_expression: 1
+                logical_and_expression: 1
+                 inclusive_or_expression: 1
+                  exclusive_or_expression: 1
+                   and_expression: 1
+                    equality_expression: 1
+                     relational_expression: 1
+                      shift_expression: 1
+                       additive_expression: 1
+                        multiplicative_expression: 1
+                         pm_expression: 1
+                          cast_expression: 1
+                           unary_expression: 1
+                            postfix_expression: 1
+                             primary_expression: 1
+                              literal: 1
+                               integer_literal: 1
+                                INTEGER: 1
+type key1
+class name1
+type head1
+access specifier3
+simple type specifier14
+type specifier1
+decl specifier2
+decl specifier seq1
+identifier1
+unqualified id1
+id expression1
+declarator id1
+direct declarator1
+parameter declaration clause4
+direct declarator5
+*addParamsToFunction*
+*passTypeBelowPointer*
+declarator1 
+member declaration1
+member declarator list1
+member declaration1
+*passTypeBelowPointer*
+simple type specifier14
+type specifier1
+decl specifier2
+decl specifier seq1
+identifier1
+unqualified id1
+id expression1
+declarator id1
+direct declarator1
+parameter declaration clause4
+direct declarator5
+*addParamsToFunction*
+*passTypeBelowPointer*
+declarator1 
+member declaration1
+member declarator list1
+member declaration1
+*passTypeBelowPointer*
+simple type specifier4
+type specifier1
+decl specifier2
+decl specifier seq1
+ptr operator1
+identifier1
+unqualified id1
+id expression1
+declarator id1
+direct declarator1
+parameter declaration clause4
+direct declarator5
+*addParamsToFunction*
+*passTypeBelowPointer*
+declarator1 
+declarator2
+member declaration1
+member declarator list1
+member declaration1
+*passTypeBelowPointer*
+function
+*passTypeBelowPointer*
+simple type specifier14
+type specifier1
+decl specifier2
+decl specifier seq1
+identifier1
+unqualified id1
+id expression1
+declarator id1
+direct declarator1
+parameter declaration clause4
+direct declarator5
+*addParamsToFunction*
+*passTypeBelowPointer*
+declarator1 
+member declaration1
+member declarator list1
+member declaration1
+*passTypeBelowPointer*
+simple type specifier14
+type specifier1
+decl specifier2
+decl specifier seq1
+identifier1
+unqualified id1
+id expression1
+declarator id1
+direct declarator1
+simple type specifier4
+type specifier1
+decl specifier2
+decl specifier seq1
+ptr operator1
+ptr operator1
+abstract_declarator_opt1
+abstract_declarator1
+abstract_declarator_opt1
+abstract_declarator1
+abstract_declarator_opt1
+parameter declaration3
+parameter declaration list1
+simple type specifier8
+type specifier1
+decl specifier2
+decl specifier seq1
+abstract_declarator_opt1
+parameter declaration3
+parameter declaration list2
+parameter declaration clause2
+direct declarator5
+*addParamsToFunction*
+*addParamsToFunction*
+*addParamsToFunction*
+*passTypeBelowPointer*
+declarator1 
+member declaration1
+member declarator list1
+member declaration1
+*passTypeBelowPointer*
+simple type specifier6
+type specifier1
+decl specifier2
+decl specifier seq1
+identifier1
+unqualified id1
+id expression1
+declarator id1
+direct declarator1
+parameter declaration clause4
+direct declarator5
+*addParamsToFunction*
+*passTypeBelowPointer*
+declarator1 
+member declaration1
+member declarator list1
+member declaration1
+*passTypeBelowPointer*
+simple type specifier4
+type specifier1
+decl specifier2
+decl specifier seq1
+ptr operator1
+identifier1
+unqualified id1
+id expression1
+declarator id1
+direct declarator1
+parameter declaration clause4
+direct declarator5
+*addParamsToFunction*
+*passTypeBelowPointer*
+declarator1 
+declarator2
+member declaration1
+member declarator list1
+member declaration1
+*passTypeBelowPointer*
+function
+*passTypeBelowPointer*
+member specification opt1
+member speccification1
+member specification opt2
+member speccification1
+eof
+peek
+*passAccessBelow*
+member specification opt2
+member speccification1
+getline
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+member specification opt2
+member speccification1
+ignore
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+member specification opt2
+member speccification1
+get
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+member specification opt2
+member speccification1
+close
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+member specification opt2
+member speccification1
+open
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+member specification opt2
+member speccification2
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+member specification opt2
+type name1
+*addMembersToClass*
+*addMembersToClass*
+*addMembersToClass*
+*addMembersToClass*
+*addMembersToClass*
+*addMembersToClass*
+*addMembersToClass*
+*addMembersToClass*
+*addMembersToClass*
+*addMembersToClass*
+*addMembersToClass*
+*addMembersToClass*
+*addMembersToClass*
+type specifier2
+decl specifier2
+decl specifier seq1
+simple declaration2
+block declaration1
+declaration1
+declaration seq1
+type key1
+class name1
+type head1
+access specifier3
+simple type specifier14
+type specifier1
+decl specifier2
+decl specifier seq1
+identifier1
+unqualified id1
+id expression1
+declarator id1
+direct declarator1
+parameter declaration clause4
+direct declarator5
+*addParamsToFunction*
+*passTypeBelowPointer*
+declarator1 
+member declaration1
+member declarator list1
+member declaration1
+*passTypeBelowPointer*
+simple type specifier14
+type specifier1
+decl specifier2
+decl specifier seq1
+identifier1
+unqualified id1
+id expression1
+declarator id1
+direct declarator1
+parameter declaration clause4
+direct declarator5
+*addParamsToFunction*
+*passTypeBelowPointer*
+declarator1 
+member declaration1
+member declarator list1
+member declaration1
+*passTypeBelowPointer*
+member specification opt1
+member speccification1
+member specification opt2
+member speccification1
+open
+close
+*passAccessBelow*
+member specification opt2
+member speccification2
+*passAccessBelow*
+*passAccessBelow*
+*passAccessBelow*
+member specification opt2
+type name1
+*addMembersToClass*
+*addMembersToClass*
+*addMembersToClass*
+type specifier2
+decl specifier2
+decl specifier seq1
+simple declaration2
+block declaration1
+declaration1
+declaration seq2
+simple type specifier8
+type specifier1
+decl specifier2
+decl specifier seq1
+identifier1
+unqualified id1
+id expression1
+declarator id1
+direct declarator1
+parameter declaration clause4
+direct declarator5
+*addParamsToFunction*
+*passTypeBelowPointer*
+declarator1 
+ctor initializer opt1
+identifier1
+unqualified id1
+id expression1
+primary expression4
+postfix expression1
+unary expression1
+cast_expression1
+pm_expression1
+multiplicative_expression1
+additive_expression1
+shift_expression1
+string literal1
+literal4
+primary expression1
+postfix expression1
+unary expression1
+cast_expression1
+pm_expression1
+multiplicative_expression1
+additive_expression1
+shift_expression2
+identifier1
+unqualified id1
+id expression1
+primary expression4
+postfix expression1
+unary expression1
+cast_expression1
+pm_expression1
+multiplicative_expression1
+additive_expression1
+shift_expression2
+relational_expression1
+equality_expression1
+and_expression1
+exclusive_or_expression1
+inclusive_or_expression1
+logical and expression1
+logical or expression1
+conditional expression1
+assignment expression1
+expression1
+expression opt2
+expression statement1
+statement2
+statement seq1
+integer literal1
+literal1
+primary expression1
+postfix expression1
+unary expression1
+cast_expression1
+pm_expression1
+multiplicative_expression1
+additive_expression1
+shift_expression1
+relational_expression1
+equality_expression1
+and_expression1
+exclusive_or_expression1
+inclusive_or_expression1
+logical and expression1
+logical or expression1
+conditional expression1
+assignment expression1
+expression1
+expression opt2
+jump_statement3statement6
+statement seq2
+statement seq opt2
+compound statement1
+function body1
+function definition2
+*passTypeBelowPointer*
+declaration2
+declaration seq2
+declaration seq opt2
+translation unit1
+*** build types successful ***
+	*createGlobalSymbolTable*
+global ST: 31
+adding to symbol table program:
+
+addToSymbolTable: [1]
+adding to symbol table program:
+
+addToSymbolTable: [2]
+adding to symbol table program:
+
+addToSymbolTable: [3]
+adding to symbol table program:
+
+addToSymbolTable: [4]
+adding to symbol table program:
+
+addToSymbolTable: [5]
+adding to symbol table program:
+
+addToSymbolTable: [6]
+ program: 1 program  - program
+ declaration_seq_opt: 1 - touple
+  declaration_seq: 2 - touple
+   declaration_seq: 2 - touple
+    declaration_seq: 1 ifstream  - class
+     declaration: 1 ifstream  - class
+      block_declaration: 1 ifstream  - class
+       simple_declaration: 1 ifstream  - class
+        decl_specifier_seq: 1 ifstream  - class
+         decl_specifier: 1 ifstream  - class
+          type_specifier: 1 ifstream  - class
+           class_specifier: 2 ifstream  - class
+            class_head: 2 ifstream  - class
+             class_key: 1 ifstream  - class
+              CLASS: class - class
+             class_name: 1 ifstream  - class
+              CLASS_NAME: ifstream - UNKNOWN TYPE
+            member_specification_opt: 1 - touple
+             member_specification: 2 - touple
+              access_specifier: 1 - UNKNOWN TYPE
+               PUBLIC: public - UNKNOWN TYPE
+              member_specification_opt: 1 - touple
+               member_specification: 2 - touple
+                member_declaration: 2 open  - void
+                 decl_specifier_seq: 1 - void
+                  decl_specifier: 1 - void
+                   type_specifier: 1 - void
+                    simple_type_specifier: 1 - void
+                     VOID: void - void
+                 member_declarator_list: 1 open  - void
+                  member_declarator: 1 open  - void
+                   declarator: 1 open  - void
+                    direct_declarator: 2 open  - void
+                     direct_declarator: 1 open  - function
+                      declarator_id: 1 open  - function
+                       id_expression: 1 open  - function
+                        unqualified_id: 1 open  - function
+                         identifier: 1 open  - function
+                          IDENTIFIER: open - function
+                     parameter_declaration_clause: 0 - NULL
+                member_specification_opt: 1 - touple
+                 member_specification: 2 - touple
+                  member_declaration: 2 close  - void
+                   decl_specifier_seq: 1 - void
+                    decl_specifier: 1 - void
+                     type_specifier: 1 - void
+                      simple_type_specifier: 1 - void
+                       VOID: void - void
+                   member_declarator_list: 1 close  - void
+                    member_declarator: 1 close  - void
+                     declarator: 1 close  - void
+                      direct_declarator: 2 close  - void
+                       direct_declarator: 1 close  - function
+                        declarator_id: 1 close  - function
+                         id_expression: 1 close  - function
+                          unqualified_id: 1 close  - function
+                           identifier: 1 close  - function
+                            IDENTIFIER: close - function
+                       parameter_declaration_clause: 0 - NULL
+                  member_specification_opt: 1 - touple
+                   member_specification: 2 - touple
+                    member_declaration: 2 get  - pointer
+                     decl_specifier_seq: 1 - char
+                      decl_specifier: 1 - char
+                       type_specifier: 1 - char
+                        simple_type_specifier: 1 - char
+                         CHAR: char - char
+                     member_declarator_list: 1 get  - pointer
+                      member_declarator: 1 get  - pointer
+                       declarator: 2 get  - pointer
+                        ptr_operator: 0 - pointer
+                        declarator: 1 get  - char
+                         direct_declarator: 2 get  - char
+                          direct_declarator: 1 get  - function
+                           declarator_id: 1 get  - function
+                            id_expression: 1 get  - function
+                             unqualified_id: 1 get  - function
+                              identifier: 1 get  - function
+                               IDENTIFIER: get - function
+                          parameter_declaration_clause: 0 - NULL
+                    member_specification_opt: 1 - touple
+                     member_specification: 2 - touple
+                      member_declaration: 2 ignore  - void
+                       decl_specifier_seq: 1 - void
+                        decl_specifier: 1 - void
+                         type_specifier: 1 - void
+                          simple_type_specifier: 1 - void
+                           VOID: void - void
+                       member_declarator_list: 1 ignore  - void
+                        member_declarator: 1 ignore  - void
+                         declarator: 1 ignore  - void
+                          direct_declarator: 2 ignore  - void
+                           direct_declarator: 1 ignore  - function
+                            declarator_id: 1 ignore  - function
+                             id_expression: 1 ignore  - function
+                              unqualified_id: 1 ignore  - function
+                               identifier: 1 ignore  - function
+                                IDENTIFIER: ignore - function
+                           parameter_declaration_clause: 0 - NULL
+                      member_specification_opt: 1 - touple
+                       member_specification: 2 - touple
+                        member_declaration: 2 getline  - void
+                         decl_specifier_seq: 1 - void
+                          decl_specifier: 1 - void
+                           type_specifier: 1 - void
+                            simple_type_specifier: 1 - void
+                             VOID: void - void
+                         member_declarator_list: 1 getline  - void
+                          member_declarator: 1 getline  - void
+                           declarator: 1 getline  - void
+                            direct_declarator: 2 getline  - void
+                             direct_declarator: 1 getline  - function
+                              declarator_id: 1 getline  - function
+                               id_expression: 1 getline  - function
+                                unqualified_id: 1 getline  - function
+                                 identifier: 1 getline  - function
+                                  IDENTIFIER: getline - function
+                             parameter_declaration_clause: 1 - touple
+                              parameter_declaration_list: 2 - touple
+                               parameter_declaration_list: 1 - char
+                                parameter_declaration: 2 - char
+                                 decl_specifier_seq: 1 - char
+                                  decl_specifier: 1 - char
+                                   type_specifier: 1 - char
+                                    simple_type_specifier: 1 - char
+                                     CHAR: char - char
+                                 abstract_declarator_opt: 1 - pointer
+                                  abstract_declarator: 2 - pointer
+                                   ptr_operator: 0 - pointer
+                                   abstract_declarator_opt: 1 - pointer
+                                    abstract_declarator: 2 - pointer
+                                     ptr_operator: 0 - pointer
+                                     abstract_declarator_opt: 0 - NULL
+                               parameter_declaration: 2 - int
+                                decl_specifier_seq: 1 - int
+                                 decl_specifier: 1 - int
+                                  type_specifier: 1 - int
+                                   simple_type_specifier: 1 - int
+                                    INT: int - int
+                                abstract_declarator_opt: 0 - NULL
+                        member_specification_opt: 1 - touple
+                         member_specification: 2 - touple
+                          member_declaration: 2 eof  - bool
+                           decl_specifier_seq: 1 - bool
+                            decl_specifier: 1 - bool
+                             type_specifier: 1 - bool
+                              simple_type_specifier: 1 - bool
+                               BOOL: bool - bool
+                           member_declarator_list: 1 eof  - bool
+                            member_declarator: 1 eof  - bool
+                             declarator: 1 eof  - bool
+                              direct_declarator: 2 eof  - bool
+                               direct_declarator: 1 eof  - function
+                                declarator_id: 1 eof  - function
+                                 id_expression: 1 eof  - function
+                                  unqualified_id: 1 eof  - function
+                                   identifier: 1 eof  - function
+                                    IDENTIFIER: eof - function
+                               parameter_declaration_clause: 0 - NULL
+                          member_specification_opt: 1 peek  - pointer
+                           member_specification: 2 peek  - pointer
+                            member_declaration: 2 peek  - pointer
+                             decl_specifier_seq: 1 - char
+                              decl_specifier: 1 - char
+                               type_specifier: 1 - char
+                                simple_type_specifier: 1 - char
+                                 CHAR: char - char
+                             member_declarator_list: 1 peek  - pointer
+                              member_declarator: 1 peek  - pointer
+                               declarator: 2 peek  - pointer
+                                ptr_operator: 0 - pointer
+                                declarator: 1 peek  - char
+                                 direct_declarator: 2 peek  - char
+                                  direct_declarator: 1 peek  - function
+                                   declarator_id: 1 peek  - function
+                                    id_expression: 1 peek  - function
+                                     unqualified_id: 1 peek  - function
+                                      identifier: 1 peek  - function
+                                       IDENTIFIER: peek - function
+                                  parameter_declaration_clause: 0 - NULL
+                            member_specification_opt: 0 - NULL
+    declaration: 1 ofstream  - class
+     block_declaration: 1 ofstream  - class
+      simple_declaration: 1 ofstream  - class
+       decl_specifier_seq: 1 ofstream  - class
+        decl_specifier: 1 ofstream  - class
+         type_specifier: 1 ofstream  - class
+          class_specifier: 2 ofstream  - class
+           class_head: 2 ofstream  - class
+            class_key: 1 ofstream  - class
+             CLASS: class - class
+            class_name: 1 ofstream  - class
+             CLASS_NAME: ofstream - UNKNOWN TYPE
+           member_specification_opt: 1 - touple
+            member_specification: 2 - touple
+             access_specifier: 1 - UNKNOWN TYPE
+              PUBLIC: public - UNKNOWN TYPE
+             member_specification_opt: 1 - touple
+              member_specification: 2 - touple
+               member_declaration: 2 open  - void
+                decl_specifier_seq: 1 - void
+                 decl_specifier: 1 - void
+                  type_specifier: 1 - void
+                   simple_type_specifier: 1 - void
+                    VOID: void - void
+                member_declarator_list: 1 open  - void
+                 member_declarator: 1 open  - void
+                  declarator: 1 open  - void
+                   direct_declarator: 2 open  - void
+                    direct_declarator: 1 open  - function
+                     declarator_id: 1 open  - function
+                      id_expression: 1 open  - function
+                       unqualified_id: 1 open  - function
+                        identifier: 1 open  - function
+                         IDENTIFIER: open - function
+                    parameter_declaration_clause: 0 - NULL
+               member_specification_opt: 1 close  - void
+                member_specification: 2 close  - void
+                 member_declaration: 2 close  - void
+                  decl_specifier_seq: 1 - void
+                   decl_specifier: 1 - void
+                    type_specifier: 1 - void
+                     simple_type_specifier: 1 - void
+                      VOID: void - void
+                  member_declarator_list: 1 close  - void
+                   member_declarator: 1 close  - void
+                    declarator: 1 close  - void
+                     direct_declarator: 2 close  - void
+                      direct_declarator: 1 close  - function
+                       declarator_id: 1 close  - function
+                        id_expression: 1 close  - function
+                         unqualified_id: 1 close  - function
+                          identifier: 1 close  - function
+                           IDENTIFIER: close - function
+                      parameter_declaration_clause: 0 - NULL
+                 member_specification_opt: 0 - NULL
+   declaration: 1 main  - function
+    function_definition: 4 main  - function
+     decl_specifier_seq: 1 - int
+      decl_specifier: 1 - int
+       type_specifier: 1 - int
+        simple_type_specifier: 1 - int
+         INT: int - int
+     declarator: 1 main  - function
+      direct_declarator: 2 main  - function
+       direct_declarator: 1 main  - function
+        declarator_id: 1 main  - function
+         id_expression: 1 main  - function
+          unqualified_id: 1 main  - function
+           identifier: 1 main  - function
+            IDENTIFIER: main - function
+       parameter_declaration_clause: 0 - NULL
+     ctor_initializer_opt: 0 - NULL
+     function_body: 1 - function
+      compound_statement: 1 - statement
+       statement_seq_opt: 1 - touple
+        statement_seq: 2 - touple
+         statement_seq: 1 - statement
+          statement: 1 - statement
+           expression_statement: 1 - statement
+            expression_opt: 1 cout  - UNKNOWN TYPE
+             expression: 1 cout  - UNKNOWN TYPE
+              assignment_expression: 1 cout  - UNKNOWN TYPE
+               conditional_expression: 1 cout  - UNKNOWN TYPE
+                logical_or_expression: 1 cout  - UNKNOWN TYPE
+                 logical_and_expression: 1 cout  - UNKNOWN TYPE
+                  inclusive_or_expression: 1 cout  - UNKNOWN TYPE
+                   exclusive_or_expression: 1 cout  - UNKNOWN TYPE
+                    and_expression: 1 cout  - UNKNOWN TYPE
+                     equality_expression: 1 cout  - UNKNOWN TYPE
+                      relational_expression: 1 cout  - UNKNOWN TYPE
+                       shift_expression: 3 cout  - UNKNOWN TYPE
+                        shift_expression: 3 cout  - UNKNOWN TYPE
+                         shift_expression: 1 cout  - UNKNOWN TYPE
+                          additive_expression: 1 cout  - UNKNOWN TYPE
+                           multiplicative_expression: 1 cout  - UNKNOWN TYPE
+                            pm_expression: 1 cout  - UNKNOWN TYPE
+                             cast_expression: 1 cout  - UNKNOWN TYPE
+                              unary_expression: 1 cout  - UNKNOWN TYPE
+                               postfix_expression: 1 cout  - UNKNOWN TYPE
+                                primary_expression: 1 cout  - UNKNOWN TYPE
+                                 id_expression: 1 cout  - UNKNOWN TYPE
+                                  unqualified_id: 1 cout  - UNKNOWN TYPE
+                                   identifier: 1 cout  - UNKNOWN TYPE
+                                    IDENTIFIER: cout - UNKNOWN TYPE
+                         SL: << - UNKNOWN TYPE
+                         additive_expression: 1 "hello"  - string
+                          multiplicative_expression: 1 "hello"  - string
+                           pm_expression: 1 "hello"  - string
+                            cast_expression: 1 "hello"  - string
+                             unary_expression: 1 "hello"  - string
+                              postfix_expression: 1 "hello"  - string
+                               primary_expression: 1 "hello"  - string
+                                literal: 1 "hello"  - string
+                                 string_literal: 1 "hello"  - string
+                                  STRING: "hello" - string
+                        SL: << - UNKNOWN TYPE
+                        additive_expression: 1 endl  - UNKNOWN TYPE
+                         multiplicative_expression: 1 endl  - UNKNOWN TYPE
+                          pm_expression: 1 endl  - UNKNOWN TYPE
+                           cast_expression: 1 endl  - UNKNOWN TYPE
+                            unary_expression: 1 endl  - UNKNOWN TYPE
+                             postfix_expression: 1 endl  - UNKNOWN TYPE
+                              primary_expression: 1 endl  - UNKNOWN TYPE
+                               id_expression: 1 endl  - UNKNOWN TYPE
+                                unqualified_id: 1 endl  - UNKNOWN TYPE
+                                 identifier: 1 endl  - UNKNOWN TYPE
+                                  IDENTIFIER: endl - UNKNOWN TYPE
+         statement: 1 1  - int
+          jump_statement: 2 1  - int
+           RETURN: return - int
+           expression_opt: 1 1  - int
+            expression: 1 1  - int
+             assignment_expression: 1 1  - int
+              conditional_expression: 1 1  - int
+               logical_or_expression: 1 1  - int
+                logical_and_expression: 1 1  - int
+                 inclusive_or_expression: 1 1  - int
+                  exclusive_or_expression: 1 1  - int
+                   and_expression: 1 1  - int
+                    equality_expression: 1 1  - int
+                     relational_expression: 1 1  - int
+                      shift_expression: 1 1  - int
+                       additive_expression: 1 1  - int
+                        multiplicative_expression: 1 1  - int
+                         pm_expression: 1 1  - int
+                          cast_expression: 1 1  - int
+                           unary_expression: 1 1  - int
+                            postfix_expression: 1 1  - int
+                             primary_expression: 1 1  - int
+                              literal: 1 1  - int
+                               integer_literal: 1 1  - int
+                                INTEGER: 1 - int
+*** print tree successful ***
+identifier 1
+identifier 1
+identifier 1
+identifier 1
+identifier 1
+identifier 1
+identifier 1
+class specifier 1
+adding to symbol table program:
+
+addToSymbolTable: [7]
+	*createSymbolTable*
+adding to symbol table ifstream:
+
+addToSymbolTable: [1]
+adding to symbol table ifstream:
+
+addToSymbolTable: [2]
+adding to symbol table ifstream:
+
+addToSymbolTable: [3]
+adding to symbol table ifstream:
+
+addToSymbolTable: [4]
+adding to symbol table ifstream:
+
+addToSymbolTable: [5]
+adding to symbol table ifstream:
+
+addToSymbolTable: [6]
+adding to symbol table ifstream:
+
+addToSymbolTable: [7]
+adding to symbol table ifstream:
+
+addToSymbolTable: [8]
+class specifier 1 complete[8]
+identifier 1
+identifier 1
+class specifier 1
+adding to symbol table program:
+
+addToSymbolTable: [8]
+	*createSymbolTable*
+adding to symbol table ofstream:
+
+addToSymbolTable: [1]
+adding to symbol table ofstream:
+
+addToSymbolTable: [2]
+adding to symbol table ofstream:
+
+addToSymbolTable: [3]
+class specifier 1 complete[3]
+identifier 1
+identifier 1
+identifier 1
+function definition 2
+adding to symbol table program:
+
+addToSymbolTable: [9]
+	*createSymbolTable*
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+expression_statement 1
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+expression 1
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+identifier 1
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+identifier 1
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+jump_statement 3****
+c
+***
+	int : int
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+expression 1
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+function definition 2 complete [0]
+translation unit 1
+translation unit 1 complete
+*** make symbol tables successful ***
+ program: 1 program  - program
+ declaration_seq_opt: 1 - touple
+  declaration_seq: 2 - touple
+   declaration_seq: 2 - touple
+    declaration_seq: 1 ifstream  - class
+     declaration: 1 ifstream  - class
+      block_declaration: 1 ifstream  - class
+       simple_declaration: 1 ifstream  - class
+        decl_specifier_seq: 1 ifstream  - class
+         decl_specifier: 1 ifstream  - class
+          type_specifier: 1 ifstream  - class
+           class_specifier: 2 ifstream  - class
+            class_head: 2 ifstream  - class
+             class_key: 1 ifstream  - class
+              CLASS: class - class
+             class_name: 1 ifstream  - class
+              CLASS_NAME: ifstream - UNKNOWN TYPE
+            member_specification_opt: 1 - touple
+             member_specification: 2 - touple
+              access_specifier: 1 - UNKNOWN TYPE
+               PUBLIC: public - UNKNOWN TYPE
+              member_specification_opt: 1 - touple
+               member_specification: 2 - touple
+                member_declaration: 2 open  - void
+                 decl_specifier_seq: 1 - void
+                  decl_specifier: 1 - void
+                   type_specifier: 1 - void
+                    simple_type_specifier: 1 - void
+                     VOID: void - void
+                 member_declarator_list: 1 open  - void
+                  member_declarator: 1 open  - void
+                   declarator: 1 open  - void
+                    direct_declarator: 2 open  - void
+                     direct_declarator: 1 open  - function
+                      declarator_id: 1 open  - function
+                       id_expression: 1 open  - function
+                        unqualified_id: 1 open  - function
+                         identifier: 1 open  - function
+                          IDENTIFIER: open - function
+                     parameter_declaration_clause: 0 - NULL
+                member_specification_opt: 1 - touple
+                 member_specification: 2 - touple
+                  member_declaration: 2 close  - void
+                   decl_specifier_seq: 1 - void
+                    decl_specifier: 1 - void
+                     type_specifier: 1 - void
+                      simple_type_specifier: 1 - void
+                       VOID: void - void
+                   member_declarator_list: 1 close  - void
+                    member_declarator: 1 close  - void
+                     declarator: 1 close  - void
+                      direct_declarator: 2 close  - void
+                       direct_declarator: 1 close  - function
+                        declarator_id: 1 close  - function
+                         id_expression: 1 close  - function
+                          unqualified_id: 1 close  - function
+                           identifier: 1 close  - function
+                            IDENTIFIER: close - function
+                       parameter_declaration_clause: 0 - NULL
+                  member_specification_opt: 1 - touple
+                   member_specification: 2 - touple
+                    member_declaration: 2 get  - pointer
+                     decl_specifier_seq: 1 - char
+                      decl_specifier: 1 - char
+                       type_specifier: 1 - char
+                        simple_type_specifier: 1 - char
+                         CHAR: char - char
+                     member_declarator_list: 1 get  - pointer
+                      member_declarator: 1 get  - pointer
+                       declarator: 2 get  - pointer
+                        ptr_operator: 0 - pointer
+                        declarator: 1 get  - char
+                         direct_declarator: 2 get  - char
+                          direct_declarator: 1 get  - function
+                           declarator_id: 1 get  - function
+                            id_expression: 1 get  - function
+                             unqualified_id: 1 get  - function
+                              identifier: 1 get  - function
+                               IDENTIFIER: get - function
+                          parameter_declaration_clause: 0 - NULL
+                    member_specification_opt: 1 - touple
+                     member_specification: 2 - touple
+                      member_declaration: 2 ignore  - void
+                       decl_specifier_seq: 1 - void
+                        decl_specifier: 1 - void
+                         type_specifier: 1 - void
+                          simple_type_specifier: 1 - void
+                           VOID: void - void
+                       member_declarator_list: 1 ignore  - void
+                        member_declarator: 1 ignore  - void
+                         declarator: 1 ignore  - void
+                          direct_declarator: 2 ignore  - void
+                           direct_declarator: 1 ignore  - function
+                            declarator_id: 1 ignore  - function
+                             id_expression: 1 ignore  - function
+                              unqualified_id: 1 ignore  - function
+                               identifier: 1 ignore  - function
+                                IDENTIFIER: ignore - function
+                           parameter_declaration_clause: 0 - NULL
+                      member_specification_opt: 1 - touple
+                       member_specification: 2 - touple
+                        member_declaration: 2 getline  - void
+                         decl_specifier_seq: 1 - void
+                          decl_specifier: 1 - void
+                           type_specifier: 1 - void
+                            simple_type_specifier: 1 - void
+                             VOID: void - void
+                         member_declarator_list: 1 getline  - void
+                          member_declarator: 1 getline  - void
+                           declarator: 1 getline  - void
+                            direct_declarator: 2 getline  - void
+                             direct_declarator: 1 getline  - function
+                              declarator_id: 1 getline  - function
+                               id_expression: 1 getline  - function
+                                unqualified_id: 1 getline  - function
+                                 identifier: 1 getline  - function
+                                  IDENTIFIER: getline - function
+                             parameter_declaration_clause: 1 - touple
+                              parameter_declaration_list: 2 - touple
+                               parameter_declaration_list: 1 - char
+                                parameter_declaration: 2 - char
+                                 decl_specifier_seq: 1 - char
+                                  decl_specifier: 1 - char
+                                   type_specifier: 1 - char
+                                    simple_type_specifier: 1 - char
+                                     CHAR: char - char
+                                 abstract_declarator_opt: 1 - pointer
+                                  abstract_declarator: 2 - pointer
+                                   ptr_operator: 0 - pointer
+                                   abstract_declarator_opt: 1 - pointer
+                                    abstract_declarator: 2 - pointer
+                                     ptr_operator: 0 - pointer
+                                     abstract_declarator_opt: 0 - NULL
+                               parameter_declaration: 2 - int
+                                decl_specifier_seq: 1 - int
+                                 decl_specifier: 1 - int
+                                  type_specifier: 1 - int
+                                   simple_type_specifier: 1 - int
+                                    INT: int - int
+                                abstract_declarator_opt: 0 - NULL
+                        member_specification_opt: 1 - touple
+                         member_specification: 2 - touple
+                          member_declaration: 2 eof  - bool
+                           decl_specifier_seq: 1 - bool
+                            decl_specifier: 1 - bool
+                             type_specifier: 1 - bool
+                              simple_type_specifier: 1 - bool
+                               BOOL: bool - bool
+                           member_declarator_list: 1 eof  - bool
+                            member_declarator: 1 eof  - bool
+                             declarator: 1 eof  - bool
+                              direct_declarator: 2 eof  - bool
+                               direct_declarator: 1 eof  - function
+                                declarator_id: 1 eof  - function
+                                 id_expression: 1 eof  - function
+                                  unqualified_id: 1 eof  - function
+                                   identifier: 1 eof  - function
+                                    IDENTIFIER: eof - function
+                               parameter_declaration_clause: 0 - NULL
+                          member_specification_opt: 1 peek  - pointer
+                           member_specification: 2 peek  - pointer
+                            member_declaration: 2 peek  - pointer
+                             decl_specifier_seq: 1 - char
+                              decl_specifier: 1 - char
+                               type_specifier: 1 - char
+                                simple_type_specifier: 1 - char
+                                 CHAR: char - char
+                             member_declarator_list: 1 peek  - pointer
+                              member_declarator: 1 peek  - pointer
+                               declarator: 2 peek  - pointer
+                                ptr_operator: 0 - pointer
+                                declarator: 1 peek  - char
+                                 direct_declarator: 2 peek  - char
+                                  direct_declarator: 1 peek  - function
+                                   declarator_id: 1 peek  - function
+                                    id_expression: 1 peek  - function
+                                     unqualified_id: 1 peek  - function
+                                      identifier: 1 peek  - function
+                                       IDENTIFIER: peek - function
+                                  parameter_declaration_clause: 0 - NULL
+                            member_specification_opt: 0 - NULL
+    declaration: 1 ofstream  - class
+     block_declaration: 1 ofstream  - class
+      simple_declaration: 1 ofstream  - class
+       decl_specifier_seq: 1 ofstream  - class
+        decl_specifier: 1 ofstream  - class
+         type_specifier: 1 ofstream  - class
+          class_specifier: 2 ofstream  - class
+           class_head: 2 ofstream  - class
+            class_key: 1 ofstream  - class
+             CLASS: class - class
+            class_name: 1 ofstream  - class
+             CLASS_NAME: ofstream - UNKNOWN TYPE
+           member_specification_opt: 1 - touple
+            member_specification: 2 - touple
+             access_specifier: 1 - UNKNOWN TYPE
+              PUBLIC: public - UNKNOWN TYPE
+             member_specification_opt: 1 - touple
+              member_specification: 2 - touple
+               member_declaration: 2 open  - void
+                decl_specifier_seq: 1 - void
+                 decl_specifier: 1 - void
+                  type_specifier: 1 - void
+                   simple_type_specifier: 1 - void
+                    VOID: void - void
+                member_declarator_list: 1 open  - void
+                 member_declarator: 1 open  - void
+                  declarator: 1 open  - void
+                   direct_declarator: 2 open  - void
+                    direct_declarator: 1 open  - function
+                     declarator_id: 1 open  - function
+                      id_expression: 1 open  - function
+                       unqualified_id: 1 open  - function
+                        identifier: 1 open  - function
+                         IDENTIFIER: open - function
+                    parameter_declaration_clause: 0 - NULL
+               member_specification_opt: 1 close  - void
+                member_specification: 2 close  - void
+                 member_declaration: 2 close  - void
+                  decl_specifier_seq: 1 - void
+                   decl_specifier: 1 - void
+                    type_specifier: 1 - void
+                     simple_type_specifier: 1 - void
+                      VOID: void - void
+                  member_declarator_list: 1 close  - void
+                   member_declarator: 1 close  - void
+                    declarator: 1 close  - void
+                     direct_declarator: 2 close  - void
+                      direct_declarator: 1 close  - function
+                       declarator_id: 1 close  - function
+                        id_expression: 1 close  - function
+                         unqualified_id: 1 close  - function
+                          identifier: 1 close  - function
+                           IDENTIFIER: close - function
+                      parameter_declaration_clause: 0 - NULL
+                 member_specification_opt: 0 - NULL
+   declaration: 1 main  - function
+    function_definition: 4 main  - function
+     decl_specifier_seq: 1 - int
+      decl_specifier: 1 - int
+       type_specifier: 1 - int
+        simple_type_specifier: 1 - int
+         INT: int - int
+     declarator: 1 main  - function
+      direct_declarator: 2 main  - function
+       direct_declarator: 1 main  - function
+        declarator_id: 1 main  - function
+         id_expression: 1 main  - function
+          unqualified_id: 1 main  - function
+           identifier: 1 main  - function
+            IDENTIFIER: main - function
+       parameter_declaration_clause: 0 - NULL
+     ctor_initializer_opt: 0 - NULL
+     function_body: 1 - function
+      compound_statement: 1 - statement
+       statement_seq_opt: 1 - touple
+        statement_seq: 2 - touple
+         statement_seq: 1 - statement
+          statement: 1 - statement
+           expression_statement: 1 - statement
+            expression_opt: 1 cout  - stream
+             expression: 1 cout  - stream
+              assignment_expression: 1 cout  - stream
+               conditional_expression: 1 cout  - stream
+                logical_or_expression: 1 cout  - stream
+                 logical_and_expression: 1 cout  - stream
+                  inclusive_or_expression: 1 cout  - stream
+                   exclusive_or_expression: 1 cout  - stream
+                    and_expression: 1 cout  - stream
+                     equality_expression: 1 cout  - stream
+                      relational_expression: 1 cout  - stream
+                       shift_expression: 3 cout  - stream
+                        shift_expression: 3 cout  - stream
+                         shift_expression: 1 cout  - stream
+                          additive_expression: 1 cout  - stream
+                           multiplicative_expression: 1 cout  - stream
+                            pm_expression: 1 cout  - stream
+                             cast_expression: 1 cout  - stream
+                              unary_expression: 1 cout  - stream
+                               postfix_expression: 1 cout  - stream
+                                primary_expression: 1 cout  - stream
+                                 id_expression: 1 cout  - stream
+                                  unqualified_id: 1 cout  - stream
+                                   identifier: 1 cout  - stream
+                                    IDENTIFIER: cout - stream
+                         SL: << - UNKNOWN TYPE
+                         additive_expression: 1 "hello"  - string
+                          multiplicative_expression: 1 "hello"  - string
+                           pm_expression: 1 "hello"  - string
+                            cast_expression: 1 "hello"  - string
+                             unary_expression: 1 "hello"  - string
+                              postfix_expression: 1 "hello"  - string
+                               primary_expression: 1 "hello"  - string
+                                literal: 1 "hello"  - string
+                                 string_literal: 1 "hello"  - string
+                                  STRING: "hello" - string
+                        SL: << - UNKNOWN TYPE
+                        additive_expression: 1 endl  - stream
+                         multiplicative_expression: 1 endl  - stream
+                          pm_expression: 1 endl  - stream
+                           cast_expression: 1 endl  - stream
+                            unary_expression: 1 endl  - stream
+                             postfix_expression: 1 endl  - stream
+                              primary_expression: 1 endl  - stream
+                               id_expression: 1 endl  - stream
+                                unqualified_id: 1 endl  - stream
+                                 identifier: 1 endl  - stream
+                                  IDENTIFIER: endl - stream
+         statement: 1 1  - int
+          jump_statement: 2 1  - int
+           RETURN: return - int
+           expression_opt: 1 1  - int
+            expression: 1 1  - int
+             assignment_expression: 1 1  - int
+              conditional_expression: 1 1  - int
+               logical_or_expression: 1 1  - int
+                logical_and_expression: 1 1  - int
+                 inclusive_or_expression: 1 1  - int
+                  exclusive_or_expression: 1 1  - int
+                   and_expression: 1 1  - int
+                    equality_expression: 1 1  - int
+                     relational_expression: 1 1  - int
+                      shift_expression: 1 1  - int
+                       additive_expression: 1 1  - int
+                        multiplicative_expression: 1 1  - int
+                         pm_expression: 1 1  - int
+                          cast_expression: 1 1  - int
+                           unary_expression: 1 1  - int
+                            postfix_expression: 1 1  - int
+                             primary_expression: 1 1  - int
+                              literal: 1 1  - int
+                               integer_literal: 1 1  - int
+                                INTEGER: 1 - int
+*** print tree successful ***
+
+3

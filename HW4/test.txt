@@ -1,0 +1,10 @@
+class foo{
+	public :
+		int getCount();
+	private :
+		int count;
+};
+
+int foo::getCount(){
+	return count;
+}

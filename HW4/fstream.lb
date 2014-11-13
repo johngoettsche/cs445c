@@ -1,0 +1,8 @@
+class iostream{
+	public :
+		char *get();
+		void ignore();
+		void getline(char **, int);
+		bool eof();
+		char *peek();
+};

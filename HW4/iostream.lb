@@ -1,0 +1,17 @@
+
+class ifstream{
+	public :
+		void open();
+		void close();
+		char *get();
+		void ignore();
+		void getline(char **, int);
+		bool eof();
+		char *peek();
+};
+
+class ofstream{
+	public :
+		void open();
+		void close();
+};

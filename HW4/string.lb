@@ -1,0 +1,9 @@
+class string {
+	public :
+		char **c_str();
+		int length();
+		int size();
+		bool empty();
+		char *at(int);
+		int find(string);
+};
