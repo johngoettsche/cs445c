@@ -78,6 +78,7 @@ SymbolTable *globalSymbolTable;
 
 int codeMemory;
 int labelNumber;
+int tempSymbNumber;
 
 extern int using_namespace_std;
 extern int included_iostream;
@@ -1479,6 +1480,8 @@ int main(int argc, char **argv){
 					//printf("xxxxxxxxxxxx\n");
 					calculateOffsets(globalSymbolTable);
 					printSymbolTables(globalSymbolTable);
+					tempSymbNumber = 0;
+					intermediateCodeGeneration(root);
 					break;
 				case 1 :
 					if(exitStatus < 2) exitStatus = 2;

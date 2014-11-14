@@ -110,6 +110,7 @@ typedef struct TreeNode {
 typedef struct SymbolTableEntry{
 	//Symbol *symbol;
 	NType *symb;
+	int offset;
 	struct SymbolTableEntry *next;
 }SymbolTableEntry;
 
