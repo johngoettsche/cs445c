@@ -1479,9 +1479,11 @@ int main(int argc, char **argv){
 					//printSymbolTables(globalSymbolTable);
 					//printf("xxxxxxxxxxxx\n");
 					calculateOffsets(globalSymbolTable);
-					printSymbolTables(globalSymbolTable);
+					//printSymbolTables(globalSymbolTable);
 					tempSymbNumber = 0;
+					printf("*** Intermediate Code Generation ***\n");
 					intermediateCodeGeneration(root);
+					printSymbolTables(globalSymbolTable);
 					break;
 				case 1 :
 					if(exitStatus < 2) exitStatus = 2;

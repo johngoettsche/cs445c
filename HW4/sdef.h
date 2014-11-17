@@ -40,12 +40,13 @@ typedef struct Location {
 
 typedef struct CodeElem {
 	int desc;
+	char *label;
 	Location **loc;
 }CodeElem;
 
 typedef struct IntrCode {
 	CodeElem *elem;
-	CodeElem *next;
+	struct IntrCode *next;
 }IntrCode;
 
 typedef struct Field {			/* members (fields) of structs */
