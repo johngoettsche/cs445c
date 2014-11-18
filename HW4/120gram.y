@@ -1472,6 +1472,7 @@ int main(int argc, char **argv){
 					addLibrariesData();
 					//if(SHOW_TREES) printTree(root, 0, 1);
 					if(SHOW_TREES) printf("*** adding symbol tables ***\n");
+					tempSymbNumber = 0;
 					makeSymbolTables(root);
 					if(SHOW_TREES) printf("*** make symbol tables successful ***\n");
 					/*if(SHOW_TREES)*/ printTree(root, 0, 1);
@@ -1479,11 +1480,11 @@ int main(int argc, char **argv){
 					//printSymbolTables(globalSymbolTable);
 					//printf("xxxxxxxxxxxx\n");
 					calculateOffsets(globalSymbolTable);
-					//printSymbolTables(globalSymbolTable);
-					tempSymbNumber = 0;
+					printSymbolTables(globalSymbolTable);
 					printf("*** Intermediate Code Generation ***\n");
 					intermediateCodeGeneration(root);
 					printSymbolTables(globalSymbolTable);
+					printCode(root);
 					break;
 				case 1 :
 					if(exitStatus < 2) exitStatus = 2;

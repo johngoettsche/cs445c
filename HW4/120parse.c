@@ -353,6 +353,8 @@ char *humanreadable(int ncode){
 		case C_MULT : name = "MULT"; break;
 		case C_DIV : name = "DIV"; break;
 		case C_MOD : name = "MOD"; break;
+		case C_ADD : name = "ADD"; break;
+		case C_SUB : name = "SUB"; break;
 		case C_PARAM : name = "PARAM"; break;
 
 		default : name =  "Not Found"; break;
@@ -387,18 +389,18 @@ void printSymbolTables(SymbolTable *symbolTable){
 	SymbolListItem *item;
 	switch(symbolTable->scope->base_type){
 		case PROGRAM_TYPE :
-			printf("%s:\n", symbolTable->scope->label);
+			printf("%s: [%d]\n", symbolTable->scope->label, symbolTable->offset);
 			item = symbolTable->list->head; 
 			while(item != NULL){
 				if(item->item->base_type == FUNC_TYPE)	printf("%d\t%s %s()\n", item->offset, humanreadable(item->item->u.func.retType->base_type), item->item->label);
 				else printf("%d\t%s %s\n", item->offset, humanreadable(item->item->base_type), item->item->label);
 				item = item->next;
 			}
-			printf("------------------\n");
+			printf("----------------------\n");
 			break;
 		case CONSTRUCTOR_TYPE :
 		case FUNC_TYPE :
-			printf("%s %s:\n", humanreadable(symbolTable->scope->base_type), symbolTable->scope->label);	
+			printf("%s %s: [%d]\n", humanreadable(symbolTable->scope->base_type), symbolTable->scope->label, symbolTable->offset);	
 			for(i = 0; i < symbolTable->scope->u.func.nargs; i++){
 				if(symbolTable->scope->u.func.args[i]->elemtype->base_type == FUNC_TYPE)	{
 					printf("%d\t%s %s %s()\n", symbolTable->scope->u.func.args[i]->elemtype->offset, humanreadable(symbolTable->scope->u.func.args[i]->elemtype->base_type), humanreadable(symbolTable->scope->u.func.retType->base_type), symbolTable->scope->u.func.args[i]->elemtype->label);
@@ -412,10 +414,10 @@ void printSymbolTables(SymbolTable *symbolTable){
 				else printf("%d\t%s %s\n", item->offset, humanreadable(item->item->base_type), item->item->label);
 				item = item->next;
 			}
-			printf("------------------\n");
+			printf("----------------------\n");
 			break;
 		case CLASS_TYPE :
-			printf("%s %s:\n", humanreadable(symbolTable->scope->base_type), symbolTable->scope->label);
+			printf("%s %s: [%d]\n", humanreadable(symbolTable->scope->base_type), symbolTable->scope->label, symbolTable->offset);
 			for(i = 0; i < symbolTable->scope->u.clas.nfields; i++){
 				if(symbolTable->scope->u.clas.f[i]->elemtype->base_type == FUNC_TYPE)	{
 					printf("%d\t%s %s %s()\n", symbolTable->scope->u.clas.f[i]->elemtype->offset, humanreadable(symbolTable->scope->u.clas.f[i]->elemtype->base_type), humanreadable(symbolTable->scope->u.clas.f[i]->elemtype->u.func.retType->base_type),symbolTable->scope->u.clas.f[i]->elemtype->label);
@@ -429,7 +431,7 @@ void printSymbolTables(SymbolTable *symbolTable){
 				else printf("%d\t%s %s\n", item->offset, humanreadable(item->item->base_type), item->item->label);
 				item = item->next;
 			}
-			printf("------------------\n");
+			printf("----------------------\n");
 			break;
 	}
 	for(t = 0; t < symbolTable->children; t++){
@@ -439,14 +441,14 @@ void printSymbolTables(SymbolTable *symbolTable){
 
 void printCode(TreeNode *node){
 	IntrCode *current = node->intCode;
-	printf("**%s**\n", humanreadable(current->elem->desc));
+	//printf("**%s**\n", humanreadable(current->elem->desc));
 	while(current != NULL){
 		switch(current->elem->desc){
 			case C_LABEL :
 				printf("%s:\n", current->elem->label);
 				break;
 			case C_PARAM :
-				printf("\t%s:%d %s:%d\n", humanreadable(current->elem->desc), 
+				printf("%16s%8s:%d, %s:%d\n", humanreadable(current->elem->desc), 
 											current->elem->loc[0]->region->label, 
 											current->elem->loc[0]->offset,
 											current->elem->loc[1]->region->label, 
@@ -454,15 +456,18 @@ void printCode(TreeNode *node){
 				break;
 				
 			case C_ASN :
-				printf("\t%s:%d\n", humanreadable(current->elem->desc), 
+				printf("%16s%8s:%d, %s:%d\n", humanreadable(current->elem->desc), 
 											current->elem->loc[0]->region->label, 
 											current->elem->loc[0]->offset,
 											current->elem->loc[1]->region->label, 
 											current->elem->loc[1]->offset);
 				break;
 			case C_MULT :
+			case C_DIV :
 			case C_MOD :
-				printf("\t%s:%d\n", humanreadable(current->elem->desc), 
+			case C_ADD :
+			case C_SUB :
+				printf("%16s%8s:%d, %s:%d, %s:%d\n", humanreadable(current->elem->desc), 
 											current->elem->loc[0]->region->label, 
 											current->elem->loc[0]->offset,
 											current->elem->loc[1]->region->label, 
@@ -685,8 +690,10 @@ NType *getClass(SymbolTable* symbolTable, char *clas){
 }
 
 void calculateOffsets(SymbolTable *symbolTable){
+printf("*** Calculating Offsets ***\n");
 	int i, t;
 	SymbolListItem *item;
+	int mode = M_OFFSETS;
 	switch(symbolTable->scope->base_type){
 		case CONSTRUCTOR_TYPE :
 		case FUNC_TYPE :		
@@ -719,9 +726,12 @@ void calculateOffsets(SymbolTable *symbolTable){
 	}
  }
  
-void addToSymbolTable(SymbolTable *symbolTable, NType *symb){
+void addToSymbolTable(SymbolTable *symbolTable, NType *symb, int mode){
 	char *symbName;
-	Location *loc;
+	if(mode == M_CODEGEN){
+		symb->offset = symbolTable->offset;
+		symbolTable->offset = getBits(symb, symbolTable->offset);
+	}
 	if(SHOW_TREES) printf("adding to symbol table %s:\n", symbolTable->scope->label);
 	SymbolTableEntry *newEntry;
 	if((newEntry = (SymbolTableEntry *)calloc(1, sizeof(SymbolTableEntry))) == NULL) memoryError();
@@ -738,6 +748,7 @@ void addToSymbolTable(SymbolTable *symbolTable, NType *symb){
 			}
 		}
 	}
+	
 	int hashvalue = hashSymbol(symb, symbolTable->size);
 	if(symbolTable->bucket[hashvalue] == NULL){
 		symbolTable->bucket[hashvalue] = newEntry;
@@ -759,27 +770,34 @@ void addToSymbolTable(SymbolTable *symbolTable, NType *symb){
 
 void addLibrariesData(){
 	NType *tempType;
+	int mode = M_LIB;
 	if(included_iostream){
 		if(using_namespace_std){
 			tempType = (NType *)getType(STREAM_TYPE);
 			tempType->label = "cin";
-			addToSymbolTable(globalSymbolTable, tempType);
+			addToSymbolTable(globalSymbolTable, tempType, mode);
+			addToSymbolTableList(globalSymbolTable, tempType, mode);
 			tempType = (NType *)getType(STREAM_TYPE);
 			tempType->label = "cout";
-			addToSymbolTable(globalSymbolTable, tempType);
+			addToSymbolTable(globalSymbolTable, tempType, mode);
+			addToSymbolTableList(globalSymbolTable, tempType, mode);
 			tempType = (NType *)getType(STREAM_TYPE);
 			tempType->label = "endl";
-			addToSymbolTable(globalSymbolTable, tempType);
+			addToSymbolTable(globalSymbolTable, tempType, mode);
+			addToSymbolTableList(globalSymbolTable, tempType, mode);
 		}
 		tempType = (NType *)getType(STREAM_TYPE);
 		tempType->label = "std::cin";
-		addToSymbolTable(globalSymbolTable, tempType);
+		addToSymbolTable(globalSymbolTable, tempType, mode);
+		addToSymbolTableList(globalSymbolTable, tempType, mode);
 		tempType = (NType *)getType(STREAM_TYPE);
 		tempType->label = "std::cout";
-		addToSymbolTable(globalSymbolTable, tempType);
+		addToSymbolTable(globalSymbolTable, tempType, mode);
+		addToSymbolTableList(globalSymbolTable, tempType, mode);
 		tempType = (NType *)getType(STREAM_TYPE);
 		tempType->label = "std::endl";
-		addToSymbolTable(globalSymbolTable, tempType);
+		addToSymbolTable(globalSymbolTable, tempType, mode);
+		addToSymbolTableList(globalSymbolTable, tempType, mode);
 	}
 	if(included_cstdlib){
 		if(using_namespace_std){
@@ -839,6 +857,9 @@ void copyType(NType *source, NType *dest){
 	dest->ref = source->ref;
 	dest->cType = source->cType;
 	dest->symbTable = source->symbTable;
+	dest->offset = source->offset;
+	dest->first = source->first;
+	dest->follow = source->follow;
 
 	switch(source->base_type){
 		case ARRAY_TYPE :
@@ -983,6 +1004,7 @@ CodeElem *getLabel(){
 void buildTypes(TreeNode *node){
 	int c;
 	NType *tempType;
+	int mode = M_TYPES;
 	if(node != NULL){
 		int n;
 		for(n = 0; n < node->u.n.children; n++){
@@ -3186,11 +3208,12 @@ nested_name_specifier_opt:
 	}
 }
 
-void addToSymbolTableList(SymbolTable *currentSymbolTable, NType *current){
+void addToSymbolTableList(SymbolTable *currentSymbolTable, NType *current, int mode){
 	SymbolListItem *item;
 	if((item = (SymbolListItem *)calloc(1, sizeof(SymbolListItem))) == NULL)memoryError();
 	item->item = current;
 	item->next = NULL;
+	if(mode == M_CODEGEN) item->offset = current->offset;
 	if(currentSymbolTable->list->size == 0){
 		currentSymbolTable->list->head = item;
 	} else {
@@ -3200,21 +3223,22 @@ void addToSymbolTableList(SymbolTable *currentSymbolTable, NType *current){
 	currentSymbolTable->list->size++;
 }
 
-void addSimpleDeclarations(SymbolTable *currentSymbolTable, NType *current){
+void addSimpleDeclarations(SymbolTable *currentSymbolTable, NType *current, int mode){
 	if(SHOW_TREES) printf("**addSimpleDeclarations**\n");
 	NType *tempType = NULL;
 	if(current != NULL){
 		if(current->base_type == TOUPLE_TYPE){
-			addSimpleDeclarations(currentSymbolTable, current->u.touple.elems[0]);
-			addSimpleDeclarations(currentSymbolTable, current->u.touple.elems[1]);
+			addSimpleDeclarations(currentSymbolTable, current->u.touple.elems[0], mode);
+			addSimpleDeclarations(currentSymbolTable, current->u.touple.elems[1], mode);
 		} else {
-			addToSymbolTable(currentSymbolTable, current);
-			addToSymbolTableList(currentSymbolTable, current);
+			addToSymbolTable(currentSymbolTable, current, mode);
+			addToSymbolTableList(currentSymbolTable, current, mode);
 		}
 	}
 }
 
-NType *createTempSymbol(NType *source, char *pre){
+NType *createTempSymbol(NType *source, int lab, int mode){
+	char *pre;
 	NType *tempSymb;
 	if((tempSymb = (NType *)calloc(1, sizeof(NType))) == NULL) memoryError();
 	char *name;
@@ -3222,27 +3246,35 @@ NType *createTempSymbol(NType *source, char *pre){
 	if((pre = (char *)calloc(8, sizeof(char))) == NULL) memoryError();
 	if((name = (char *)calloc(16, sizeof(char))) == NULL) memoryError();
 	if((number = (char *)calloc(8, sizeof(char))) == NULL) memoryError();
-	itoa(tempSymbNumber, number, 10);
+	switch(lab){
+		case T_TEMP :
+			pre = "_Temp_";
+			break;
+		case T_CONST :
+			pre = "_Const_";
+			break;
+	}
+printf("*************************************************\n");
+printf("temp count: %d\n", tempSymbNumber);
+	itoa(tempSymbNumber++, number, 10);
 	strcat(name, pre);
 	strcat(name, number);
-printf("pre: %s\n", pre);
-printf("number: %s\n", number);
-printf("name: %s\n", name);
 	tempSymb->label = name;
 	tempSymb->base_type = source->base_type;
 	tempSymb->symbTable = source->symbTable;
-printf("adding: %s to %s\n", tempSymb->label, source->symbTable->scope->label);
-	addToSymbolTable(source->symbTable, tempSymb);
-	addToSymbolTableList(source->symbTable, tempSymb);
-printf("%s\n", humanreadable(tempSymb->base_type));
 	tempSymb->offset = tempSymb->symbTable->offset;
-	tempSymb->symbTable->offset = getBits(tempSymb, tempSymb->symbTable->offset);
-printf("%d\n", tempSymb->offset);
+printf("%s %d\n", tempSymb->label, tempSymb->symbTable->offset);
+	if(!inSymbolTable(tempSymb->symbTable, tempSymb)){
+		addToSymbolTable(source->symbTable, tempSymb, mode);
+		addToSymbolTableList(source->symbTable, tempSymb, mode);
+	} else {
+		tempSymb = getSymbolFromTable(tempSymb->symbTable, tempSymb);
+	}
 	return tempSymb;
 }
 
 /* adds symbols in a function body and type checks for appropriate type.*/
-void addFunctionBodySymbols(SymbolTable *currentSymbolTable, TreeNode *node){
+void addFunctionBodySymbols(SymbolTable *currentSymbolTable, TreeNode *node, int mode){
 	//if(SHOW_TREES) printf("**addFunctionBodySymbols**\n");
 	SymbolTable *oldSymbolTable;
 	NType *tempType;
@@ -3262,12 +3294,12 @@ void addFunctionBodySymbols(SymbolTable *currentSymbolTable, TreeNode *node){
 						node->u.n.child[1]->type->ref = node->type->label;
 					}
 				}
-				addSimpleDeclarations(currentSymbolTable, node->u.n.child[1]->type);
+				addSimpleDeclarations(currentSymbolTable, node->u.n.child[1]->type, mode);
 				if(SHOW_TREES) printf("simple declaration 1 complete\n");
 				break;
 			case SIMPLE_DECLARATIONr2 :
 				if(SHOW_TREES) printf("simple declaration 2\n");
-				//addSimpleDeclarations(currentSymbolTable, node->u.n.child[1]->type);
+				//addSimpleDeclarations(currentSymbolTable, node->u.n.child[1]->type, mode);
 				if(SHOW_TREES) printf("simple declaration 2 complete\n");
 				break;
 			
@@ -3435,9 +3467,9 @@ void addFunctionBodySymbols(SymbolTable *currentSymbolTable, TreeNode *node){
 				//if((str = (char *)calloc(8, sizeof(char))) == NULL) memoryError();
 				//strcpy(str, "_Const_");
 				//str ="_Const_";
-				tempType = (NType *)createTempSymbol(node->type, "_Const_");
-				addToSymbolTable(currentSymbolTable, tempType);
-				addToSymbolTableList(currentSymbolTable, tempType);
+			printf("****************************************\n");
+				tempType = (NType *)createTempSymbol(node->type, T_CONST, mode);
+				copyType(tempType, node->type);
 				break;
 	
 			case ASSIGNMENT_EXPRESSIONr2 :
@@ -3462,7 +3494,7 @@ void addFunctionBodySymbols(SymbolTable *currentSymbolTable, TreeNode *node){
 		}
 		int n;
 		for(n = 0; n < node->u.n.children; n++){
-			addFunctionBodySymbols(currentSymbolTable, node->u.n.child[n]);
+			addFunctionBodySymbols(currentSymbolTable, node->u.n.child[n], mode);
 		}
 	}
 }
@@ -3475,6 +3507,7 @@ void makeSymbolTables(TreeNode *node){
 	SymbolTable *newSymbolTable;
 	NType *tempType;
 	int p;
+	int mode = M_SYMBOLS;
 	if(node != NULL){
 		//recursion
 		int n;
@@ -3579,8 +3612,8 @@ void makeSymbolTables(TreeNode *node){
 				if(node->type->base_type == FUNC_TYPE)
 					currentSymbolTable = getSymbolTable(globalSymbolTable, node->type->u.func.parent);
 				if(currentSymbolTable == NULL) currentSymbolTable = oldSymbolTable;
-				addToSymbolTable(currentSymbolTable, node->type);
-				addToSymbolTableList(currentSymbolTable, node->type);
+				addToSymbolTable(currentSymbolTable, node->type, mode);
+				addToSymbolTableList(currentSymbolTable, node->type, mode);
 				currentSymbolTable = createSymbolTable(currentSymbolTable, currentSymbolTable->size);
 				currentSymbolTable->scope = node->type;
 				//node->type->symbTable = currentSymbolTable;
@@ -3588,18 +3621,19 @@ void makeSymbolTables(TreeNode *node){
 				//add parameters
 			printf("makeSymbolTables **** %d ****\n", node->type->u.func.nargs);
 				for(p = 0; p < node->type->u.func.nargs; p++){
-					addToSymbolTable(currentSymbolTable, node->type->u.func.args[p]->elemtype);
+					addToSymbolTable(currentSymbolTable, node->type->u.func.args[p]->elemtype, mode);
+					addToSymbolTableList(currentSymbolTable, node->type->u.func.args[p]->elemtype, mode);
 				}
 				//add body variables
-				addFunctionBodySymbols(currentSymbolTable, node->u.n.child[2]);
+				addFunctionBodySymbols(currentSymbolTable, node->u.n.child[2], mode);
 				currentSymbolTable = oldSymbolTable;
 				if(SHOW_TREES) printf("function definition 1 complete[%d]\n", currentSymbolTable->entries);
 				break;	
 			case FUNCTION_DEFINITIONr2 :
 				if(SHOW_TREES) printf("function definition 2\n");	
 				if(!inSymbolTable(currentSymbolTable, node->type)){
-					addToSymbolTable(currentSymbolTable, node->type);
-					addToSymbolTableList(currentSymbolTable, node->type);
+					addToSymbolTable(currentSymbolTable, node->type, mode);
+					addToSymbolTableList(currentSymbolTable, node->type, mode);
 					// create symbol table
 					currentSymbolTable = createSymbolTable(currentSymbolTable, currentSymbolTable->size);
 					currentSymbolTable->scope = node->type;
@@ -3607,51 +3641,54 @@ void makeSymbolTables(TreeNode *node){
 					passSymbolTableDownTree(currentSymbolTable, node);
 					//add parameters
 					for(p = 0; p < node->type->u.func.nargs; p++){
-						addToSymbolTable(currentSymbolTable, node->type->u.func.args[p]->elemtype);
+						addToSymbolTable(currentSymbolTable, node->type->u.func.args[p]->elemtype, mode);
+						addToSymbolTableList(currentSymbolTable, node->type->u.func.args[p]->elemtype, mode);
 					}
 					//add body variables
-					addFunctionBodySymbols(currentSymbolTable, node->u.n.child[3]);
+					addFunctionBodySymbols(currentSymbolTable, node->u.n.child[3], mode);
 					if(SHOW_TREES) printf("function definition 2 complete [%d]\n", currentSymbolTable->entries);
 				}
 				break;
 				
 			case FUNCTION_DEFINITIONr3 :
 				if(SHOW_TREES) printf("function definition 3\n");
-				addToSymbolTable(currentSymbolTable, node->type);
-				addToSymbolTableList(currentSymbolTable, node->type);
+				addToSymbolTable(currentSymbolTable, node->type, mode);
+				addToSymbolTableList(currentSymbolTable, node->type, mode);
 				currentSymbolTable = createSymbolTable(currentSymbolTable, currentSymbolTable->size);
 				currentSymbolTable->scope = node->type;
 				//node->type->symbTable = currentSymbolTable;
 				passSymbolTableDownTree(currentSymbolTable, node);
 				//add parameters
 				for(p = 0; p < node->type->u.func.nargs; p++){
-					addToSymbolTable(currentSymbolTable, node->type->u.func.args[p]->elemtype);
+					addToSymbolTable(currentSymbolTable, node->type->u.func.args[p]->elemtype, mode);
+					addToSymbolTableList(currentSymbolTable, node->type->u.func.args[p]->elemtype, mode);
 				}
 				//add body variables
-				addFunctionBodySymbols(currentSymbolTable, node->u.n.child[2]);
+				addFunctionBodySymbols(currentSymbolTable, node->u.n.child[2], mode);
 				if(SHOW_TREES) printf("function definition 3 complete[%d]\n", currentSymbolTable->entries);
 				break;
 			case FUNCTION_DEFINITIONr4 :
 				if(SHOW_TREES) printf("function definition 4\n");
-				addToSymbolTable(currentSymbolTable, node->type);
-				addToSymbolTableList(currentSymbolTable, node->type);
+				addToSymbolTable(currentSymbolTable, node->type, mode);
+				addToSymbolTableList(currentSymbolTable, node->type, mode);
 				currentSymbolTable = createSymbolTable(currentSymbolTable, currentSymbolTable->size);
 				currentSymbolTable->scope = node->type;
 				//node->type->symbTable = currentSymbolTable;
 				passSymbolTableDownTree(currentSymbolTable, node);
 				//add parameters
 				for(p = 0; p < node->type->u.func.nargs; p++){
-					addToSymbolTable(currentSymbolTable, node->type->u.func.args[p]->elemtype);
+					addToSymbolTable(currentSymbolTable, node->type->u.func.args[p]->elemtype, mode);
+					addToSymbolTableList(currentSymbolTable, node->type->u.func.args[p]->elemtype, mode);
 				}
 				//add body variables
-				addFunctionBodySymbols(currentSymbolTable, node->u.n.child[3]);
+				addFunctionBodySymbols(currentSymbolTable, node->u.n.child[3], mode);
 				if(SHOW_TREES) printf("function definition 4 complete[%d]\n", currentSymbolTable->entries);
 				break;
 
 			case CLASS_SPECIFIERr1 :
 				if(SHOW_TREES) printf("class specifier 1\n");
-				addToSymbolTable(currentSymbolTable, node->type);
-				addToSymbolTableList(currentSymbolTable, node->type);
+				addToSymbolTable(currentSymbolTable, node->type, mode);
+				addToSymbolTableList(currentSymbolTable, node->type, mode);
 				//create symbol table
 				currentSymbolTable = createSymbolTable(currentSymbolTable, currentSymbolTable->size);
 				currentSymbolTable->scope = node->type;
@@ -3659,7 +3696,8 @@ void makeSymbolTables(TreeNode *node){
 				passSymbolTableDownTree(currentSymbolTable, node);
 				//add members
 				for(p = 0; p < node->type->u.clas.nfields; p++){
-					addToSymbolTable(currentSymbolTable, node->type->u.clas.f[p]->elemtype);
+					addToSymbolTable(currentSymbolTable, node->type->u.clas.f[p]->elemtype, mode);
+					addToSymbolTableList(currentSymbolTable, node->type->u.clas.f[p]->elemtype, mode);
 					newSymbolTable = createSymbolTable(currentSymbolTable, currentSymbolTable->size);
 					newSymbolTable->scope = node->type->u.clas.f[p]->elemtype;
 					node->type->u.clas.f[p]->elemtype->symbTable = newSymbolTable;
@@ -3687,50 +3725,29 @@ IntrCode *createIntrCode(){
 	intrCode->elem = elem;
 	return intrCode;
 }
-/*
-NType *createTempSymbol(NType *source, char *pre){
-	NType *tempSymb;
-	if((tempSymb = (NType *)calloc(1, sizeof(NType))) == NULL) memoryError();
-	char *name;
-	char *number;
-	if((pre = (char *)calloc(8, sizeof(char))) == NULL) memoryError();
-	if((name = (char *)calloc(16, sizeof(char))) == NULL) memoryError();
-	if((number = (char *)calloc(8, sizeof(char))) == NULL) memoryError();
-	itoa(tempSymbNumber, number, 10);
-	strcat(name, pre);
-	strcat(name, number);
-	tempSymb->label = name;
-	tempSymb->base_type = source->base_type;
-	tempSymb->symbTable = source->symbTable;
-printf("adding: %s to %s\n", tempSymb->label, source->symbTable->scope->label);
-	addToSymbolTable(source->symbTable, tempSymb);
-	addToSymbolTableList(source->symbTable, tempSymb);
-printf("%s\n", humanreadable(tempSymb->base_type));
-	tempSymb->offset = tempSymb->symbTable->offset;
-	tempSymb->symbTable->offset = getBits(tempSymb, tempSymb->symbTable->offset);
-printf("%d\n", tempSymb->offset);
-	return tempSymb;
-}
-*/
+
 Location *makeLocation(NType *source){
-	Location *location;
+	Location *location;	
+	NType *temp;
+	temp = (NType *)getSymbolFromTable(source->symbTable, source);
+	if(temp != NULL) source = temp;
 	if((location = (Location *)calloc(1, sizeof(Location))) == NULL) memoryError();
 	location->region = source->symbTable->scope;
 	location->offset = source->offset;
-printf("Location: %s; offset: %d\n", location->region->label, location->offset);
+//printf("Location: %s; offset: %d\n", location->region->label, location->offset);
 	return location;
 }
 
-IntrCode *makePairedExpression(int code, NType *child1, NType *child2){
+IntrCode *makePairedExpression(int code, NType *child1, NType *child2, int mode){
 	IntrCode *icode;
 	NType *tempSymb;
 	CodeElem *codeElem;	
 	if((icode = (IntrCode *)calloc(1, sizeof(IntrCode))) == NULL) memoryError();
 	if((codeElem = (CodeElem *)calloc(1, sizeof(CodeElem))) == NULL) memoryError();
 	if((codeElem->loc = realloc(codeElem->loc, 3 * sizeof(Location))) == NULL) memoryError();
-	//char *str = "_Temp_";
-	tempSymb = (NType *)createTempSymbol(child2, "_Temp_");
+	tempSymb = (NType *)createTempSymbol(child2, T_TEMP, mode);
 	codeElem->desc = code;
+	codeElem->label = tempSymb->label;
 	codeElem->loc[0] = makeLocation(tempSymb);
 	codeElem->loc[1] = makeLocation(child1);
 	codeElem->loc[2] = makeLocation(child2);
@@ -3760,6 +3777,7 @@ void intermediateCodeGeneration(TreeNode *node){
 	NType *temp;
 	CodeElem *codeElem;
 	SymbolTable *thisSymbolTable;
+	int mode = M_CODEGEN;
 	if(node != NULL){
 		//recursion
 		int n;
@@ -3969,28 +3987,41 @@ pm_expression:
 	| pm_expression DOTSTAR cast_expression					{ $$ = (TreeNode *)alacnary(PM_EXPRESSIONr2, 3, $1, $2, $3); }
 	| pm_expression ARROWSTAR cast_expression					{ $$ =(TreeNode *)alacnary(PM_EXPRESSIONr3, 3, $1, $2, $3); }
 	;*/
-	
+			case MULTIPLICATIVE_EXPRESSIONr1 :
+				printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				break;
 			case MULTIPLICATIVE_EXPRESSIONr2 :
 				printf("%s\n", humanreadable(node->u.n.rule));
-				if(node->type->symbTable == NULL) printf("node: NULL\n");
-				else printf("node: %s\n", node->type->symbTable->scope->label);
-				node->intCode = makePairedExpression(C_MULT, node->u.n.child[0]->type, node->u.n.child[1]->type);
+				node->intCode = makePairedExpression(C_MULT, node->u.n.child[0]->type, node->u.n.child[1]->type, mode);
+				printCode(node);
+				break;
+			case MULTIPLICATIVE_EXPRESSIONr3 :
+				printf("%s\n", humanreadable(node->u.n.rule));
+				node->intCode = makePairedExpression(C_DIV, node->u.n.child[0]->type, node->u.n.child[1]->type, mode);
+				printCode(node);
+				break;
+			case MULTIPLICATIVE_EXPRESSIONr4 :
+				printf("%s\n", humanreadable(node->u.n.rule));
+				node->intCode = makePairedExpression(C_MOD, node->u.n.child[0]->type, node->u.n.child[1]->type, mode);
+				printCode(node);
+				break;
+				
+			case ADDITIVE_EXPRESSIONr1 :
+				printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				break;
+			case ADDITIVE_EXPRESSIONr2 :
+				printf("%s\n", humanreadable(node->u.n.rule));
+				node->intCode = makePairedExpression(C_ADD, node->u.n.child[0]->type, node->u.n.child[1]->type, mode);
+				printCode(node);
+				break;
+			case ADDITIVE_EXPRESSIONr3 :
+				printf("%s\n", humanreadable(node->u.n.rule));
+				node->intCode = makePairedExpression(C_SUB, node->u.n.child[0]->type, node->u.n.child[1]->type, mode);
 				printCode(node);
 				break;
 /*
-multiplicative_expression:
-	pm_expression														{ $$ = (TreeNode *)alacnary(MULTIPLICATIVE_EXPRESSIONr1, 1, $1); }
-	| multiplicative_expression '*' pm_expression			{ $$ = (TreeNode *)alacnary(MULTIPLICATIVE_EXPRESSIONr2, 2, $1, $3); }
-	| multiplicative_expression '/' pm_expression			{ $$ = (TreeNode *)alacnary(MULTIPLICATIVE_EXPRESSIONr3, 2, $1, $3); }
-	| multiplicative_expression '%' pm_expression			{ $$ = (TreeNode *)alacnary(MULTIPLICATIVE_EXPRESSIONr4, 2, $1, $3); }
-	;
-
-additive_expression:
-	multiplicative_expression										{ $$ = (TreeNode *)alacnary(ADDITIVE_EXPRESSIONr1, 1, $1); }
-	| additive_expression '+' multiplicative_expression	{ $$ = (TreeNode *)alacnary(ADDITIVE_EXPRESSIONr2, 2, $1, $3); }
-	| additive_expression '-' multiplicative_expression	{ $$ = (TreeNode *)alacnary(ADDITIVE_EXPRESSIONr3, 2, $1, $3); }
-	;
-
 shift_expression:
 	additive_expression												{ $$ = (TreeNode *)alacnary(SHIFT_EXPRESSIONr1, 1, $1); }
 	| shift_expression SL additive_expression					{ $$ = (TreeNode *)alacnary(SHIFT_EXPRESSIONr2, 3, $1, $2, $3); }

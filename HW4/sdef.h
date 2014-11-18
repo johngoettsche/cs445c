@@ -1,5 +1,4 @@
 
-
 typedef struct Token{
   int category;
   char *text;

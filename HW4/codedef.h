@@ -17,3 +17,6 @@
 #define C_MULT 210004
 #define C_DIV 210005
 #define C_MOD 210006
+
+#define C_ADD 210007
+#define C_SUB 210008
