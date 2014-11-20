@@ -80,6 +80,8 @@ int codeMemory;
 int labelNumber;
 int tempSymbNumber;
 
+NType *codeRegion;
+
 extern int using_namespace_std;
 extern int included_iostream;
 extern int included_cstdlib;
@@ -1482,6 +1484,9 @@ int main(int argc, char **argv){
 					calculateOffsets(globalSymbolTable);
 					printSymbolTables(globalSymbolTable);
 					printf("*** Intermediate Code Generation ***\n");
+					if((codeRegion = (NType *)calloc(1, sizeof(NType))) == NULL) memoryError();
+					if((codeRegion->label = (char *)calloc(8, sizeof(char))) == NULL) memoryError();
+					codeRegion->label = "Code";
 					intermediateCodeGeneration(root);
 					printSymbolTables(globalSymbolTable);
 					printCode(root);

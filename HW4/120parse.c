@@ -42,6 +42,8 @@ extern int codeMemory;
 extern int labelNumber;
 extern int tempSymbNumber;
 
+extern NType *codeRegion;
+
 char *humanreadable(int ncode){
 	if(ncode >= 1000 && ncode < 20000)ncode = (int)(ncode / 100) * 100;
 	char *name;
@@ -3757,9 +3759,13 @@ IntrCode *makeLabel(){
 	elem->desc = C_LABEL;
 	if((elem->label = (char *)calloc(16, sizeof(char))) == NULL) memoryError();
 	elem->label = label;
+	if((elem->loc = realloc(elem->loc, 3 * sizeof(Location))) == NULL) memoryError();
 	IntrCode *intrCode;
 	if((intrCode = (IntrCode *)calloc(1, sizeof(IntrCode))) == NULL) memoryError();
 	intrCode->elem = elem;
+	intrCode->elem->loc[0]->elem = elem;
+	intrCode->elem->loc[0]->region = codeRegion;
+	intrCode->elem->loc[0]->offset = 0;
 	intrCode->next = NULL;
 	return intrCode;
 }
@@ -3799,6 +3805,7 @@ IntrCode *makePairedExpression(int code, NType *child1, NType *child2, int mode)
 	codeElem->desc = code;
 	codeElem->label = tempSymb->label;
 	codeElem->loc[0] = makeLocation(tempSymb);
+	codeElem->loc[0]->elem = codeElem;
 	codeElem->loc[1] = makeLocation(child1);
 	codeElem->loc[2] = makeLocation(child2);
 	icode = createIntrCode();
@@ -4105,6 +4112,7 @@ shift_expression:
 				codeElem->desc = C_LT;
 				codeElem->label = "<";
 				codeElem->loc[0] = makeLocation(temp);
+				codeElem->loc[0]->elem = codeElem;
 				codeElem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				codeElem->loc[2] = makeLocation(node->u.n.child[1]->type);
 				node->intCode = createIntrCode();
@@ -4119,6 +4127,7 @@ shift_expression:
 				codeElem->desc = C_GT;
 				codeElem->label = ">";
 				codeElem->loc[0] = makeLocation(temp);
+				codeElem->loc[0]->elem = codeElem;
 				codeElem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				codeElem->loc[2] = makeLocation(node->u.n.child[1]->type);
 				node->intCode = createIntrCode();
@@ -4133,6 +4142,7 @@ shift_expression:
 				codeElem->desc = C_LTEQ;
 				codeElem->label = "<=";
 				codeElem->loc[0] = makeLocation(temp);
+				codeElem->loc[0]->elem = codeElem;
 				codeElem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				codeElem->loc[2] = makeLocation(node->u.n.child[2]->type);
 				node->intCode = createIntrCode();
@@ -4147,6 +4157,7 @@ shift_expression:
 				codeElem->desc = C_GTEQ;
 				codeElem->label = ">=";
 				codeElem->loc[0] = makeLocation(temp);
+				codeElem->loc[0]->elem = codeElem;
 				codeElem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				codeElem->loc[2] = makeLocation(node->u.n.child[2]->type);
 				node->intCode = createIntrCode();
@@ -4166,6 +4177,7 @@ shift_expression:
 				codeElem->desc = C_EQ;
 				codeElem->label = "==";
 				codeElem->loc[0] = makeLocation(temp);
+				codeElem->loc[0]->elem = codeElem;
 				codeElem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				codeElem->loc[2] = makeLocation(node->u.n.child[2]->type);
 				node->intCode = createIntrCode();
@@ -4180,6 +4192,7 @@ shift_expression:
 				codeElem->desc = C_NOTEQ;
 				codeElem->label = "!=";
 				codeElem->loc[0] = makeLocation(temp);
+				codeElem->loc[0]->elem = codeElem;
 				codeElem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				codeElem->loc[2] = makeLocation(node->u.n.child[2]->type);
 				node->intCode = createIntrCode();
@@ -4199,6 +4212,7 @@ shift_expression:
 				codeElem->desc = C_AND;
 				codeElem->label = "&";
 				codeElem->loc[0] = makeLocation(temp);
+				codeElem->loc[0]->elem = codeElem;
 				codeElem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				codeElem->loc[2] = makeLocation(node->u.n.child[1]->type);
 				node->intCode = createIntrCode();
@@ -4218,6 +4232,7 @@ shift_expression:
 				codeElem->desc = C_EXOR;
 				codeElem->label = "^";
 				codeElem->loc[0] = makeLocation(temp);
+				codeElem->loc[0]->elem = codeElem;
 				codeElem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				codeElem->loc[2] = makeLocation(node->u.n.child[1]->type);
 				node->intCode = createIntrCode();
@@ -4237,6 +4252,7 @@ shift_expression:
 				codeElem->desc = C_INOR;
 				codeElem->label = "|";
 				codeElem->loc[0] = makeLocation(temp);
+				codeElem->loc[0]->elem = codeElem;
 				codeElem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				codeElem->loc[2] = makeLocation(node->u.n.child[1]->type);
 				node->intCode = createIntrCode();
@@ -4256,6 +4272,7 @@ shift_expression:
 				codeElem->desc = C_ANDAND;
 				codeElem->label = "&&";
 				codeElem->loc[0] = makeLocation(temp);
+				codeElem->loc[0]->elem = codeElem;
 				codeElem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				codeElem->loc[2] = makeLocation(node->u.n.child[2]->type);
 				node->intCode = createIntrCode();
@@ -4274,6 +4291,7 @@ shift_expression:
 				codeElem->desc = C_OROR;
 				codeElem->label = "||";
 				codeElem->loc[0] = makeLocation(temp);
+				codeElem->loc[0]->elem = codeElem;
 				codeElem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				codeElem->loc[2] = makeLocation(node->u.n.child[2]->type);
 				node->intCode = createIntrCode();
@@ -4368,7 +4386,10 @@ statement_seq:
 				if((codeElem = (CodeElem *)calloc(1, sizeof(CodeElem))) == NULL) memoryError();
 				codeElem->desc = C_BR;
 				codeElem->label = "Branch";
+			printf("a\n");
 				if((codeElem->loc = realloc(codeElem->loc, 3 * sizeof(Location))) == NULL) memoryError();
+			printf("1");
+			printf("%s:%d\n", label->elem->loc[0]->region->label, label->elem->loc[0]->offset);
 				codeElem->loc[0]->elem = label->elem; //to be modified later
 				codeElem->loc[1] = node->u.n.child[1]->intCode->elem->loc[0];
 				icode->elem = codeElem;
@@ -4382,14 +4403,15 @@ statement_seq:
 			case SELECTION_STATEMENTr2 :
 				printf("%s\n", humanreadable(node->u.n.rule));
 				label = makeLabel();
-				if((icode = (IntrCode *)calloc(1, sizeof(IntrCode))) == NULL) memoryError();
+				if((icode = (IntrCode *)calloc(1, sizeof(IntrCode))) == NULL) memoryError();			
 				if((codeElem = (CodeElem *)calloc(1, sizeof(CodeElem))) == NULL) memoryError();
 				codeElem->desc = C_BR;
 				codeElem->label = "Branch";
-				if((codeElem->loc = realloc(codeElem->loc, 3 * sizeof(Location))) == NULL) memoryError();
 			printf("a\n");
+				if((codeElem->loc = realloc(codeElem->loc, 3 * sizeof(Location))) == NULL) memoryError();
+			printf("1");
 			printf("%s:%d\n", label->elem->loc[0]->region->label, label->elem->loc[0]->offset);
-				codeElem->loc[0]->elem = label->elem; //to be defined later
+				codeElem->loc[0]->elem = label->elem; //offset to be defined later
 			printf("b");
 				codeElem->loc[1] = node->u.n.child[1]->intCode->elem->loc[0];
 			printf("c");
