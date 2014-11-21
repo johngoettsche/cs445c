@@ -23,4 +23,5 @@ extern int exitStatus;
 void memoryError();
 void getErrorMessage(int ecode);
 void lexerr(char *s);
+void yerror(char *s, int line);
 void yyerror(char *s);

@@ -55,6 +55,7 @@ typedef struct Field {			/* members (fields) of structs */
 }Field;
 
 typedef struct NType {
+	int lineno;
    int base_type;
 	char *label;
 	int pub;
@@ -96,6 +97,7 @@ typedef struct TreeNode {
 	NType *type;
 	Location *place;
 	IntrCode *intCode;
+	int lineno;
    union {
       struct leaf {
 			Token *token;
@@ -141,6 +143,7 @@ typedef struct SymbolTable{
 
 typedef struct ErrorMessage{
    int number;
+	int lineno;
 	char *errorType;
 	char *message;
 }ErrorMessage;

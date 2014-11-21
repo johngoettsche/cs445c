@@ -9,6 +9,7 @@
 #include "errors.h"
  
 void memoryError(){
+//printf("memoryError\n");
 	exitStatus = 4;
 	getErrorMessage(ER_MALLOC_E);
 	yyerror(NULL);
@@ -42,6 +43,22 @@ void getErrorMessage(int ecode){
 	close(ef);
 }
 
+void yerror(char *s, int line)
+{
+   errors++;
+   fprintf(stderr, "\nError #%d: %s, line: %d ", errors, fname, line);
+	if(!e_message) {
+		s = NULL;
+		getErrorMessage(ER_SYNTAX);
+	}
+	
+	if(s != NULL) fprintf(stderr, "%s\t\'%s\' %s\n",e_message->errorType, s, e_message->message);
+	else fprintf(stderr, "%s\t%s\n",e_message->errorType, e_message->message);
+	e_message = NULL;
+	free(e_message);
+	fflush(stderr);
+}
+
 void yyerror(char *s)
 {
    errors++;
@@ -50,6 +67,7 @@ void yyerror(char *s)
 		s = NULL;
 		getErrorMessage(ER_SYNTAX);
 	}
+	
 	if(s != NULL) fprintf(stderr, "%s\t\'%s\' %s\n",e_message->errorType, s, e_message->message);
 	else fprintf(stderr, "%s\t%s\n",e_message->errorType, e_message->message);
 	e_message = NULL;

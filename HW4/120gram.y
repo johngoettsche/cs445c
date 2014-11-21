@@ -63,7 +63,7 @@
 #include "errors.h"
 
 #define SYMBOL_TABLE_SIZE 31
-#define SHOW_TREES 1
+#define SHOW_TREES 0
 
 extern int lineno;
 int yydebug=0;
@@ -91,6 +91,8 @@ extern int included_fstream;
 extern int included_stdio; 
 extern int included_stdlib;
 
+TreeNode *alacnary(int prodRule, int children,...);
+SymbolTable *createGlobalSymbolTable(int size);
 %}
 
 %union{
@@ -174,7 +176,7 @@ class_name:
 	CLASS_NAME															{ $$ = (TreeNode *)alacnary(CLASS_NAMEr1, 1, $1); }
 	| template_id														{ exitStatus = 3;
 																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
+																				yerror(NULL, -1);
 																				$$ = NULL;
 																				/*$$ = (TreeNode *)alacnary(CLASS_NAMEr2, 1, $1); */}
 	;
@@ -188,7 +190,7 @@ template_name:
 	/* identifier */
 	TEMPLATE_NAME														{ exitStatus = 3;
 																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
+																				yerror(NULL, -1);
 																				$$ = NULL; 
 																				/*(TreeNode *)alacnary(TEMPLATE_NAMEr1, 1, $1);*/ }
 	;
@@ -265,7 +267,7 @@ qualified_id:
 	nested_name_specifier unqualified_id						{ $$ = (TreeNode *)alacnary(QUALIFIED_IDr1, 2, $1, $2); }
 	| nested_name_specifier TEMPLATE unqualified_id			{ exitStatus = 3;
 																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
+																				yerror(NULL, -1);
 																				$$ = NULL;
 																			/* $$ = (TreeNode *)alacnary(QUALIFIED_IDr1, 3, $1, $2, $3);*/ }
 	;
@@ -284,12 +286,12 @@ postfix_expression:
 	| postfix_expression '.' TEMPLATE COLONCOLON id_expression
 																			{ exitStatus = 3;
 																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
+																				yerror(NULL, -1);
 																				$$ = NULL;
 																			/*$$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr4, 3, $1, $3, $4);*/ }
 	| postfix_expression '.' TEMPLATE id_expression			{ exitStatus = 3;
 																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
+																				yerror(NULL, -1);
 																				$$ = NULL;
 																			/*$$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr5, 3, $1, $3, $4); */}
 	| postfix_expression '.' COLONCOLON id_expression		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr6, 3, $1, $3, $4); }
@@ -297,12 +299,12 @@ postfix_expression:
 	| postfix_expression ARROW TEMPLATE COLONCOLON id_expression
 																			{ exitStatus = 3;
 																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
+																				yerror(NULL, -1);
 																				$$ = NULL;
 																			/*$$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr8, 5, $1, $2, $3, $4, $5);*/ }
 	| postfix_expression ARROW TEMPLATE id_expression		{ exitStatus = 3;
 																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
+																				yerror(NULL, -1);
 																				$$ = NULL;
 																			/*$$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr9, 4, $1, $2, $3, $4); */}
 	| postfix_expression ARROW COLONCOLON id_expression	{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr10, 4, $1, $2, $3, $4); }
@@ -312,7 +314,7 @@ postfix_expression:
 	| DYNAMIC_CAST '<' type_id '>' '(' expression ')'		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr14, 3, $1, $3, $6); }
 	| STATIC_CAST '<' type_id '>' '(' expression ')'		{ exitStatus = 2;
 																				getErrorMessage(ER_STATIC);
-																				yyerror(NULL);
+																				yerror(NULL, -1);
 																				$$ = NULL;
 																			/* $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr15, 3, $1, $3, $6); */}
 	| REINTERPRET_CAST '<' type_id '>' '(' expression ')'	{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr16, 3, $1, $3, $6); }
@@ -575,7 +577,7 @@ declaration:
 	| function_definition											{ $$ = (TreeNode *)alacnary(DECLARATIONr2, 1, $1); }
 	| template_declaration											{ exitStatus = 3;
 																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
+																				yerror(NULL, -1);
 																				$$ = NULL;
 																				/*$$ = alacnary(DECLARATIONr3, 1, $1); */}
 	| explicit_instantiation										{ $$ = (TreeNode *)alacnary(DECLARATIONr4, 1, $1); }
@@ -612,41 +614,41 @@ decl_specifier_seq:
 
 storage_class_specifier:
 	AUTO																	{ getErrorMessage(ER_AUTO);
-																				yyerror(NULL);
+																				yerror(NULL, -1);
 																				$$ = NULL;
 																				/*$$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr1, 1, $1); */}
 	| REGISTER															{ getErrorMessage(ER_REGISTER);
-																				yyerror(NULL);
+																				yerror(NULL, -1);
 																				$$ = NULL;
 																				/*$$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr2, 1, $1); */}
 	| STATIC																{ exitStatus = 3;
 																				getErrorMessage(ER_STATIC);
-																				yyerror(NULL);
+																				yerror(NULL, -1);
 																				$$ = NULL;
 																				/*$$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr3, 1, $1); */}
 	| EXTERN																{ exitStatus = 3;
 																				getErrorMessage(ER_EXTERN);
-																				yyerror(NULL);
+																				yerror(NULL, -1);
 																				$$ = NULL;
 																				/*$$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr4, 1, $1); */}
 	| MUTABLE															{ exitStatus = 3;
 																				getErrorMessage(ER_MUTABLE);
-																				yyerror(NULL);
+																				yerror(NULL, -1);
 																				$$ = NULL;
 																				/*$$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr5, 1, $1); */}
 	;
 
 function_specifier:
 	INLINE																{ getErrorMessage(ER_INLINE);
-																				yyerror(NULL);
+																				yerror(NULL, -1);
 																				$$ = NULL;
 																				/*$$ = (TreeNode *)alacnary(FUNCTION_SPECIFIERr1, 1, $1); */}
 	| VIRTUAL															{ getErrorMessage(ER_VIRTUAL);
-																				yyerror(NULL);
+																				yerror(NULL, -1);
 																				$$ = NULL;
 																				/*$$ = (TreeNode *)alacnary(FUNCTION_SPECIFIERr2, 1, $1); */}
 	| EXPLICIT															{ getErrorMessage(ER_EXPLICIT);
-																				yyerror(NULL);
+																				yerror(NULL, -1);
 																				$$ = NULL;
 																				/*$$ = (TreeNode *)alacnary(FUNCTION_SPECIFIERr3, 1, $1); */}
 	;
@@ -694,7 +696,7 @@ elaborated_type_specifier:
 	| TYPENAME COLONCOLON_opt nested_name_specifier identifier '<' template_argument_list '>'
 																			{ exitStatus = 3;
 																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
+																				yerror(NULL, -1);
 																				$$ = NULL;
 																				/*$$ = alacnary(ELABORATED_TYPE_SPECIFIERr7, 5, $1, $2, $3, $4, $6); */}
 	;
@@ -988,7 +990,7 @@ member_declaration:
 	| using_declaration												{ $$ = (TreeNode *)alacnary(MEMBER_DECLARATIONr7, 1, $1); }
 	| template_declaration											{ exitStatus = 3;
 																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
+																				yerror(NULL, -1);
 																				$$ = NULL;
 																				/*$$ = alacnary(MEMBER_DECLARATIONr8, 1, $1); */}
 	;
@@ -1157,7 +1159,7 @@ template_declaration:
 	EXPORT_opt TEMPLATE '<' template_parameter_list '>' declaration
 																		{ exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
+																			yerror(NULL, -1);
 																			$$ = NULL; 
 																			/*alacnary(TEMPLATE_DECLARATIONr1, 4, $1, $2, $4, $6); */}
 	;
@@ -1165,12 +1167,12 @@ template_declaration:
 template_parameter_list:
 	template_parameter											{ exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
+																			yerror(NULL, -1);
 																			$$ = NULL; 
 																			/*$$ = alacnary(TEMPLATE_PARAMETER_LISTr1, 1, $1); */}
 	| template_parameter_list ',' template_parameter	{ exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
+																			yerror(NULL, -1);
 																			$$ = NULL; 
 																			/*$$ = alacnary(TEMPLATE_PARAMETER_LISTr2, 2, $1, $3);*/ }
 	;
@@ -1178,12 +1180,12 @@ template_parameter_list:
 template_parameter:
 	type_parameter													{ exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
+																			yerror(NULL, -1);
 																			$$ = NULL; 
 																			/*$$ = alacnary(TEMPLATE_PARAMETERr1, 1, $1); */}
 	| parameter_declaration										{ exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
+																			yerror(NULL, -1);
 																			$$ = NULL; 
 																			/* $$ = alacnary(TEMPLATE_PARAMETERr2, 1, $1); */}
 	;
@@ -1191,52 +1193,52 @@ template_parameter:
 type_parameter:
 	CLASS identifier												{ exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
+																			yerror(NULL, -1);
 																			$$ = NULL;
 																			/*$$ = alacnary(TYPE_PARAMETERr1, 2, $1, $2);*/ }
 	| CLASS identifier '=' type_id							{ exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
+																			yerror(NULL, -1);
 																			$$ = NULL;
 																			/*$$ = alacnary(TYPE_PARAMETERr2, 3, $1, $2, $4); */}
 	| TYPENAME identifier										{ exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
+																			yerror(NULL, -1);
 																			$$ = NULL;
 																			/*$$ = alacnary(TYPE_PARAMETERr3, 2, $1, $2);*/ }
 	| TYPENAME identifier '=' type_id						{ exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
+																			yerror(NULL, -1);
 																			$$ = NULL;
 																			/*$$ = alacnary(TYPE_PARAMETERr4, 3, $1, $2, $4); */}
 	| TEMPLATE '<' template_parameter_list '>' CLASS identifier
 																		{ exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
+																			yerror(NULL, -1);
 																			$$ = NULL; /*alacnary(TYPE_PARAMETERr5, 4, $1, $3, $5, $6);*/ }
 	| TEMPLATE '<' template_parameter_list '>' CLASS identifier '=' template_name
 																		{ exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
+																			yerror(NULL, -1);
 																			$$ = NULL; /*alacnary(TYPE_PARAMETERr6, 5, $1, $3, $5, $6, $8);*/ }
 	;
 
 template_id:
 	template_name '<' template_argument_list '>'			{ exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
+																			yerror(NULL, -1);
 																			$$ = NULL; /*alacnary(TEMPLATE_IDr1, 2, $1, $3);*/ }
 	;
 
 template_argument_list:
 	template_argument												{ exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
+																			yerror(NULL, -1);
 																			$$ = NULL;
 																			/*$$ = alacnary(TEMPLATE_ARGUMENT_LISTr1, 1, $1); */}
 	| template_argument_list ',' template_argument		{ exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
+																			yerror(NULL, -1);
 																			$$ = NULL;
 																			/*$$ = alacnary(TEMPLATE_ARGUMENT_LISTr2, 2, $1, $3);*/}
 	;
@@ -1244,17 +1246,17 @@ template_argument_list:
 template_argument:
 	assignment_expression										{ exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
+																			yerror(NULL, -1);
 																			$$ = NULL;
 																			/*$$ = alacnary(TEMPLATE_ARGUMENTr1, 1, $1);*/ }
 	| type_id														{ exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
+																			yerror(NULL, -1);
 																			$$ = NULL;
 																			/*$$ = alacnary(TEMPLATE_ARGUMENTr2, 1, $1);*/ }
 	| template_name												{ exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
+																			yerror(NULL, -1);
 																			$$ = NULL;
 																			/*$$ = alacnary(TEMPLATE_ARGUMENTr3, 1, $1);*/ }
 	;
@@ -1262,7 +1264,7 @@ template_argument:
 explicit_instantiation:
 	TEMPLATE declaration											{ exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
+																			yerror(NULL, -1);
 																			$$ = NULL; 
 																			/*alacnary(EXPLICIT_INSTANTIATIONr1, 2, $1, $2);*/ }
 	;
@@ -1270,7 +1272,7 @@ explicit_instantiation:
 explicit_specialization:
 	TEMPLATE '<' '>' declaration								{ exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
-																			yyerror(NULL);
+																			yerror(NULL, -1);
 																			$$ = NULL; 
 																			/*alacnary(EXPLICIT_SPECIALIZATIONr1, 2, $1, $4);*/ }
 	;
@@ -1447,6 +1449,43 @@ type_id_list_opt:
 
 %%
 
+TreeNode *alacnary(int prodRule, int children,...){
+	TreeNode *nd;
+	if((nd = (TreeNode *)calloc(1, sizeof(TreeNode))) == NULL) memoryError();
+	nd->lineno = lineno;
+	nd->u.n.rule = prodRule;
+	nd->u.n.children = children;
+	nd->symbol = (int)(prodRule / 100) * 100;
+	int c = 0;
+	va_list mylist;
+	va_start(mylist, children);
+	while(c < children){
+		nd->u.n.child[c] = va_arg(mylist, TreeNode *);
+		c++;
+	}
+	va_end(mylist);
+	return nd;
+}
+
+SymbolTable *createGlobalSymbolTable(int size){
+	if(SHOW_TREES) printf("\t*createGlobalSymbolTable*\n");
+	int i;
+	SymbolTable *symbolTable;
+	if((symbolTable = (SymbolTable *)calloc(1, sizeof(SymbolTable))) == NULL) memoryError();
+	symbolTable->size = size;
+	symbolTable->entries = 0;
+	symbolTable->scope = root->type;
+	if((symbolTable->bucket = calloc(size, sizeof(SymbolTableEntry))) == NULL) memoryError();
+	for(i = 0; i < size; i++){
+		symbolTable->bucket[i] = NULL;
+	}
+	if(SHOW_TREES) printf("global ST: %d\n", symbolTable->size);
+	symbolTable->offset = 0;
+	if((symbolTable->list = (SymbolList *)calloc(1, sizeof(SymbolList))) == NULL) memoryError();
+	symbolTable->list->size = 0;
+	return symbolTable;
+}
+
 int main(int argc, char **argv){
 	int rv;
    if(argc > 1) { 
@@ -1456,7 +1495,7 @@ int main(int argc, char **argv){
 			fname = argv[f];
 			FILE *infile = fopen(fname, "r");
 			yyin = infile;
-			lineno = 0;
+			lineno = 1;
 			if(!yyin){
 				printf("Error reading file %s\n", argv[f]);
 				exit(1);
@@ -1472,15 +1511,16 @@ int main(int argc, char **argv){
 					globalSymbolTable = (SymbolTable *)createGlobalSymbolTable(SYMBOL_TABLE_SIZE);
 					currentSymbolTable = globalSymbolTable;
 					addLibrariesData();
-					//if(SHOW_TREES) printTree(root, 0, 1);
+					if(SHOW_TREES) printTree(root, 0, 1);
 					if(SHOW_TREES) printf("*** adding symbol tables ***\n");
 					tempSymbNumber = 0;
 					makeSymbolTables(root);
 					if(SHOW_TREES) printf("*** make symbol tables successful ***\n");
-					/*if(SHOW_TREES)*/ printTree(root, 0, 1);
+					if(SHOW_TREES) printTree(root, 0, 1);
 					if(SHOW_TREES) printf("*** print tree successful ***\n");
 					//printSymbolTables(globalSymbolTable);
 					//printf("xxxxxxxxxxxx\n");
+					/*
 					calculateOffsets(globalSymbolTable);
 					printSymbolTables(globalSymbolTable);
 					printf("*** Intermediate Code Generation ***\n");
@@ -1489,7 +1529,7 @@ int main(int argc, char **argv){
 					codeRegion->label = "Code";
 					intermediateCodeGeneration(root);
 					printSymbolTables(globalSymbolTable);
-					printCode(root);
+					printCode(root);*/
 					break;
 				case 1 :
 					if(exitStatus < 2) exitStatus = 2;

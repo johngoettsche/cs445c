@@ -4,6 +4,9 @@
  * codedef.h
  */
 
+#define TP_CALC 220001 
+#define TP_EQUA 220002
+ 
 /* memory definitions */
 #define GLOBAL_MEM 200001
 #define PARAM_MEM 200002

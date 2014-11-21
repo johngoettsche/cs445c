@@ -67,6 +67,9 @@ function or variable is not defined in this scope.
 50037
 Inappropriate Return Type
 type in return statement does not match function return type;
+50037
+Inappropriate Reference
+Class or Function name may not be used as a variable reference;
 50100
 File Not Found
 not found.
