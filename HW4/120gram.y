@@ -63,7 +63,7 @@
 #include "errors.h"
 
 #define SYMBOL_TABLE_SIZE 31
-#define SHOW_TREES 0
+#define SHOW_TREES 1
 
 extern int lineno;
 int yydebug=0;

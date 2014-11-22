@@ -99,7 +99,7 @@ pm_expression1
 multiplicative_expression1
 additive_expression1
 shift_expression1
-relational_expression3
+relational_expression2
 equality_expression1
 and_expression1
 exclusive_or_expression1
@@ -137,16 +137,16 @@ unary expression1
 cast_expression1
 pm_expression1
 multiplicative_expression1
-additive_expression1
-integer literal1
-literal1
-primary expression1
+identifier1
+unqualified id1
+id expression1
+primary expression4
 postfix expression1
 unary expression1
 cast_expression1
 pm_expression1
-multiplicative_expression1
-additive_expression3
+multiplicative_expression2
+additive_expression1
 shift_expression1
 relational_expression1
 equality_expression1
@@ -162,6 +162,63 @@ expression1
 expression opt2
 expression statement1
 statement2
+statement seq1
+identifier1
+unqualified id1
+id expression1
+primary expression4
+postfix expression1
+unary expression1
+cast_expression1
+pm_expression1
+multiplicative_expression1
+additive_expression1
+shift_expression1
+relational_expression1
+equality_expression1
+and_expression1
+exclusive_or_expression1
+inclusive_or_expression1
+logical and expression1
+logical or expression1
+identifier1
+unqualified id1
+id expression1
+primary expression4
+postfix expression1
+unary expression1
+cast_expression1
+pm_expression1
+multiplicative_expression1
+additive_expression1
+integer literal1
+literal1
+primary expression1
+postfix expression1
+unary expression1
+cast_expression1
+pm_expression1
+multiplicative_expression1
+additive_expression2
+shift_expression1
+relational_expression1
+equality_expression1
+and_expression1
+exclusive_or_expression1
+inclusive_or_expression1
+logical and expression1
+logical or expression1
+conditional expression1
+assignment expression1
+assignment expression2
+expression1
+expression opt2
+expression statement1
+statement2
+statement seq2
+statement seq opt2
+compound statement1
+statement3
 iteration statement1
 statement5
 statement seq2
@@ -226,25 +283,25 @@ global ST: 31
         statement_seq: 2 - touple
          statement_seq: 2 - touple
           statement_seq: 2 - touple
-           statement_seq: 1 i  - int
-            statement: 1 i  - int
-             declaration_statement: 1 i  - int
-              block_declaration: 1 i  - int
-               simple_declaration: 2 i  - int
-                decl_specifier_seq: 1 i  - int
-                 decl_specifier: 1 i  - int
-                  type_specifier: 1 i  - int
-                   simple_type_specifier: 1 i  - int
+           statement_seq: 1 x  - int
+            statement: 1 x  - int
+             declaration_statement: 1 x  - int
+              block_declaration: 1 x  - int
+               simple_declaration: 2 x  - int
+                decl_specifier_seq: 1 x  - int
+                 decl_specifier: 1 x  - int
+                  type_specifier: 1 x  - int
+                   simple_type_specifier: 1 x  - int
                     INT: int - int
-                init_declarator_list: 1 i  - int
-                 init_declarator: 2 i  - int
-                  declarator: 1 i  - int
-                   direct_declarator: 1 i  - int
-                    declarator_id: 1 i  - int
-                     id_expression: 1 i  - int
-                      unqualified_id: 1 i  - int
-                       identifier: 1 i  - int
-                        IDENTIFIER: i - int
+                init_declarator_list: 1 x  - int
+                 init_declarator: 2 x  - int
+                  declarator: 1 x  - int
+                   direct_declarator: 1 x  - int
+                    declarator_id: 1 x  - int
+                     id_expression: 1 x  - int
+                      unqualified_id: 1 x  - int
+                       identifier: 1 x  - int
+                        IDENTIFIER: x - int
                   initializer_opt: 0 - NULL
            statement: 1 - statement
             expression_statement: 1 - statement
@@ -271,26 +328,26 @@ global ST: 31
                                  identifier: 1 i  - UNKNOWN TYPE
                                   IDENTIFIER: i - UNKNOWN TYPE
                 assignment_operator: 0 - operator
-                assignment_expression: 1 5  - int
-                 conditional_expression: 1 5  - int
-                  logical_or_expression: 1 5  - int
-                   logical_and_expression: 1 5  - int
-                    inclusive_or_expression: 1 5  - int
-                     exclusive_or_expression: 1 5  - int
-                      and_expression: 1 5  - int
-                       equality_expression: 1 5  - int
-                        relational_expression: 1 5  - int
-                         shift_expression: 1 5  - int
-                          additive_expression: 1 5  - int
-                           multiplicative_expression: 1 5  - int
-                            pm_expression: 1 5  - int
-                             cast_expression: 1 5  - int
-                              unary_expression: 1 5  - int
-                               postfix_expression: 1 5  - int
-                                primary_expression: 1 5  - int
-                                 literal: 1 5  - int
-                                  integer_literal: 1 5  - int
-                                   INTEGER: 5 - int
+                assignment_expression: 1 0  - int
+                 conditional_expression: 1 0  - int
+                  logical_or_expression: 1 0  - int
+                   logical_and_expression: 1 0  - int
+                    inclusive_or_expression: 1 0  - int
+                     exclusive_or_expression: 1 0  - int
+                      and_expression: 1 0  - int
+                       equality_expression: 1 0  - int
+                        relational_expression: 1 0  - int
+                         shift_expression: 1 0  - int
+                          additive_expression: 1 0  - int
+                           multiplicative_expression: 1 0  - int
+                            pm_expression: 1 0  - int
+                             cast_expression: 1 0  - int
+                              unary_expression: 1 0  - int
+                               postfix_expression: 1 0  - int
+                                primary_expression: 1 0  - int
+                                 literal: 1 0  - int
+                                  integer_literal: 1 0  - int
+                                   INTEGER: 0 - int
           statement: 1 - statement
            iteration_statement: 3 - statement
             WHILE: while - statement
@@ -318,73 +375,134 @@ global ST: 31
                                  unqualified_id: 1 i  - UNKNOWN TYPE
                                   identifier: 1 i  - UNKNOWN TYPE
                                    IDENTIFIER: i - UNKNOWN TYPE
-                       shift_expression: 1 0  - int
-                        additive_expression: 1 0  - int
-                         multiplicative_expression: 1 0  - int
-                          pm_expression: 1 0  - int
-                           cast_expression: 1 0  - int
-                            unary_expression: 1 0  - int
-                             postfix_expression: 1 0  - int
-                              primary_expression: 1 0  - int
-                               literal: 1 0  - int
-                                integer_literal: 1 0  - int
-                                 INTEGER: 0 - int
+                       shift_expression: 1 10  - int
+                        additive_expression: 1 10  - int
+                         multiplicative_expression: 1 10  - int
+                          pm_expression: 1 10  - int
+                           cast_expression: 1 10  - int
+                            unary_expression: 1 10  - int
+                             postfix_expression: 1 10  - int
+                              primary_expression: 1 10  - int
+                               literal: 1 10  - int
+                                integer_literal: 1 10  - int
+                                 INTEGER: 10 - int
             statement: 1 - statement
-             expression_statement: 1 - statement
-              expression_opt: 1 i  - UNKNOWN TYPE
-               expression: 1 i  - UNKNOWN TYPE
-                assignment_expression: 3 i  - UNKNOWN TYPE
-                 logical_or_expression: 1 i  - UNKNOWN TYPE
-                  logical_and_expression: 1 i  - UNKNOWN TYPE
-                   inclusive_or_expression: 1 i  - UNKNOWN TYPE
-                    exclusive_or_expression: 1 i  - UNKNOWN TYPE
-                     and_expression: 1 i  - UNKNOWN TYPE
-                      equality_expression: 1 i  - UNKNOWN TYPE
-                       relational_expression: 1 i  - UNKNOWN TYPE
-                        shift_expression: 1 i  - UNKNOWN TYPE
-                         additive_expression: 1 i  - UNKNOWN TYPE
-                          multiplicative_expression: 1 i  - UNKNOWN TYPE
-                           pm_expression: 1 i  - UNKNOWN TYPE
-                            cast_expression: 1 i  - UNKNOWN TYPE
-                             unary_expression: 1 i  - UNKNOWN TYPE
-                              postfix_expression: 1 i  - UNKNOWN TYPE
-                               primary_expression: 1 i  - UNKNOWN TYPE
-                                id_expression: 1 i  - UNKNOWN TYPE
-                                 unqualified_id: 1 i  - UNKNOWN TYPE
-                                  identifier: 1 i  - UNKNOWN TYPE
-                                   IDENTIFIER: i - UNKNOWN TYPE
-                 assignment_operator: 0 - operator
-                 assignment_expression: 1 i  - UNKNOWN TYPE
-                  conditional_expression: 1 i  - UNKNOWN TYPE
-                   logical_or_expression: 1 i  - UNKNOWN TYPE
-                    logical_and_expression: 1 i  - UNKNOWN TYPE
-                     inclusive_or_expression: 1 i  - UNKNOWN TYPE
-                      exclusive_or_expression: 1 i  - UNKNOWN TYPE
-                       and_expression: 1 i  - UNKNOWN TYPE
-                        equality_expression: 1 i  - UNKNOWN TYPE
-                         relational_expression: 1 i  - UNKNOWN TYPE
-                          shift_expression: 1 i  - UNKNOWN TYPE
-                           additive_expression: 2 i  - UNKNOWN TYPE
-                            additive_expression: 1 i  - UNKNOWN TYPE
-                             multiplicative_expression: 1 i  - UNKNOWN TYPE
-                              pm_expression: 1 i  - UNKNOWN TYPE
-                               cast_expression: 1 i  - UNKNOWN TYPE
-                                unary_expression: 1 i  - UNKNOWN TYPE
-                                 postfix_expression: 1 i  - UNKNOWN TYPE
-                                  primary_expression: 1 i  - UNKNOWN TYPE
-                                   id_expression: 1 i  - UNKNOWN TYPE
-                                    unqualified_id: 1 i  - UNKNOWN TYPE
-                                     identifier: 1 i  - UNKNOWN TYPE
-                                      IDENTIFIER: i - UNKNOWN TYPE
-                            multiplicative_expression: 1 1  - int
-                             pm_expression: 1 1  - int
-                              cast_expression: 1 1  - int
-                               unary_expression: 1 1  - int
-                                postfix_expression: 1 1  - int
-                                 primary_expression: 1 1  - int
-                                  literal: 1 1  - int
-                                   integer_literal: 1 1  - int
-                                    INTEGER: 1 - int
+             compound_statement: 1 - statement
+              statement_seq_opt: 1 - touple
+               statement_seq: 2 - touple
+                statement_seq: 1 - statement
+                 statement: 1 - statement
+                  expression_statement: 1 - statement
+                   expression_opt: 1 x  - UNKNOWN TYPE
+                    expression: 1 x  - UNKNOWN TYPE
+                     assignment_expression: 3 x  - UNKNOWN TYPE
+                      logical_or_expression: 1 x  - UNKNOWN TYPE
+                       logical_and_expression: 1 x  - UNKNOWN TYPE
+                        inclusive_or_expression: 1 x  - UNKNOWN TYPE
+                         exclusive_or_expression: 1 x  - UNKNOWN TYPE
+                          and_expression: 1 x  - UNKNOWN TYPE
+                           equality_expression: 1 x  - UNKNOWN TYPE
+                            relational_expression: 1 x  - UNKNOWN TYPE
+                             shift_expression: 1 x  - UNKNOWN TYPE
+                              additive_expression: 1 x  - UNKNOWN TYPE
+                               multiplicative_expression: 1 x  - UNKNOWN TYPE
+                                pm_expression: 1 x  - UNKNOWN TYPE
+                                 cast_expression: 1 x  - UNKNOWN TYPE
+                                  unary_expression: 1 x  - UNKNOWN TYPE
+                                   postfix_expression: 1 x  - UNKNOWN TYPE
+                                    primary_expression: 1 x  - UNKNOWN TYPE
+                                     id_expression: 1 x  - UNKNOWN TYPE
+                                      unqualified_id: 1 x  - UNKNOWN TYPE
+                                       identifier: 1 x  - UNKNOWN TYPE
+                                        IDENTIFIER: x - UNKNOWN TYPE
+                      assignment_operator: 0 - operator
+                      assignment_expression: 1 i  - UNKNOWN TYPE
+                       conditional_expression: 1 i  - UNKNOWN TYPE
+                        logical_or_expression: 1 i  - UNKNOWN TYPE
+                         logical_and_expression: 1 i  - UNKNOWN TYPE
+                          inclusive_or_expression: 1 i  - UNKNOWN TYPE
+                           exclusive_or_expression: 1 i  - UNKNOWN TYPE
+                            and_expression: 1 i  - UNKNOWN TYPE
+                             equality_expression: 1 i  - UNKNOWN TYPE
+                              relational_expression: 1 i  - UNKNOWN TYPE
+                               shift_expression: 1 i  - UNKNOWN TYPE
+                                additive_expression: 1 i  - UNKNOWN TYPE
+                                 multiplicative_expression: 2 i  - UNKNOWN TYPE
+                                  multiplicative_expression: 1 i  - UNKNOWN TYPE
+                                   pm_expression: 1 i  - UNKNOWN TYPE
+                                    cast_expression: 1 i  - UNKNOWN TYPE
+                                     unary_expression: 1 i  - UNKNOWN TYPE
+                                      postfix_expression: 1 i  - UNKNOWN TYPE
+                                       primary_expression: 1 i  - UNKNOWN TYPE
+                                        id_expression: 1 i  - UNKNOWN TYPE
+                                         unqualified_id: 1 i  - UNKNOWN TYPE
+                                          identifier: 1 i  - UNKNOWN TYPE
+                                           IDENTIFIER: i - UNKNOWN TYPE
+                                  pm_expression: 1 i  - UNKNOWN TYPE
+                                   cast_expression: 1 i  - UNKNOWN TYPE
+                                    unary_expression: 1 i  - UNKNOWN TYPE
+                                     postfix_expression: 1 i  - UNKNOWN TYPE
+                                      primary_expression: 1 i  - UNKNOWN TYPE
+                                       id_expression: 1 i  - UNKNOWN TYPE
+                                        unqualified_id: 1 i  - UNKNOWN TYPE
+                                         identifier: 1 i  - UNKNOWN TYPE
+                                          IDENTIFIER: i - UNKNOWN TYPE
+                statement: 1 - statement
+                 expression_statement: 1 - statement
+                  expression_opt: 1 i  - UNKNOWN TYPE
+                   expression: 1 i  - UNKNOWN TYPE
+                    assignment_expression: 3 i  - UNKNOWN TYPE
+                     logical_or_expression: 1 i  - UNKNOWN TYPE
+                      logical_and_expression: 1 i  - UNKNOWN TYPE
+                       inclusive_or_expression: 1 i  - UNKNOWN TYPE
+                        exclusive_or_expression: 1 i  - UNKNOWN TYPE
+                         and_expression: 1 i  - UNKNOWN TYPE
+                          equality_expression: 1 i  - UNKNOWN TYPE
+                           relational_expression: 1 i  - UNKNOWN TYPE
+                            shift_expression: 1 i  - UNKNOWN TYPE
+                             additive_expression: 1 i  - UNKNOWN TYPE
+                              multiplicative_expression: 1 i  - UNKNOWN TYPE
+                               pm_expression: 1 i  - UNKNOWN TYPE
+                                cast_expression: 1 i  - UNKNOWN TYPE
+                                 unary_expression: 1 i  - UNKNOWN TYPE
+                                  postfix_expression: 1 i  - UNKNOWN TYPE
+                                   primary_expression: 1 i  - UNKNOWN TYPE
+                                    id_expression: 1 i  - UNKNOWN TYPE
+                                     unqualified_id: 1 i  - UNKNOWN TYPE
+                                      identifier: 1 i  - UNKNOWN TYPE
+                                       IDENTIFIER: i - UNKNOWN TYPE
+                     assignment_operator: 0 - operator
+                     assignment_expression: 1 i  - UNKNOWN TYPE
+                      conditional_expression: 1 i  - UNKNOWN TYPE
+                       logical_or_expression: 1 i  - UNKNOWN TYPE
+                        logical_and_expression: 1 i  - UNKNOWN TYPE
+                         inclusive_or_expression: 1 i  - UNKNOWN TYPE
+                          exclusive_or_expression: 1 i  - UNKNOWN TYPE
+                           and_expression: 1 i  - UNKNOWN TYPE
+                            equality_expression: 1 i  - UNKNOWN TYPE
+                             relational_expression: 1 i  - UNKNOWN TYPE
+                              shift_expression: 1 i  - UNKNOWN TYPE
+                               additive_expression: 2 i  - UNKNOWN TYPE
+                                additive_expression: 1 i  - UNKNOWN TYPE
+                                 multiplicative_expression: 1 i  - UNKNOWN TYPE
+                                  pm_expression: 1 i  - UNKNOWN TYPE
+                                   cast_expression: 1 i  - UNKNOWN TYPE
+                                    unary_expression: 1 i  - UNKNOWN TYPE
+                                     postfix_expression: 1 i  - UNKNOWN TYPE
+                                      primary_expression: 1 i  - UNKNOWN TYPE
+                                       id_expression: 1 i  - UNKNOWN TYPE
+                                        unqualified_id: 1 i  - UNKNOWN TYPE
+                                         identifier: 1 i  - UNKNOWN TYPE
+                                          IDENTIFIER: i - UNKNOWN TYPE
+                                multiplicative_expression: 1 1  - int
+                                 pm_expression: 1 1  - int
+                                  cast_expression: 1 1  - int
+                                   unary_expression: 1 1  - int
+                                    postfix_expression: 1 1  - int
+                                     primary_expression: 1 1  - int
+                                      literal: 1 1  - int
+                                       integer_literal: 1 1  - int
+                                        INTEGER: 1 - int
          statement: 1 0  - int
           jump_statement: 2 0  - int
            RETURN: return - int
@@ -414,69 +532,430 @@ global ST: 31
 identifier 1
 identifier 1
 identifier 1
+		SymbolTable: program
 identifier 1
+		SymbolTable: program
 identifier 1
+		SymbolTable: program
 identifier 1
-additive_expression 3
-	UNKNOWN TYPE : int
+		SymbolTable: program
+identifier 1
+		SymbolTable: program
+identifier 1
+		SymbolTable: program
+identifier 1
+		SymbolTable: program
 function definition 2
 adding to symbol table program:
+function main
+ret: int
 
 addToSymbolTable: [1]
 	*createSymbolTable*
+**addFunctionBodySymbols**
+**** 0 ****
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 simple declaration 1
 **addSimpleDeclarations**
 adding to symbol table main:
+int x
 
 addToSymbolTable: [1]
 simple declaration 1 complete
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 identifier 1
+int x
+int x
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 expression_statement 1
+		SymbolTable: main
+***error***
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 expression 1
+		SymbolTable: main
+***error***
+**addFunctionBodySymbols**
 assignment_expression 2
-	int : int
+		SymbolTable: main
+***error***
+UNKNOWN TYPE i
+int 0
+a	Operator: UNKNOWN TYPE : int
+	Base:  UNKNOWN TYPE : int
+***error***
+b
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 identifier 1
+UNKNOWN TYPE i
+		SymbolTable: main
+		SymbolTable: main
+Temp: NULL
+***error***
+UNKNOWN TYPE i
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 ****************************************
 *************************************************
 temp count: 0
 _Const_0 0
 adding to symbol table main:
+int _Const_0
 
 addToSymbolTable: [2]
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 expression 1
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 relational_expression
-	int : int
+		SymbolTable: main
+***error***
+	Operator: UNKNOWN TYPE : int
+	Base:  UNKNOWN TYPE : int
+***error***
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 identifier 1
+UNKNOWN TYPE i
+		SymbolTable: main
+		SymbolTable: main
+Temp: NULL
+***error***
+UNKNOWN TYPE i
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 ****************************************
 *************************************************
 temp count: 1
 _Const_1 0
 adding to symbol table main:
+int _Const_1
 
 addToSymbolTable: [3]
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 expression_statement 1
+		SymbolTable: main
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 expression 1
+**addFunctionBodySymbols**
 assignment_expression 2
-	int : int
+int x
+		SymbolTable: main
+***error***
+UNKNOWN TYPE i
+a	Operator: int : UNKNOWN TYPE
+	Base:  int : UNKNOWN TYPE
+***error***
+b
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 identifier 1
+int x
+int x
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+multiplicative_expression 2
+		SymbolTable: main
+		SymbolTable: main
+	Operator: UNKNOWN TYPE : UNKNOWN TYPE
+	Base:  UNKNOWN TYPE : UNKNOWN TYPE
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 identifier 1
+UNKNOWN TYPE i
+		SymbolTable: main
+		SymbolTable: main
+Temp: NULL
+***error***
+UNKNOWN TYPE i
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+identifier 1
+UNKNOWN TYPE i
+		SymbolTable: main
+		SymbolTable: main
+Temp: NULL
+***error***
+UNKNOWN TYPE i
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+expression_statement 1
+		SymbolTable: main
+***error***
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+expression 1
+		SymbolTable: main
+***error***
+**addFunctionBodySymbols**
+assignment_expression 2
+		SymbolTable: main
+***error***
+UNKNOWN TYPE i
+		SymbolTable: main
+***error***
+UNKNOWN TYPE i
+a	Operator: UNKNOWN TYPE : UNKNOWN TYPE
+	Base:  UNKNOWN TYPE : UNKNOWN TYPE
+b
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+identifier 1
+UNKNOWN TYPE i
+		SymbolTable: main
+		SymbolTable: main
+Temp: NULL
+***error***
+UNKNOWN TYPE i
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+additive_expression 2
+UNKNOWN TYPE
+		SymbolTable: main
+int
+	Operator: UNKNOWN TYPE : int
+	Base:  UNKNOWN TYPE : int
+***error***
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+identifier 1
+UNKNOWN TYPE i
+		SymbolTable: main
+		SymbolTable: main
+Temp: NULL
+***error***
+UNKNOWN TYPE i
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 ****************************************
 *************************************************
 temp count: 2
 _Const_2 0
 adding to symbol table main:
+int _Const_2
 
 addToSymbolTable: [4]
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 jump_statement 3*** int : int ***
 	int : int
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 expression 1
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 ****************************************
 *************************************************
 temp count: 3
 _Const_3 0
 adding to symbol table main:
+int _Const_3
 
 addToSymbolTable: [5]
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 function definition 2 complete [5]
 translation unit 1
 translation unit 1 complete
@@ -507,50 +986,50 @@ translation unit 1 complete
         statement_seq: 2 - touple
          statement_seq: 2 - touple
           statement_seq: 2 - touple
-           statement_seq: 1 i  - int
-            statement: 1 i  - int
-             declaration_statement: 1 i  - int
-              block_declaration: 1 i  - int
-               simple_declaration: 2 i  - int
-                decl_specifier_seq: 1 i  - int
-                 decl_specifier: 1 i  - int
-                  type_specifier: 1 i  - int
-                   simple_type_specifier: 1 i  - int
+           statement_seq: 1 x  - int
+            statement: 1 x  - int
+             declaration_statement: 1 x  - int
+              block_declaration: 1 x  - int
+               simple_declaration: 2 x  - int
+                decl_specifier_seq: 1 x  - int
+                 decl_specifier: 1 x  - int
+                  type_specifier: 1 x  - int
+                   simple_type_specifier: 1 x  - int
                     INT: int - int
-                init_declarator_list: 1 i  - int
-                 init_declarator: 2 i  - int
-                  declarator: 1 i  - int
-                   direct_declarator: 1 i  - int
-                    declarator_id: 1 i  - int
-                     id_expression: 1 i  - int
-                      unqualified_id: 1 i  - int
-                       identifier: 1 i  - int
-                        IDENTIFIER: i - int
+                init_declarator_list: 1 x  - int
+                 init_declarator: 2 x  - int
+                  declarator: 1 x  - int
+                   direct_declarator: 1 x  - int
+                    declarator_id: 1 x  - int
+                     id_expression: 1 x  - int
+                      unqualified_id: 1 x  - int
+                       identifier: 1 x  - int
+                        IDENTIFIER: x - int
                   initializer_opt: 0 - NULL
            statement: 1 - statement
             expression_statement: 1 - statement
-             expression_opt: 1 i  - int
-              expression: 1 i  - int
-               assignment_expression: 3 i  - int
-                logical_or_expression: 1 i  - int
-                 logical_and_expression: 1 i  - int
-                  inclusive_or_expression: 1 i  - int
-                   exclusive_or_expression: 1 i  - int
-                    and_expression: 1 i  - int
-                     equality_expression: 1 i  - int
-                      relational_expression: 1 i  - int
-                       shift_expression: 1 i  - int
-                        additive_expression: 1 i  - int
-                         multiplicative_expression: 1 i  - int
-                          pm_expression: 1 i  - int
-                           cast_expression: 1 i  - int
-                            unary_expression: 1 i  - int
-                             postfix_expression: 1 i  - int
-                              primary_expression: 1 i  - int
-                               id_expression: 1 i  - int
-                                unqualified_id: 1 i  - int
-                                 identifier: 1 i  - int
-                                  IDENTIFIER: i - int
+             expression_opt: 1 i  - UNKNOWN TYPE
+              expression: 1 i  - UNKNOWN TYPE
+               assignment_expression: 3 i  - UNKNOWN TYPE
+                logical_or_expression: 1 i  - UNKNOWN TYPE
+                 logical_and_expression: 1 i  - UNKNOWN TYPE
+                  inclusive_or_expression: 1 i  - UNKNOWN TYPE
+                   exclusive_or_expression: 1 i  - UNKNOWN TYPE
+                    and_expression: 1 i  - UNKNOWN TYPE
+                     equality_expression: 1 i  - UNKNOWN TYPE
+                      relational_expression: 1 i  - UNKNOWN TYPE
+                       shift_expression: 1 i  - UNKNOWN TYPE
+                        additive_expression: 1 i  - UNKNOWN TYPE
+                         multiplicative_expression: 1 i  - UNKNOWN TYPE
+                          pm_expression: 1 i  - UNKNOWN TYPE
+                           cast_expression: 1 i  - UNKNOWN TYPE
+                            unary_expression: 1 i  - UNKNOWN TYPE
+                             postfix_expression: 1 i  - UNKNOWN TYPE
+                              primary_expression: 1 i  - UNKNOWN TYPE
+                               id_expression: 1 i  - UNKNOWN TYPE
+                                unqualified_id: 1 i  - UNKNOWN TYPE
+                                 identifier: 1 i  - UNKNOWN TYPE
+                                  IDENTIFIER: i - UNKNOWN TYPE
                 assignment_operator: 0 - operator
                 assignment_expression: 1 _Const_0  - int
                  conditional_expression: 1 _Const_0  - int
@@ -571,7 +1050,7 @@ translation unit 1 complete
                                 primary_expression: 1 _Const_0  - int
                                  literal: 1 _Const_0  - int
                                   integer_literal: 1 _Const_0  - int
-                                   INTEGER: 5 - int
+                                   INTEGER: 0 - int
           statement: 1 - statement
            iteration_statement: 3 - statement
             WHILE: while - statement
@@ -586,19 +1065,19 @@ translation unit 1 complete
                     and_expression: 1 - bool
                      equality_expression: 1 - bool
                       relational_expression: 2 - bool
-                       relational_expression: 1 i  - int
-                        shift_expression: 1 i  - int
-                         additive_expression: 1 i  - int
-                          multiplicative_expression: 1 i  - int
-                           pm_expression: 1 i  - int
-                            cast_expression: 1 i  - int
-                             unary_expression: 1 i  - int
-                              postfix_expression: 1 i  - int
-                               primary_expression: 1 i  - int
-                                id_expression: 1 i  - int
-                                 unqualified_id: 1 i  - int
-                                  identifier: 1 i  - int
-                                   IDENTIFIER: i - int
+                       relational_expression: 1 i  - UNKNOWN TYPE
+                        shift_expression: 1 i  - UNKNOWN TYPE
+                         additive_expression: 1 i  - UNKNOWN TYPE
+                          multiplicative_expression: 1 i  - UNKNOWN TYPE
+                           pm_expression: 1 i  - UNKNOWN TYPE
+                            cast_expression: 1 i  - UNKNOWN TYPE
+                             unary_expression: 1 i  - UNKNOWN TYPE
+                              postfix_expression: 1 i  - UNKNOWN TYPE
+                               primary_expression: 1 i  - UNKNOWN TYPE
+                                id_expression: 1 i  - UNKNOWN TYPE
+                                 unqualified_id: 1 i  - UNKNOWN TYPE
+                                  identifier: 1 i  - UNKNOWN TYPE
+                                   IDENTIFIER: i - UNKNOWN TYPE
                        shift_expression: 1 _Const_1  - int
                         additive_expression: 1 _Const_1  - int
                          multiplicative_expression: 1 _Const_1  - int
@@ -609,63 +1088,124 @@ translation unit 1 complete
                               primary_expression: 1 _Const_1  - int
                                literal: 1 _Const_1  - int
                                 integer_literal: 1 _Const_1  - int
-                                 INTEGER: 0 - int
+                                 INTEGER: 10 - int
             statement: 1 - statement
-             expression_statement: 1 - statement
-              expression_opt: 1 i  - int
-               expression: 1 i  - int
-                assignment_expression: 3 i  - int
-                 logical_or_expression: 1 i  - int
-                  logical_and_expression: 1 i  - int
-                   inclusive_or_expression: 1 i  - int
-                    exclusive_or_expression: 1 i  - int
-                     and_expression: 1 i  - int
-                      equality_expression: 1 i  - int
-                       relational_expression: 1 i  - int
-                        shift_expression: 1 i  - int
-                         additive_expression: 1 i  - int
-                          multiplicative_expression: 1 i  - int
-                           pm_expression: 1 i  - int
-                            cast_expression: 1 i  - int
-                             unary_expression: 1 i  - int
-                              postfix_expression: 1 i  - int
-                               primary_expression: 1 i  - int
-                                id_expression: 1 i  - int
-                                 unqualified_id: 1 i  - int
-                                  identifier: 1 i  - int
-                                   IDENTIFIER: i - int
-                 assignment_operator: 0 - operator
-                 assignment_expression: 1 i  - int
-                  conditional_expression: 1 i  - int
-                   logical_or_expression: 1 i  - int
-                    logical_and_expression: 1 i  - int
-                     inclusive_or_expression: 1 i  - int
-                      exclusive_or_expression: 1 i  - int
-                       and_expression: 1 i  - int
-                        equality_expression: 1 i  - int
-                         relational_expression: 1 i  - int
-                          shift_expression: 1 i  - int
-                           additive_expression: 2 i  - int
-                            additive_expression: 1 i  - int
-                             multiplicative_expression: 1 i  - int
-                              pm_expression: 1 i  - int
-                               cast_expression: 1 i  - int
-                                unary_expression: 1 i  - int
-                                 postfix_expression: 1 i  - int
-                                  primary_expression: 1 i  - int
-                                   id_expression: 1 i  - int
-                                    unqualified_id: 1 i  - int
-                                     identifier: 1 i  - int
-                                      IDENTIFIER: i - int
-                            multiplicative_expression: 1 _Const_2  - int
-                             pm_expression: 1 _Const_2  - int
-                              cast_expression: 1 _Const_2  - int
-                               unary_expression: 1 _Const_2  - int
-                                postfix_expression: 1 _Const_2  - int
-                                 primary_expression: 1 _Const_2  - int
-                                  literal: 1 _Const_2  - int
-                                   integer_literal: 1 _Const_2  - int
-                                    INTEGER: 1 - int
+             compound_statement: 1 - statement
+              statement_seq_opt: 1 - touple
+               statement_seq: 2 - touple
+                statement_seq: 1 - statement
+                 statement: 1 - statement
+                  expression_statement: 1 - statement
+                   expression_opt: 1 x  - int
+                    expression: 1 x  - int
+                     assignment_expression: 3 x  - int
+                      logical_or_expression: 1 x  - int
+                       logical_and_expression: 1 x  - int
+                        inclusive_or_expression: 1 x  - int
+                         exclusive_or_expression: 1 x  - int
+                          and_expression: 1 x  - int
+                           equality_expression: 1 x  - int
+                            relational_expression: 1 x  - int
+                             shift_expression: 1 x  - int
+                              additive_expression: 1 x  - int
+                               multiplicative_expression: 1 x  - int
+                                pm_expression: 1 x  - int
+                                 cast_expression: 1 x  - int
+                                  unary_expression: 1 x  - int
+                                   postfix_expression: 1 x  - int
+                                    primary_expression: 1 x  - int
+                                     id_expression: 1 x  - int
+                                      unqualified_id: 1 x  - int
+                                       identifier: 1 x  - int
+                                        IDENTIFIER: x - int
+                      assignment_operator: 0 - operator
+                      assignment_expression: 1 i  - UNKNOWN TYPE
+                       conditional_expression: 1 i  - UNKNOWN TYPE
+                        logical_or_expression: 1 i  - UNKNOWN TYPE
+                         logical_and_expression: 1 i  - UNKNOWN TYPE
+                          inclusive_or_expression: 1 i  - UNKNOWN TYPE
+                           exclusive_or_expression: 1 i  - UNKNOWN TYPE
+                            and_expression: 1 i  - UNKNOWN TYPE
+                             equality_expression: 1 i  - UNKNOWN TYPE
+                              relational_expression: 1 i  - UNKNOWN TYPE
+                               shift_expression: 1 i  - UNKNOWN TYPE
+                                additive_expression: 1 i  - UNKNOWN TYPE
+                                 multiplicative_expression: 2 i  - UNKNOWN TYPE
+                                  multiplicative_expression: 1 i  - UNKNOWN TYPE
+                                   pm_expression: 1 i  - UNKNOWN TYPE
+                                    cast_expression: 1 i  - UNKNOWN TYPE
+                                     unary_expression: 1 i  - UNKNOWN TYPE
+                                      postfix_expression: 1 i  - UNKNOWN TYPE
+                                       primary_expression: 1 i  - UNKNOWN TYPE
+                                        id_expression: 1 i  - UNKNOWN TYPE
+                                         unqualified_id: 1 i  - UNKNOWN TYPE
+                                          identifier: 1 i  - UNKNOWN TYPE
+                                           IDENTIFIER: i - UNKNOWN TYPE
+                                  pm_expression: 1 i  - UNKNOWN TYPE
+                                   cast_expression: 1 i  - UNKNOWN TYPE
+                                    unary_expression: 1 i  - UNKNOWN TYPE
+                                     postfix_expression: 1 i  - UNKNOWN TYPE
+                                      primary_expression: 1 i  - UNKNOWN TYPE
+                                       id_expression: 1 i  - UNKNOWN TYPE
+                                        unqualified_id: 1 i  - UNKNOWN TYPE
+                                         identifier: 1 i  - UNKNOWN TYPE
+                                          IDENTIFIER: i - UNKNOWN TYPE
+                statement: 1 - statement
+                 expression_statement: 1 - statement
+                  expression_opt: 1 i  - UNKNOWN TYPE
+                   expression: 1 i  - UNKNOWN TYPE
+                    assignment_expression: 3 i  - UNKNOWN TYPE
+                     logical_or_expression: 1 i  - UNKNOWN TYPE
+                      logical_and_expression: 1 i  - UNKNOWN TYPE
+                       inclusive_or_expression: 1 i  - UNKNOWN TYPE
+                        exclusive_or_expression: 1 i  - UNKNOWN TYPE
+                         and_expression: 1 i  - UNKNOWN TYPE
+                          equality_expression: 1 i  - UNKNOWN TYPE
+                           relational_expression: 1 i  - UNKNOWN TYPE
+                            shift_expression: 1 i  - UNKNOWN TYPE
+                             additive_expression: 1 i  - UNKNOWN TYPE
+                              multiplicative_expression: 1 i  - UNKNOWN TYPE
+                               pm_expression: 1 i  - UNKNOWN TYPE
+                                cast_expression: 1 i  - UNKNOWN TYPE
+                                 unary_expression: 1 i  - UNKNOWN TYPE
+                                  postfix_expression: 1 i  - UNKNOWN TYPE
+                                   primary_expression: 1 i  - UNKNOWN TYPE
+                                    id_expression: 1 i  - UNKNOWN TYPE
+                                     unqualified_id: 1 i  - UNKNOWN TYPE
+                                      identifier: 1 i  - UNKNOWN TYPE
+                                       IDENTIFIER: i - UNKNOWN TYPE
+                     assignment_operator: 0 - operator
+                     assignment_expression: 1 i  - UNKNOWN TYPE
+                      conditional_expression: 1 i  - UNKNOWN TYPE
+                       logical_or_expression: 1 i  - UNKNOWN TYPE
+                        logical_and_expression: 1 i  - UNKNOWN TYPE
+                         inclusive_or_expression: 1 i  - UNKNOWN TYPE
+                          exclusive_or_expression: 1 i  - UNKNOWN TYPE
+                           and_expression: 1 i  - UNKNOWN TYPE
+                            equality_expression: 1 i  - UNKNOWN TYPE
+                             relational_expression: 1 i  - UNKNOWN TYPE
+                              shift_expression: 1 i  - UNKNOWN TYPE
+                               additive_expression: 2 i  - UNKNOWN TYPE
+                                additive_expression: 1 i  - UNKNOWN TYPE
+                                 multiplicative_expression: 1 i  - UNKNOWN TYPE
+                                  pm_expression: 1 i  - UNKNOWN TYPE
+                                   cast_expression: 1 i  - UNKNOWN TYPE
+                                    unary_expression: 1 i  - UNKNOWN TYPE
+                                     postfix_expression: 1 i  - UNKNOWN TYPE
+                                      primary_expression: 1 i  - UNKNOWN TYPE
+                                       id_expression: 1 i  - UNKNOWN TYPE
+                                        unqualified_id: 1 i  - UNKNOWN TYPE
+                                         identifier: 1 i  - UNKNOWN TYPE
+                                          IDENTIFIER: i - UNKNOWN TYPE
+                                multiplicative_expression: 1 _Const_2  - int
+                                 pm_expression: 1 _Const_2  - int
+                                  cast_expression: 1 _Const_2  - int
+                                   unary_expression: 1 _Const_2  - int
+                                    postfix_expression: 1 _Const_2  - int
+                                     primary_expression: 1 _Const_2  - int
+                                      literal: 1 _Const_2  - int
+                                       integer_literal: 1 _Const_2  - int
+                                        INTEGER: 1 - int
          statement: 1 _Const_3  - int
           jump_statement: 2 _Const_3  - int
            RETURN: return - int
