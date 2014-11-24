@@ -1495,7 +1495,7 @@ int main(int argc, char **argv){
 			fname = argv[f];
 			FILE *infile = fopen(fname, "r");
 			yyin = infile;
-			lineno = 1;
+			lineno = 0;
 			if(!yyin){
 				printf("Error reading file %s\n", argv[f]);
 				exit(1);
@@ -1504,7 +1504,7 @@ int main(int argc, char **argv){
 			switch(rv){
 				case 0 :
 					if(SHOW_TREES) printf("*** parse successful ***\n");
-					//f(SHOW_TREES) printTree(root, 0, 0);
+					printTree(root, 0, 0);
 					if(SHOW_TREES) printf("*** building types ***\n");
 					buildTypes(root);
 					if(SHOW_TREES) printf("*** build types successful ***\n");
@@ -1518,9 +1518,9 @@ int main(int argc, char **argv){
 					if(SHOW_TREES) printf("*** make symbol tables successful ***\n");
 					if(SHOW_TREES) printTree(root, 0, 1);
 					if(SHOW_TREES) printf("*** print tree successful ***\n");
-					//printSymbolTables(globalSymbolTable);
-					//printf("xxxxxxxxxxxx\n");
-					/*
+					printSymbolTables(globalSymbolTable);
+					printf("xxxxxxxxxxxx\n");
+					
 					calculateOffsets(globalSymbolTable);
 					printSymbolTables(globalSymbolTable);
 					printf("*** Intermediate Code Generation ***\n");
@@ -1529,7 +1529,7 @@ int main(int argc, char **argv){
 					codeRegion->label = "Code";
 					intermediateCodeGeneration(root);
 					printSymbolTables(globalSymbolTable);
-					printCode(root);*/
+					printCode(root);
 					break;
 				case 1 :
 					if(exitStatus < 2) exitStatus = 2;

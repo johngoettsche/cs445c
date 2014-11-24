@@ -35,3 +35,10 @@
 #define C_OROR 210019
 #define C_BR 210020
 #define C_GOTO 210021
+#define C_RET 210022 
+#define C_IDENT 210023
+#define C_INT_LIT 210024
+#define C_CHAR_LIT 210025
+#define C_FLT_LIT 210026
+#define C_STR_LIT 210027
+#define C_BOOL_LIT 210028

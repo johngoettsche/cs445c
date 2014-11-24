@@ -17,7 +17,7 @@ void memoryError(){
 }
 
 void getErrorMessage(int ecode){
-printf("***error***\n");
+//printf("***error %d***\n", ecode);
    int size = 128;
    int code;
 	char *line = (char *)calloc(size, sizeof(char));
