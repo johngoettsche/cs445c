@@ -42,3 +42,8 @@
 #define C_FLT_LIT 210026
 #define C_STR_LIT 210027
 #define C_BOOL_LIT 210028
+#define C_NOT 210029
+#define C_ADD1 210030
+#define C_SUB1 210031
+#define C_ASN_INT 210032
+#define C_FUNC 210033

@@ -1,9 +1,10 @@
+class foo{
+	public :
+		int getCount();
+	private :
+		int count;
+};
 
-#include <iostream>
-
-using namespace std;
-
-int main(){
-	cout << "hello" << endl;
-	return 1;
-} 
+int foo::getCount(){
+	return count;
+}

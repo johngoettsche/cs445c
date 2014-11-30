@@ -42,7 +42,8 @@ void addFunctionBodySymbols(SymbolTable *currentSymbolTable, TreeNode *node, int
 void makeSymbolTables(TreeNode *node);
 CodeElem *createCodeElement();
 IntrCode *createIntrCode();
-NType *createTempSymbol(NType *source, char *pre);
+NType *createTempSymbol(NType *source, int lab, int mode);
+//NType *createTempSymbol(NType *source, char *pre);
 Location *makeLocation(NType *source);
 IntrCode *makePairedExpression(int code, NType *child1, NType *child2, int mode);
 IntrCode *concatCode(IntrCode *front, IntrCode *back);

@@ -64,6 +64,7 @@
 
 #define SYMBOL_TABLE_SIZE 31
 #define SHOW_TREES 1
+#define SHOW_MEMMORY 1
 
 extern int lineno;
 int yydebug=0;
@@ -1518,17 +1519,14 @@ int main(int argc, char **argv){
 					if(SHOW_TREES) printf("*** make symbol tables successful ***\n");
 					if(SHOW_TREES) printTree(root, 0, 1);
 					if(SHOW_TREES) printf("*** print tree successful ***\n");
-					printSymbolTables(globalSymbolTable);
-					printf("xxxxxxxxxxxx\n");
-					
 					calculateOffsets(globalSymbolTable);
-					printSymbolTables(globalSymbolTable);
-					printf("*** Intermediate Code Generation ***\n");
+					if(SHOW_MEMMORY)printSymbolTables(globalSymbolTable);
+					if(SHOW_MEMMORY)printf("*** Intermediate Code Generation ***\n");
 					if((codeRegion = (NType *)calloc(1, sizeof(NType))) == NULL) memoryError();
 					if((codeRegion->label = (char *)calloc(8, sizeof(char))) == NULL) memoryError();
 					codeRegion->label = "Code";
 					intermediateCodeGeneration(root);
-					printSymbolTables(globalSymbolTable);
+					if(SHOW_MEMMORY)printSymbolTables(globalSymbolTable);
 					printCode(root);
 					break;
 				case 1 :

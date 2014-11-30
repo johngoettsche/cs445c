@@ -20,6 +20,7 @@
 
 #define SHOW_TREES 1
 #define SHOW_MEMMORY 1
+#define SHOW_CODE 1
 
 //#define SYMBOL_TABLE_SIZE 31
 
@@ -368,6 +369,11 @@ char *humanreadable(int ncode){
 		case C_BR : name = "BR"; break;
 		case C_GOTO : name = "GOTO"; break;
 		case C_RET : name = "RETURN"; break;
+		case C_NOT : name = "NOT"; break;
+		case C_ADD1 : name = "ADD1"; break;
+		case C_SUB1 : name = "SUB1"; break;
+		case C_ASN_INT : name = "ASN_INT"; break;
+		case C_FUNC : name = "FUNC"; break;
 
 		default : name =  "Not Found"; break;
 	}
@@ -453,25 +459,51 @@ void printSymbolTables(SymbolTable *symbolTable){
 	}
 }
 
+char *findLocation(SymbolTable *symbolTable, int offset){
+	SymbolListItem *current = symbolTable->list->head;
+	int count = 0;
+	while(count < symbolTable->list->size) {
+		if(current->offset == offset) return current->item->label;
+		current = current->next;
+		count++;
+	}
+	return NULL;
+}
+
+void printLocation(Location * loc){
+	char *temp = findLocation(loc->region->symbTable, loc->offset);
+		if(strstr(temp, "_Const_") != NULL){
+			printf("Const:%s", loc->val);
+		} else {
+			printf("%s:%d", loc->region->label, loc->offset);
+		}
+}
+
 void printCode(TreeNode *node){
 	IntrCode *current = node->intCode;
 	while(current != NULL){
 		switch(current->elem->desc){
-			case C_LABEL :
+			case C_FUNC :
 				printf("%s:\n", current->elem->label);
 				break;
-			case C_RET :
-				printf("%16s%8s:%d\n", humanreadable(current->elem->desc), 
-											current->elem->loc[0]->region->label, 
-											current->elem->loc[0]->offset);
+			case C_LABEL :
+				printf("%16s:\n", current->elem->label);
 				break;
 			case C_PARAM :
+			case C_RET :
+				printf("%32s    ", humanreadable(current->elem->desc));
+				printLocation(current->elem->loc[0]);
+				printf("\n");
+				break;
 			case C_ASN :
-				printf("%16s%8s:%d\n", humanreadable(current->elem->desc), 
-											current->elem->loc[0]->region->label, 
-											current->elem->loc[0]->offset,
-											current->elem->loc[1]->region->label, 
-											current->elem->loc[1]->offset);
+			case C_NOT :
+			case C_ADD1 :
+			case C_SUB1 :
+				printf("%32s    ", humanreadable(current->elem->desc));
+				printLocation(current->elem->loc[0]);
+				printf(", ");
+				printLocation(current->elem->loc[1]);
+				printf("\n");
 				break;
 			case C_MULT :
 			case C_DIV :
@@ -486,22 +518,21 @@ void printCode(TreeNode *node){
 			case C_NOTEQ :
 			case C_AND :
 			case C_EXOR :
-				printf("%16s%8s:%d, %s:%d, %s:%d\n", humanreadable(current->elem->desc), 
-											current->elem->loc[0]->region->label, 
-											current->elem->loc[0]->offset,
-											current->elem->loc[1]->region->label, 
-											current->elem->loc[1]->offset,
-											current->elem->loc[2]->region->label, 
-											current->elem->loc[2]->offset);
+				printf("%32s    ", humanreadable(current->elem->desc)); 
+				printLocation(current->elem->loc[0]);
+				printf(", ");
+				printLocation(current->elem->loc[1]);
+				printf(", ");
+				printLocation(current->elem->loc[2]);
+				printf("\n");
 				break;
 			case C_BR :
-				printf("%16s%8s, %s:%d\n", humanreadable(current->elem->desc), 
-											current->elem->loc[0]->elem->label,
-											current->elem->loc[1]->region->label, 
-											current->elem->loc[1]->offset);
+				printf("%32s%11s, ", humanreadable(current->elem->desc), current->elem->loc[0]->elem->label);
+				printLocation(current->elem->loc[1]);
+				printf("\n");
 				break;
 			case C_GOTO :
-				printf("%16s%8s\n", humanreadable(current->elem->desc), 
+				printf("%32s%11s\n", humanreadable(current->elem->desc), 
 											current->elem->loc[0]->elem->label);
 
 				break;
@@ -1785,7 +1816,7 @@ void buildTypes(TreeNode *node){
 			case SELECTION_STATEMENTr1 :
 				if(SHOW_TREES) printf("selection_statement1\n");
 				node->type = getType(STATEMENT_TYPE);
-				if(node->u.n.child[1]->type->base_type != BOOL_TYPE || node->u.n.child[1]->type->base_type != INT_TYPE){
+				if(node->u.n.child[1]->type->base_type != BOOL_TYPE && node->u.n.child[1]->type->base_type != INT_TYPE){
 					exitStatus = 3;
 					getErrorMessage(ER_BOOL_EXPECTED);
 					yerror(NULL, node->lineno);
@@ -1797,7 +1828,7 @@ void buildTypes(TreeNode *node){
 			case SELECTION_STATEMENTr2 :
 				if(SHOW_TREES) printf("selection_statement2\n");
 				node->type = getType(STATEMENT_TYPE);
-				if(node->u.n.child[1]->type->base_type != BOOL_TYPE || node->u.n.child[1]->type->base_type != INT_TYPE){
+				if(node->u.n.child[1]->type->base_type != BOOL_TYPE && node->u.n.child[1]->type->base_type != INT_TYPE){
 					exitStatus = 3;
 					getErrorMessage(ER_BOOL_EXPECTED);
 					yerror(NULL, node->lineno);
@@ -2541,8 +2572,8 @@ void buildTypes(TreeNode *node){
 				if(SHOW_TREES) printf("function definition4\n");
 				node->type = node->u.n.child[1]->type;
 				node->type->u.func.retType = node->u.n.child[0]->type;
-				break;
-				
+				break;			
+						
 			case FUNCTION_BODYr1 :
 				if(SHOW_TREES) printf("function body1\n");
 				node->type = getType(FUNC_TYPE);
@@ -3077,6 +3108,7 @@ if(SHOW_TREES)printf("%s %d\n", tempSymb->label, tempSymb->symbTable->offset);
 	} else {
 		tempSymb = getSymbolFromTable(tempSymb->symbTable, tempSymb);
 	}
+	tempSymb->val = source->label;
 	return tempSymb;
 }
 
@@ -3440,6 +3472,7 @@ void makeSymbolTables(TreeNode *node){
 	NType *tempType;
 	int p;
 	int mode = M_SYMBOLS;
+	node->type->val = node->type->label;
 	if(node != NULL){
 		//recursion
 		int n;
@@ -3615,21 +3648,15 @@ IntrCode *makeLabel(){
 
 CodeElem *createCodeElement(){
 	CodeElem *elem;
-	printf("\n1");
 	if((elem = (CodeElem *)calloc(1, sizeof(CodeElem))) == NULL) memoryError();
-	printf("2");
 	if((elem->loc = realloc(elem->loc, 3 * sizeof(Location))) == NULL) memoryError();
-	printf("3");
 	return elem;
 }
 
 IntrCode *createIntrCode(){
 	IntrCode *intrCode;
-	printf("\nA");
 	if((intrCode = (IntrCode *)calloc(1, sizeof(IntrCode))) == NULL) memoryError();
-	printf("B");
 	CodeElem *elem = createCodeElement();
-	printf("C");
 	intrCode->elem = elem;
 	return intrCode;
 }
@@ -3642,6 +3669,7 @@ Location *makeLocation(NType *source){
 	if((location = (Location *)calloc(1, sizeof(Location))) == NULL) memoryError();
 	location->region = source->symbTable->scope;
 	location->offset = source->offset;
+	location->val = source->val;
 	return location;
 }
 
@@ -3663,22 +3691,25 @@ IntrCode *makePairedExpression(int code, NType *child1, NType *child2, int mode)
 IntrCode *concatCode(IntrCode *front, IntrCode *back){
 	IntrCode *icode;
 	IntrCode *current;
-	IntrCode *previous;
+	IntrCode *tail;
+	IntrCode *returnCode;
+	
 	current = front;
-	if((previous = (IntrCode *)calloc(1, sizeof(IntrCode))) == NULL) memoryError();
+	if((returnCode = (IntrCode *)calloc(1, sizeof(IntrCode))) == NULL) memoryError();
 	while(current != NULL){
-printf("%s\n", humanreadable(current->elem->desc));
 		if((icode = (IntrCode *)calloc(1, sizeof(IntrCode))) == NULL) memoryError();
 		icode->elem = current->elem;
-		if(previous != NULL) previous->next = icode;
-		else previous = icode;
-		previous = previous->next;
+		if(returnCode->elem == NULL) {
+			returnCode = icode;
+			tail = returnCode;
+		} else {
+			tail->next = icode;
+			tail = icode;
+		}
 		current = current->next;
 	}
-printf("B");
-	previous->next = back;
-printf("C\n");
-	return front;
+	tail->next = back;
+	return returnCode;
 }
 
 
@@ -3703,96 +3734,6 @@ void intermediateCodeGeneration(TreeNode *node){
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				node->intCode = node->u.n.child[0]->intCode;
 				break;
-			
-		/*	case TYPEDEF_NAMEr1 :
-			case NAMESPACE_NAMEr1 :
-			case ORIGINAL_NAMESPACE_NAMEr1 :
-			case CLASS_NAMEr1 :
-			case ENUM_NAMEr1 :
-				break;
-			case IDENTIFIERr1 :
-				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
-				icode = createIntrCode();
-				icode->elem->desc = C_IDENT;
-				node->intCode->elem->label = "IDENT";
-				node->intCode->elem->loc[0] = makeLocation(node->u.n.child[0]->type);
-				node->intCode->elem->loc[0]->elem = node->intCode->elem;
-				node->place = node->intCode->elem->loc[0];
-				node->type->label = "IDENT";
-				printCode(node);
-				break;
-				break;
-				
-			case LITERALr1 :	
-			case LITERALr2 :	
-			case LITERALr3 :	
-			case LITERALr4 :	
-			case LITERALr5 :
-				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
-				if(node->u.n.child[0] != NULL) node->intCode = node->u.n.child[0]->intCode;
-				break;
-			
-			case INTEGER_LITERALr1 :
-				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
-				icode = createIntrCode();
-				temp = (NType *)createTempSymbol(node->type, T_TEMP, mode);
-				icode->elem->desc = C_INT_LIT;
-				node->intCode->elem->label = "INT_LIT";
-				node->intCode->elem->loc[0] = makeLocation(temp);
-				node->intCode->elem->loc[0]->elem = node->intCode->elem;
-				node->place = node->intCode->elem->loc[0];
-				node->type->label = "INT_LIT";
-				printCode(node);
-				break;
-			case CHARACTER_LITERALr1 :
-				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
-				icode = createIntrCode();
-				temp = (NType *)createTempSymbol(node->type, T_TEMP, mode);
-				icode->elem->desc = C_CHAR_LIT;
-				node->intCode->elem->label = "CHAR_LIT";
-				node->intCode->elem->loc[0] = makeLocation(temp);
-				node->intCode->elem->loc[0]->elem = node->intCode->elem;
-				node->place = node->intCode->elem->loc[0];
-				node->type->label = "CHAR_LIT";
-				printCode(node);
-				break;
-			case FLOATING_LITERALr1 :
-				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
-				icode = createIntrCode();
-				temp = (NType *)createTempSymbol(node->type, T_TEMP, mode);
-				icode->elem->desc = C_FLT_LIT;
-				node->intCode->elem->label = "FLT_LIT";
-				node->intCode->elem->loc[0] = makeLocation(temp);
-				node->intCode->elem->loc[0]->elem = node->intCode->elem;
-				node->place = node->intCode->elem->loc[0];
-				node->type->label = "FLT_LIT";
-				printCode(node);
-				break;
-			case STRING_LITERALr1 :
-				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
-				icode = createIntrCode();
-				temp = (NType *)createTempSymbol(node->type, T_TEMP, mode);
-				icode->elem->desc = C_STR_LIT;
-				node->intCode->elem->label = "STR_LIT";
-				node->intCode->elem->loc[0] = makeLocation(temp);
-				node->intCode->elem->loc[0]->elem = node->intCode->elem;
-				node->place = node->intCode->elem->loc[0];
-				node->type->label = "STR_LIT";
-				printCode(node);
-				break;
-			case BOOLEAN_LITERALr1 :
-			case BOOLEAN_LITERALr2 :
-				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
-				icode = createIntrCode();
-				temp = (NType *)createTempSymbol(node->type, T_TEMP, mode);
-				icode->elem->desc = C_BOOL_LIT;
-				node->intCode->elem->label = "BOOL_LIT";
-				node->intCode->elem->loc[0] = makeLocation(temp);
-				node->intCode->elem->loc[0]->elem = node->intCode->elem;
-				node->place = node->intCode->elem->loc[0];
-				node->type->label = "BOOL_LIT";
-				printCode(node);
-				break;*/
 				
 			case TYPEDEF_NAMEr1 :
 			case NAMESPACE_NAMEr1 :
@@ -3800,18 +3741,48 @@ void intermediateCodeGeneration(TreeNode *node){
 			case CLASS_NAMEr1 :
 			case ENUM_NAMEr1 :
 			case IDENTIFIERr1 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				break;
+				
 			case LITERALr1 :	
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				icode = (IntrCode *)createIntrCode();
+				icode->elem->desc = C_ASN_INT;
+				icode->elem->label = node->type->label;
+				temp = (NType *)getSymbolFromTable(node->u.n.child[0]->type->symbTable, node->u.n.child[0]->type);
+				if((location = (Location *)calloc(1, sizeof(Location))) == NULL) memoryError();
+				location->region = temp->symbTable->scope;
+				location->offset = temp->offset;
+				location->elem = icode->elem;
+				icode->elem->loc[0] = location;
+				printCode(node);
+				break;
 			case LITERALr2 :	
 			case LITERALr3 :	
 			case LITERALr4 :	
 			case LITERALr5 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				/*
+				icode = (IntrCode *)createIntrCode();
+					icode->elem->desc = C_ASN_INT;
+					icode->elem->label = node->type->label;
+					temp = (NType *)getSymbolFromTable(node->u.n.child[1]->type->symbTable, node->u.n.child[1]->type);
+					if((location = (Location *)calloc(1, sizeof(Location))) == NULL) memoryError();
+					location->region = temp->symbTable->scope;
+					location->offset = temp->offset;
+					location->elem = icode->elem;
+					temp = (NType *)getSymbolFromTable(node->u.n.child[0]->type->symbTable, node->u.n.child[0]->type);
+					icode->elem->loc[0] = makeLocation(temp);
+					icode->elem->loc[1] = location;
+				*/
+				break;
 			case INTEGER_LITERALr1 :
 			case CHARACTER_LITERALr1 :
 			case FLOATING_LITERALr1 :
 			case STRING_LITERALr1 :
 			case BOOLEAN_LITERALr1 :
 			case BOOLEAN_LITERALr2 :
-	
 			case PRIMARY_EXPRESSIONr1 :
 			case PRIMARY_EXPRESSIONr2 :
 			case PRIMARY_EXPRESSIONr3 :
@@ -3850,8 +3821,33 @@ nested_name_specifier:
 	| namespace_name COLONCOLON nested_name_specifier		{ $$ = (TreeNode *)alacnary(NESTED_NAME_SPECIFIERr2, 3, $1, $2, $3); }
 	| class_name COLONCOLON											{ $$ = (TreeNode *)alacnary(NESTED_NAME_SPECIFIERr3, 2, $1, $2); }
 	| namespace_name COLONCOLON									{ $$ = (TreeNode *)alacnary(NESTED_NAME_SPECIFIERr4, 2, $1, $2); }
-	;
-
+	;*/
+			case POSTFIX_EXPRESSIONr1 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				if(SHOW_CODE)printCode(node);
+				break;
+				
+			case POSTFIX_EXPRESSIONr12 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0]->intCode != NULL)node->intCode = node->u.n.child[0]->intCode;
+				icode = (IntrCode *)createIntrCode();
+				icode->elem->label = "Add1";
+				icode->elem->desc = C_ADD1;
+				if(node->u.n.child[0]->intCode == NULL){
+					temp = getSymbolFromTable(node->type->symbTable, node->type);
+					icode->elem->loc[0] = makeLocation(temp);
+					icode->elem->loc[1] = makeLocation(temp);
+				} else {
+					icode->elem->loc[0] = node->u.n.child[0]->intCode->elem->loc[0];
+					icode->elem->loc[1] = node->u.n.child[0]->intCode->elem->loc[0];
+				}
+				if(node->intCode != NULL) node->intCode = concatCode(node->intCode, icode);
+				else node->intCode = icode;
+				if(SHOW_CODE)printCode(node);
+				break;
+/*
+	
 postfix_expression:
 	primary_expression												{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr1, 1, $1); }
 	| postfix_expression '[' expression ']'					{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr2, 2, $1, $3); }
@@ -3894,12 +3890,27 @@ postfix_expression:
 	| CONST_CAST '<' type_id '>' '(' expression ')'			{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr17, 3, $1, $3, $6); }
 	| TYPEID '(' expression ')'									{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr18, 2, $1, $3); }
 	| TYPEID '(' type_id ')'										{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr19, 2, $1, $3); }
-	;
+	;*/
+	
+			case EXPRESSION_LISTr1 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				if(SHOW_CODE)printCode(node);
+				break;
+			/*
+	
 
 expression_list:
 	assignment_expression											{ $$ = (TreeNode *)alacnary(EXPRESSION_LISTr1, 1, $1); }
 	| expression_list ',' assignment_expression				{ $$ = (TreeNode *)alacnary(EXPRESSION_LISTr2, 2, $1, $3); }
-	;
+	;*/
+	
+			case UNARY_EXPRESSIONr1 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				if(SHOW_CODE)printCode(node);
+				break;
+	/*
 
 unary_expression:
 	postfix_expression												{ $$ = (TreeNode *)alacnary(UNARY_EXPRESSIONr1, 1, $1); }
@@ -3995,17 +4006,17 @@ pm_expression:
 			case MULTIPLICATIVE_EXPRESSIONr2 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				node->intCode = makePairedExpression(C_MULT, node->u.n.child[0]->type, node->u.n.child[1]->type, mode);
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 			case MULTIPLICATIVE_EXPRESSIONr3 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				node->intCode = makePairedExpression(C_DIV, node->u.n.child[0]->type, node->u.n.child[1]->type, mode);
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 			case MULTIPLICATIVE_EXPRESSIONr4 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				node->intCode = makePairedExpression(C_MOD, node->u.n.child[0]->type, node->u.n.child[1]->type, mode);
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 				
 			case ADDITIVE_EXPRESSIONr1 :
@@ -4015,12 +4026,12 @@ pm_expression:
 			case ADDITIVE_EXPRESSIONr2 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				node->intCode = makePairedExpression(C_ADD, node->u.n.child[0]->type, node->u.n.child[1]->type, mode);
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 			case ADDITIVE_EXPRESSIONr3 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				node->intCode = makePairedExpression(C_SUB, node->u.n.child[0]->type, node->u.n.child[1]->type, mode);
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 				
 			case SHIFT_EXPRESSIONr1 :
@@ -4045,7 +4056,7 @@ shift_expression:
 			case RELATIONAL_EXPRESSIONr1 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 			case RELATIONAL_EXPRESSIONr2 :
 				node->intCode = (IntrCode *)createIntrCode();
@@ -4058,7 +4069,7 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[1]->type);
 				node->type->label = "<";
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 			case RELATIONAL_EXPRESSIONr3 :
 				node->intCode = (IntrCode *)createIntrCode();
@@ -4071,7 +4082,7 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[1]->type);
 				node->type->label = ">";
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 			case RELATIONAL_EXPRESSIONr4 :	
 				node->intCode = (IntrCode *)createIntrCode();
@@ -4084,7 +4095,7 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[2]->type);
 				node->type->label = "<=";
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 			case RELATIONAL_EXPRESSIONr5 :
 				node->intCode = (IntrCode *)createIntrCode();
@@ -4097,13 +4108,13 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[2]->type);
 				node->type->label = ">=";
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 				
 			case EQUALITY_EXPRESSIONr1 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 			case EQUALITY_EXPRESSIONr2 :
 				node->intCode = (IntrCode *)createIntrCode();
@@ -4116,7 +4127,7 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[2]->type);
 				node->type->label = "==";
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				if(SHOW_MEMMORY)printf("%s:%d\n", node->place->region->label, node->place->offset);
 				break;
 			case EQUALITY_EXPRESSIONr3 :
@@ -4130,13 +4141,13 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[2]->type);
 				node->type->label = "!=";
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 				
 			case AND_EXPRESSIONr1 :
 				printf("%s\n", humanreadable(node->u.n.rule));
 				if(SHOW_MEMMORY)if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 			case AND_EXPRESSIONr2 :
 				node->intCode = (IntrCode *)createIntrCode();
@@ -4149,13 +4160,13 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[1]->type);
 				node->type->label = "&";
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 				
 			case EXCLUSIVE_OR_EXPRESSIONr1 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 			case EXCLUSIVE_OR_EXPRESSIONr2 :
 				node->intCode = (IntrCode *)createIntrCode();
@@ -4174,7 +4185,7 @@ shift_expression:
 			case INCLUSIVE_OR_EXPRESSIONr1 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 			case INCLUSIVE_OR_EXPRESSIONr2 :
 				node->intCode = (IntrCode *)createIntrCode();
@@ -4187,13 +4198,13 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[1]->type);
 				node->type->label = "|";
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 				
 			case LOGICAL_AND_EXPRESSIONr1 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 			case LOGICAL_AND_EXPRESSIONr2 :
 				node->intCode = (IntrCode *)createIntrCode();
@@ -4206,12 +4217,12 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[2]->type);
 				node->type->label = "&&";
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 			case LOGICAL_OR_EXPRESSIONr1 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 			case LOGICAL_OR_EXPRESSIONr2 :
 				node->intCode = (IntrCode *)createIntrCode();
@@ -4224,25 +4235,25 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[2]->type);
 				node->type->label = "||";
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 			
 			case CONDITIONAL_EXPRESSIONr1 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 
 			case ASSIGNMENT_EXPRESSIONr1 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 			case ASSIGNMENT_EXPRESSIONr2 :
 			case ASSIGNMENT_EXPRESSIONr3 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 	
 	/*
@@ -4269,7 +4280,7 @@ assignment_operator:
 			case EXPRESSIONr1 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 /*
 
@@ -4284,301 +4295,434 @@ constant_expression:
 
 /*----------------------------------------------------------------------
  * Statements.
- *----------------------------------------------------------------------
+ *----------------------------------------------------------------------*/
 
-statement:
-	labeled_statement													{ $$ = (TreeNode *)alacnary(STATEMENTr1, 1, $1); }
-	| expression_statement											{ $$ = (TreeNode *)alacnary(STATEMENTr2, 1, $1); }
-	| compound_statement												{ $$ = (TreeNode *)alacnary(STATEMENTr3, 1, $1); }
-	| selection_statement											{ $$ = (TreeNode *)alacnary(STATEMENTr4, 1, $1); }
-	| iteration_statement											{ $$ = (TreeNode *)alacnary(STATEMENTr5, 1, $1); }
-	| jump_statement													{ $$ = (TreeNode *)alacnary(STATEMENTr6, 1, $1); }
-	| declaration_statement											{ $$ = (TreeNode *)alacnary(STATEMENTr7, 1, $1); }
-	| try_block															{ $$ = (TreeNode *)alacnary(STATEMENTr8, 1, $1); }
-	;
-
+			case STATEMENTr1 :
+			case STATEMENTr2 :
+			case STATEMENTr3 :
+			case STATEMENTr4 :
+			case STATEMENTr5 :
+			case STATEMENTr6 :
+			case STATEMENTr7 :
+			case STATEMENTr8 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				if(SHOW_CODE)printCode(node);
+				break;
+			
+ /*
 labeled_statement:
 	identifier ':' statement										{ $$ = (TreeNode *)alacnary(LABELED_STATEMENTr1, 2, $1, $3); }
 	| CASE constant_expression ':' statement					{ $$ = (TreeNode *)alacnary(LABELED_STATEMENTr2, 3, $1, $2, $4); }
 	| DEFAULT ':' statement											{ $$ = (TreeNode *)alacnary(LABELED_STATEMENTr3, 2, $1, $3); }
 	;
-
-expression_statement:
-	expression_opt ';'												{ $$ = (TreeNode *)alacnary(EXPRESSION_STATEMENTr1, 1, $1); }
-	;
-
-compound_statement:
-	'{' statement_seq_opt '}'										{ $$ = (TreeNode *)alacnary(COMPOUND_STATEMENTr1, 1, $2); }
-	;
-
-statement_seq:
-	statement															{ $$ = (TreeNode *)alacnary(STATEMENT_SEQr1, 1, $1); }
-	| statement_seq statement										{ $$ = (TreeNode *)alacnary(STATEMENT_SEQr2, 2, $1, $2); }
-	;*/
-	
-			case SELECTION_STATEMENTr1 :
+*/
+			case EXPRESSION_STATEMENTr1 :
+			case COMPOUND_STATEMENTr1 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
-				label1 = makeLabel();
-				icode = createIntrCode();
-				/**********************************/
-				printCode(node);
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				if(SHOW_CODE)printCode(node);
+				break;
+
+			case STATEMENT_SEQr1 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL) node->intCode = node->u.n.child[0]->intCode;
+				if(SHOW_CODE)printCode(node);
+				break;
+			case STATEMENT_SEQr2 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0]->intCode != NULL) {
+					node->intCode = node->u.n.child[0]->intCode;
+					if(node->u.n.child[1]->intCode != NULL)node->intCode = concatCode(node->intCode, node->u.n.child[1]->intCode);
+				}
+				else if(node->u.n.child[1]->intCode != NULL) node->intCode = node->u.n.child[1]->intCode;
+				if(SHOW_CODE)printCode(node);
 				break;
 				
-/* NEED TO UPDATE ALL MY LOCATION STRUCT ASSIGNMENTS TO INCLUDE CodeElem */
-/*
- *				BR Label1 !boolTestResult
- *					code
- *				GOTO Label2
- *	Label1
- *					elseCode
- *	Label2
- */
-			case SELECTION_STATEMENTr2 :
+			case SELECTION_STATEMENTr1 :
+
+				/*
+				 *				test
+				 *				NOT test
+				 *				BR Label1 !boolTestResult
+				 *					code
+				 *	Label1
+				 */
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				node->intCode = node->u.n.child[1]->intCode;
 				//make labels
 				label1 = makeLabel();
-				label2 = makeLabel();
+				//make NOT
+				icode = createIntrCode();		
+				icode->elem->desc = C_NOT;
+				icode->elem->loc[0] = node->u.n.child[1]->intCode->elem->loc[0];
+				icode->elem->loc[1] = node->u.n.child[1]->intCode->elem->loc[0];
+				node->intCode = concatCode(node->intCode, icode);
 				//make BR 
 				icode = createIntrCode();		
 				icode->elem->desc = C_BR;
 				icode->elem->label = "Branch";
-			if(SHOW_MEMMORY)printf("%d %s\n", icode->elem->desc, humanreadable(icode->elem->desc));
-			if(SHOW_MEMMORY)printf("%s:%d\n", label1->elem->loc[0]->region->label, label1->elem->loc[0]->offset);
 			   icode->elem->loc[0] = label1->elem->loc[0];
-				icode->elem->loc[0]->elem = icode->elem;
-			if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.child[1]->type->base_type));
-			if(SHOW_MEMMORY)printf("%s\n", node->u.n.child[1]->type->label);
-			if(SHOW_MEMMORY)printf("%d\n", node->u.n.child[1]->intCode->elem->loc[0]->offset);
-			if(SHOW_MEMMORY)printCode(node->u.n.child[1]);	
+				icode->elem->loc[0]->elem = label1->elem;
 				icode->elem->loc[1] = node->u.n.child[1]->intCode->elem->loc[0];
-				node->intCode = concatCode(node->u.n.child[1]->intCode, icode);
+				node->intCode = concatCode(node->intCode, icode);
 					/* child[1]|BR|..*/
-			printf("b");
-				node->intCode = concatCode(node->u.n.child[1]->intCode, node->u.n.child[2]->intCode);
-				/*current = node->intCode;
-				while(current->next != NULL) current = current->next;
-				current->next = node->u.n.child[2]->intCode;*/
+				node->intCode = concatCode(node->intCode, node->u.n.child[2]->intCode);
 					/* child[1]|BR|child[2]|..*/
-			printf("c");
+				
+				current = node->intCode;
+				while(current->next != NULL) current = current->next;
+				current->next = label1;	
+					/* child[1]|BR|child[2]|Label1*/
+				if(SHOW_CODE)printCode(node);
+				break;
+			case SELECTION_STATEMENTr2 :
+				/*
+				 *				test
+				 *				NOT test
+				 *				BR Label1 test
+				 *					code
+				 *				GOTO Label2
+				 *	Label1
+				 *					elseCode
+				 *	Label2
+				 */
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				node->intCode = node->u.n.child[1]->intCode;
+				//make labels
+				label1 = makeLabel();
+				label2 = makeLabel();
+				//make NOT
+				icode = createIntrCode();		
+				icode->elem->desc = C_NOT;
+				icode->elem->loc[0] = node->u.n.child[1]->intCode->elem->loc[0];
+				icode->elem->loc[1] = node->u.n.child[1]->intCode->elem->loc[0];
+				node->intCode = concatCode(node->intCode, icode);
+				//make BR 
+				icode = createIntrCode();		
+				icode->elem->desc = C_BR;
+				icode->elem->label = "Branch";
+			   icode->elem->loc[0] = label1->elem->loc[0];
+				icode->elem->loc[0]->elem = label1->elem;
+				icode->elem->loc[1] = node->u.n.child[1]->intCode->elem->loc[0];
+				node->intCode = concatCode(node->intCode, icode);
+					/* child[1]|BR|..*/
+				node->intCode = concatCode(node->intCode, node->u.n.child[2]->intCode);
+					/* child[1]|BR|child[2]|..*/
 				//make GOTO
 				icode = createIntrCode();		
 				icode->elem->desc = C_GOTO;
 				icode->elem->label = "Goto";
 				icode->elem->loc[0] = label2->elem->loc[0];
-				icode->elem->loc[0]->elem = icode->elem;
-			printf("d");
-			
-			
+				icode->elem->loc[0]->elem = label2->elem;
 				node->intCode = concatCode(node->intCode, icode);
 					/* child[1]|BR|child[2]|GOTO|..*/
-			printf("e");
+				current = node->intCode;
 				while(current->next != NULL) current = current->next;
-				current->next = label1;	;
+				current->next = label1;	
 					/* child[1]|BR|child[2]|GOTO|Label1|..*/
-			printf("f");
 				current = current->next;
 				current->next = node->u.n.child[4]->intCode;
 					/* child[1]|BR|child[2]|GOTO|Label1|child[4]..*/
-			printf("g");
 				node->intCode = concatCode(node->intCode, label2);
 					/* child[1]|BR|child[2]|GOTO|Label1|child[4]|Label2*/
-			printf("h");
 				current->next = label2;
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
+				
+			case SELECTION_STATEMENTr3 :
+				/*
+				 *	???????????
+				 */
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				
+				if(SHOW_CODE)printCode(node);
+				break;
+			
 /*
 selection_statement:
-	IF '(' condition ')' statement								{ $$ = (TreeNode *)alacnary(SELECTION_STATEMENTr1, 3, $1, $3, $5); }
-	| IF '(' condition ')' statement ELSE statement			{ $$ = (TreeNode *)alacnary(SELECTION_STATEMENTr2, 5, $1, $3, $5, $6, $7); }
+
 	| SWITCH '(' condition ')' statement						{ $$ = (TreeNode *)alacnary(SELECTION_STATEMENTr3, 3, $1, $3, $5); }
 	;*/
 			case CONDITIONr1 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 /*
 condition:
 	expression															{ $$ = (TreeNode *)alacnary(CONDITIONr1, 1, $1); }
 	| type_specifier_seq declarator '=' assignment_expression
 																			{ $$ = (TreeNode *)alacnary(CONDITIONr2, 3, $1, $2, $4); }
-	;
-
+	;*/
+			case ITERATION_STATEMENTr1 :
+				/*
+				 *				GOTO Label2
+				 *	Label1
+				 *				code
+				 * Label2
+				 *				test
+				 *				BR Label 1
+				 */
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				//make labels
+				label1 = makeLabel();
+				label2 = makeLabel();
+				//make GOTO
+				icode = createIntrCode();		
+				icode->elem->desc = C_GOTO;
+				icode->elem->label = "Goto";
+				icode->elem->loc[0] = label2->elem->loc[0];
+				icode->elem->loc[0]->elem = label2->elem;
+				node->intCode = icode;
+					/* GOTO|..*/
+				node->intCode = concatCode(node->intCode, label1);
+					/* GOTO|Label1|..*/
+				node->intCode = concatCode(node->intCode, node->u.n.child[2]->intCode);
+					/* GOTO|Label1|child[2]..*/
+				node->intCode = concatCode(node->intCode, label2);
+					/* Label1|child[2]|Label2|..*/
+				node->intCode = concatCode(node->intCode, node->u.n.child[1]->intCode);
+					/* Label1|child[2]|Label2|child[1]..*/
+				//temporary symbol	
+				temp = node->u.n.child[1]->type;
+				icode = createIntrCode();		
+				icode->elem->desc = C_BR;
+				icode->elem->label = "Branch";
+			   icode->elem->loc[0] = makeLocation(temp);
+				icode->elem->loc[0]->elem = label1->elem;
+				icode->elem->loc[1] = node->u.n.child[1]->intCode->elem->loc[0];
+				node->intCode = concatCode(node->intCode, icode);
+					/* GOTO|Label1|child[2]|Label2|child[1]|BR| */
+				if(SHOW_CODE)printCode(node);
+				break;
+			case ITERATION_STATEMENTr2 :
+				/*
+				 *	Label1
+				 *				code (child1)
+				 * Label2
+				 *				test (child3)
+				 *				BR Label 1
+				 */
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				//make labels
+				label1 = makeLabel();
+				label2 = makeLabel();
+	
+				node->intCode = label1;
+					/* Label1|..*/
+				node->intCode = concatCode(node->intCode, node->u.n.child[1]->intCode);
+					/* Label1|child[1]..*/
+				node->intCode = concatCode(node->intCode, label2);
+					/* Label1|child[1]|Label2|..*/
+				node->intCode = concatCode(node->intCode, node->u.n.child[3]->intCode);
+					/* Label1|child[1]|Label2|child[3]..*/
+				//temporary symbol	
+				temp = node->u.n.child[3]->type;
+					/* Label1|child[1]|Label2|child[3]|..*/
+				icode = createIntrCode();		
+				icode->elem->desc = C_BR;
+				icode->elem->label = "Branch";
+			   icode->elem->loc[0] = makeLocation(temp);
+				icode->elem->loc[0]->elem = label1->elem;
+				icode->elem->loc[1] = node->u.n.child[3]->intCode->elem->loc[0];
+				node->intCode = concatCode(node->intCode, icode);
+					/* Label1|child[1]|Label2|child[3]|BR| */
+				if(SHOW_CODE)printCode(node);
+				break;
+			case ITERATION_STATEMENTr3 :
+				/*
+				 *				child[1]
+				 *				GOTO Label2
+				 * Label1
+				 *				child[3]
+				 *				code (child4)
+				 * Label2
+				 *				test (child2)
+				 *				BR Label 1
+				 */
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				//make labels
+				label1 = makeLabel();
+				label2 = makeLabel();
+				node->intCode = node->u.n.child[1]->intCode;
+					/* child[1] */
+				//make GOTO
+				icode = createIntrCode();		
+				icode->elem->desc = C_GOTO;
+				icode->elem->label = "Goto";
+				icode->elem->loc[0] = label2->elem->loc[0];
+				icode->elem->loc[0]->elem = label2->elem;
+				node->intCode = concatCode(node->intCode, icode);
+					/* child[1]|GOTO */
+				node->intCode = concatCode(node->intCode, label1);
+					/* child[1]|GOTO|Label1 */
+				node->intCode = concatCode(node->intCode, node->u.n.child[3]->intCode);
+					/* child[1]|GOTO|Label1|child[3] */
+				node->intCode = concatCode(node->intCode, node->u.n.child[4]->intCode);
+					/* child[1]|GOTO|Label1|child[3]|child[4] */
+				node->intCode = concatCode(node->intCode, label2);
+					/* child[1]|GOTO|Label1|child[3]|child[4]|Label2 */
+				node->intCode = concatCode(node->intCode, node->u.n.child[2]->intCode);
+					/* child[1]|GOTO|Label1|child[3]|child[4]|label2|child[2] */
+				
+				temp = node->u.n.child[2]->type;
+				//temp = (NType *)createTempSymbol(node->u.n.child[2]->type, T_TEMP, mode);
+				icode = createIntrCode();		
+				icode->elem->desc = C_BR;
+				icode->elem->label = "Branch";
+			   icode->elem->loc[0] = makeLocation(temp);
+				icode->elem->loc[0]->elem = label1->elem;
+				icode->elem->loc[1] = node->u.n.child[2]->intCode->elem->loc[0];
+				node->intCode = concatCode(node->intCode, icode);
+					/* child[1]|GOTO|Label1|child[3]|child[4]|label2|child[2]|BR */
+				if(SHOW_CODE)printCode(node);
+				break;
+/*
+			
 iteration_statement:
-	WHILE '(' condition ')' statement							{ $$ = (TreeNode *)alacnary(ITERATION_STATEMENTr1, 3, $1, $3, $5); }
-	| DO statement WHILE '(' expression ')' ';'				{ $$ = (TreeNode *)alacnary(ITERATION_STATEMENTr2, 4, $1, $2, $3, $5); }
 	| FOR '(' for_init_statement condition_opt ';' expression_opt ')' statement
 																			{ $$ = (TreeNode *)alacnary(ITERATION_STATEMENTr3, 5, $1, $3, $4, $6, $8); }
-	;
-
-for_init_statement:
-	expression_statement												{ $$ = (TreeNode *)alacnary(FOR_INIT_STATEMENTr1, 1, $1); }
-	| simple_declaration												{ $$ = (TreeNode *)alacnary(FOR_INIT_STATEMENTr2, 1, $1); }
 	;*/
+	
+			case FOR_INIT_STATEMENTr1 :
+			case FOR_INIT_STATEMENTr2 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				if(SHOW_CODE)printCode(node);
+				break;
 	
 			case JUMP_STATEMENTr3 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				node->intCode = (IntrCode *)createIntrCode();
-			printf("0");
 				node->intCode->elem->desc = C_RET;
 				node->intCode->elem->label = "RETURN";
-			printf("a");
 				temp = (NType *)getSymbolFromTable(node->u.n.child[1]->type->symbTable, node->u.n.child[1]->type);
-			printf("b");
-				/*printf("%s %s %s:%d\n", humanreadable(temp->base_type), 
-											temp->label,
-											temp->symbTable->scope->label,
-											temp->offset);*/
-			printf("c");
-				//node->intCode->elem->loc[0] = makeLocation(node->intCode->elem->loc[0]);
-				node->intCode->elem->loc[0]->region = temp->symbTable->scope;
-			printf("d");
-				node->intCode->elem->loc[0]->offset = temp->offset;
-			printf("e");
-				node->intCode->elem->loc[0]->elem = node->intCode->elem;
-			printf("f");
+				if((location = (Location *)calloc(1, sizeof(Location))) == NULL) memoryError();
+				location->region = temp->symbTable->scope;
+				location->offset = temp->offset;
+				location->elem = node->intCode->elem;
+				node->intCode->elem->loc[0] = location;
 				node->place = node->intCode->elem->loc[0];
 				node->type->label = "RETURN";
-				printCode(node);
+				if(SHOW_CODE)printCode(node);
 				break;
 /*
-node->intCode = (IntrCode *)createIntrCode();
-				
-				node->intCode->elem->desc = C_EQ;
-				node->intCode->elem->label = "==";
-				node->intCode->elem->loc[0] = makeLocation(node->u.n.child[0]->type);
-				node->intCode->elem->loc[0]->elem = node->intCode->elem;
-				node->place = node->intCode->elem->loc[0];
-				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
-				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[2]->type);
-				node->type->label = "==";
-
 jump_statement:
 	BREAK ';'															{ $$ = (TreeNode *)alacnary(JUMP_STATEMENTr1, 1, $1); }
 	| CONTINUE ';'														{ $$ = (TreeNode *)alacnary(JUMP_STATEMENTr2, 1, $1); }
 	| RETURN expression_opt ';'									{ $$ = (TreeNode *)alacnary(JUMP_STATEMENTr3, 2, $1, $2); }
 	| GOTO identifier ';'											{ $$ = (TreeNode *)alacnary(JUMP_STATEMENTr4, 2, $1, $2); }
 	;
-
-declaration_statement:
-	block_declaration													{ $$ = (TreeNode *)alacnary(DECLARATION_STATEMENTr1, 1, $1); }
-	;
+*/
+			case DECLARATION_STATEMENTr1 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				if(SHOW_CODE)printCode(node);
+				break;
 
 /*----------------------------------------------------------------------
  * Declarations.
- *----------------------------------------------------------------------
+ *----------------------------------------------------------------------*/
+			case DECLARATION_SEQr2 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				if(node->intCode == NULL) node->intCode = node->u.n.child[1]->intCode;
+				else node->intCode = concatCode(node->intCode, node->u.n.child[1]->intCode);
+				if(SHOW_CODE)printCode(node);
+				break;
 
-declaration_seq:
-	declaration															{ $$ = (TreeNode *)alacnary(DECLARATION_SEQr1, 1, $1); }
-	| declaration_seq declaration									{ $$ = (TreeNode *)alacnary(DECLARATION_SEQr2, 2, $1, $2); }
-	;
+			case DECLARATION_SEQr1 :
+			case DECLARATIONr1 :
+			case DECLARATIONr2 :
+			case DECLARATIONr4 :
+			case DECLARATIONr5 :
+			case DECLARATIONr6 :
+			case DECLARATIONr7 :
+			case BLOCK_DECLARATIONr1 :
+			case BLOCK_DECLARATIONr2 :
+			case BLOCK_DECLARATIONr3 :
+			case BLOCK_DECLARATIONr4 :
+			case BLOCK_DECLARATIONr5 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				if(SHOW_CODE)printCode(node);
+				break;
+				
+			case SIMPLE_DECLARATIONr1 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				if(node->u.n.child[1] != NULL){
+					if(node->u.n.child[0]->intCode != NULL) concatCode(node->intCode, node->u.n.child[1]->intCode);
+					else node->intCode = node->u.n.child[1]->intCode;
+				}
+				if(SHOW_CODE)printCode(node);
+				break;
 
-declaration:
-	block_declaration													{ $$ = (TreeNode *)alacnary(DECLARATIONr1, 1, $1); }
-	| function_definition											{ $$ = (TreeNode *)alacnary(DECLARATIONr2, 1, $1); }
-	| template_declaration											{ exitStatus = 3;
-																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
-																				$$ = NULL;
-																				/*$$ = alacnary(DECLARATIONr3, 1, $1); }
-	| explicit_instantiation										{ $$ = (TreeNode *)alacnary(DECLARATIONr4, 1, $1); }
-	| explicit_specialization										{ $$ = (TreeNode *)alacnary(DECLARATIONr5, 1, $1); }
-	| linkage_specification											{ $$ = (TreeNode *)alacnary(DECLARATIONr6, 1, $1); }
-	| namespace_definition											{ $$ = (TreeNode *)alacnary(DECLARATIONr7, 1, $1); }
-	;
-
-block_declaration:
-	simple_declaration												{ $$ = (TreeNode *)alacnary(BLOCK_DECLARATIONr1, 1, $1); }
-	| asm_definition													{ $$ = (TreeNode *)alacnary(BLOCK_DECLARATIONr2, 1, $1); }
-	| namespace_alias_definition									{ $$ = (TreeNode *)alacnary(BLOCK_DECLARATIONr3, 1, $1); }
-	| using_declaration												{ $$ = (TreeNode *)alacnary(BLOCK_DECLARATIONr4, 1, $1); }
-	| using_directive													{ $$ = (TreeNode *)alacnary(BLOCK_DECLARATIONr5, 1, $1); }
-	;
-
+			case SIMPLE_DECLARATIONr2 :
+/*
 simple_declaration:
 	decl_specifier_seq init_declarator_list ';'				{ $$ = (TreeNode *)alacnary(SIMPLE_DECLARATIONr1, 2, $1, $2); }
 	|  decl_specifier_seq ';'										{ $$ = (TreeNode *)alacnary(SIMPLE_DECLARATIONr2, 1, $1); }
-	;
+*/			
 
-decl_specifier:
-	storage_class_specifier											{ $$ = (TreeNode *)alacnary(DECL_SPECIFIERr1, 1, $1); }
-	| type_specifier													{ $$ = (TreeNode *)alacnary(DECL_SPECIFIERr2, 1, $1); }
-	| function_specifier												{ $$ = (TreeNode *)alacnary(DECL_SPECIFIERr3, 1, $1); }
-	| FRIEND																{ $$ = (TreeNode *)alacnary(DECL_SPECIFIERr4, 1, $1); }
-	| TYPEDEF															{ $$ = (TreeNode *)alacnary(DECL_SPECIFIERr5, 1, $1); }
-	;
-
-decl_specifier_seq:
-	decl_specifier														{ $$ = (TreeNode *)alacnary(DECL_SPECIFIER_SEQr1, 1, $1); }
-	| decl_specifier_seq decl_specifier							{ $$ = (TreeNode *)alacnary(DECL_SPECIFIER_SEQr2, 2, $1, $2); }
-	;
-
-storage_class_specifier:
-	AUTO																	{ getErrorMessage(ER_AUTO);
-																				yyerror(NULL);
-																				$$ = NULL;
-																				/*$$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr1, 1, $1); }
-	| REGISTER															{ getErrorMessage(ER_REGISTER);
-																				yyerror(NULL);
-																				$$ = NULL;
-																				/*$$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr2, 1, $1); }
-	| STATIC																{ exitStatus = 3;
-																				getErrorMessage(ER_STATIC);
-																				yyerror(NULL);
-																				$$ = NULL;
-																				/*$$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr3, 1, $1); }
-	| EXTERN																{ exitStatus = 3;
-																				getErrorMessage(ER_EXTERN);
-																				yyerror(NULL);
-																				$$ = NULL;
-																				/*$$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr4, 1, $1); }
-	| MUTABLE															{ exitStatus = 3;
-																				getErrorMessage(ER_MUTABLE);
-																				yyerror(NULL);
-																				$$ = NULL;
-																				/*$$ = (TreeNode *)alacnary(STORAGE_CLASS_SPECIFIERr5, 1, $1); }
-	;
-
-function_specifier:
-	INLINE																{ getErrorMessage(ER_INLINE);
-																				yyerror(NULL);
-																				$$ = NULL;
-																				/*$$ = (TreeNode *)alacnary(FUNCTION_SPECIFIERr1, 1, $1); }
-	| VIRTUAL															{ getErrorMessage(ER_VIRTUAL);
-																				yyerror(NULL);
-																				$$ = NULL;
-																				/*$$ = (TreeNode *)alacnary(FUNCTION_SPECIFIERr2, 1, $1); }
-	| EXPLICIT															{ getErrorMessage(ER_EXPLICIT);
-																				yyerror(NULL);
-																				$$ = NULL;
-																				/*$$ = (TreeNode *)alacnary(FUNCTION_SPECIFIERr3, 1, $1); }
-	;
-
-type_specifier:
-	simple_type_specifier											{ $$ = (TreeNode *)alacnary(TYPE_SPECIFIERr1, 1, $1); }
-	| class_specifier													{ $$ = (TreeNode *)alacnary(TYPE_SPECIFIERr2, 1, $1); }
-	| enum_specifier													{ $$ = (TreeNode *)alacnary(TYPE_SPECIFIERr3, 1, $1); }
-	| elaborated_type_specifier									{ $$ = (TreeNode *)alacnary(TYPE_SPECIFIERr4, 1, $1); }
-	| cv_qualifier														{ $$ = (TreeNode *)alacnary(TYPE_SPECIFIERr5, 1, $1); }
-	;
-
+			case DECL_SPECIFIERr1 :
+			case DECL_SPECIFIERr2 :
+			case DECL_SPECIFIERr3 :
+			case DECL_SPECIFIERr4 :
+			case DECL_SPECIFIERr5 :
+			case DECL_SPECIFIER_SEQr1 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				if(SHOW_CODE)printCode(node);
+				break;
+				
+			case DECL_SPECIFIER_SEQr2 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				if(node->u.n.child[1] != NULL){
+					if(node->u.n.child[0]->intCode != NULL) concatCode(node->intCode, node->u.n.child[1]->intCode);
+					else node->intCode = node->u.n.child[1]->intCode;
+				}
+				if(SHOW_CODE)printCode(node);
+				break;
+			
+			case TYPE_SPECIFIERr1 :
+			case TYPE_SPECIFIERr2 :
+			case TYPE_SPECIFIERr3 :
+			case TYPE_SPECIFIERr4 :
+			case TYPE_SPECIFIERr5 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				if(SHOW_CODE)printCode(node);
+				break;
+				
+			case SIMPLE_TYPE_SPECIFIERr1 :
+			case SIMPLE_TYPE_SPECIFIERr4 :
+			case SIMPLE_TYPE_SPECIFIERr5 :
+			case SIMPLE_TYPE_SPECIFIERr6 :
+			case SIMPLE_TYPE_SPECIFIERr7 :
+			case SIMPLE_TYPE_SPECIFIERr8 :
+			case SIMPLE_TYPE_SPECIFIERr9 :
+			case SIMPLE_TYPE_SPECIFIERr10 :
+			case SIMPLE_TYPE_SPECIFIERr11 :
+			case SIMPLE_TYPE_SPECIFIERr12 :
+			case SIMPLE_TYPE_SPECIFIERr13 :
+			case SIMPLE_TYPE_SPECIFIERr14 :
+			case SIMPLE_TYPE_SPECIFIERr15 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				if(SHOW_CODE)printCode(node);
+				break;
+	/*
 simple_type_specifier:
-	type_name															{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr1, 1, $1); }
 	| nested_name_specifier type_name							{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr2, 2, $1, $2); }
 	| COLONCOLON nested_name_specifier_opt type_name		{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr3, 3, $1, $2, $3); }
-	| CHAR																{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr4, 1, $1); }
-	| WCHAR_T															{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr5, 1, $1); }
-	| BOOL																{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr6, 1, $1); }
-	| SHORT																{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr7, 1, $1); }
-	| INT																	{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr8, 1, $1); }
-	| LONG																{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr9, 1, $1); }
-	| SIGNED																{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr10, 1, $1); }
-	| UNSIGNED															{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr11, 1, $1); }
-	| FLOAT																{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr12, 1, $1); }
-	| DOUBLE																{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr13, 1, $1); }
-	| VOID																{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr14, 1, $1); }
-	| STR_TYPE															{ $$ = (TreeNode *)alacnary(SIMPLE_TYPE_SPECIFIERr15, 1, $1); }
-	;
+
+	;*/
+	
+	
+	/*
 
 type_name:
 	class_name															{ $$ = (TreeNode *)alacnary(TYPE_NAMEr1, 1, $1); }
@@ -4713,17 +4857,57 @@ linkage_specification:
 
 /*----------------------------------------------------------------------
  * Declarators.
- *----------------------------------------------------------------------
-
-init_declarator_list:
-	init_declarator													{ $$ = (TreeNode *)alacnary(INIT_DECLARATOR_LISTr1, 1, $1); }
-	| init_declarator_list ',' init_declarator				{ $$ = (TreeNode *)alacnary(INIT_DECLARATOR_LISTr2, 2, $1, $3); }
-	;
-
+ *----------------------------------------------------------------------*/
+			case INIT_DECLARATOR_LISTr1 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				if(SHOW_CODE)printCode(node);
+				break;
+			case INIT_DECLARATOR_LISTr2 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				if(node->u.n.child[1] != NULL){
+					if(node->u.n.child[0]->intCode != NULL) concatCode(node->intCode, node->u.n.child[1]->intCode);
+					else node->intCode = node->u.n.child[1]->intCode;
+				}
+				if(SHOW_CODE)printCode(node);
+				break;
+		
+			case INIT_DECLARATORr1 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[1]->type->base_type != NULL_TYPE){
+					icode = (IntrCode *)createIntrCode();
+					icode->elem->desc = C_ASN;
+					icode->elem->label = node->type->label;
+					temp = (NType *)getSymbolFromTable(node->u.n.child[1]->type->symbTable, node->u.n.child[1]->type);
+					if((location = (Location *)calloc(1, sizeof(Location))) == NULL) memoryError();
+					location->region = temp->symbTable->scope;
+					location->offset = temp->offset;
+					location->val = temp->val;
+					location->elem = icode->elem;
+					temp = (NType *)getSymbolFromTable(node->u.n.child[0]->type->symbTable, node->u.n.child[0]->type);
+					icode->elem->loc[0] = makeLocation(temp);
+					icode->elem->loc[1] = location;
+				} else {
+					icode = (IntrCode *)createIntrCode();
+					icode->elem->desc = C_PARAM;
+					icode->elem->label = node->type->label;
+					temp = (NType *)getSymbolFromTable(node->u.n.child[0]->type->symbTable, node->u.n.child[0]->type);
+					if((location = (Location *)calloc(1, sizeof(Location))) == NULL) memoryError();
+					location->region = temp->symbTable->scope;
+					location->offset = temp->offset;
+					location->elem = icode->elem;
+					icode->elem->loc[0] = location;
+				}
+				node->intCode = icode;
+				node->place = node->intCode->elem->loc[0];
+				if(SHOW_CODE)printCode(node);
+				break;
+	/*
 init_declarator:
 	declarator initializer_opt										{ $$ = (TreeNode *)alacnary(INIT_DECLARATORr1, 2, $1, $2); }
 	;
-
+	
 declarator:
 	direct_declarator													{ $$ = (TreeNode *)alacnary(DECLARATORr1, 1, $1); }
 	| ptr_operator declarator										{ $$ = (TreeNode *)alacnary(DECLARATORr2, 2, $1, $2); }
@@ -4825,6 +5009,42 @@ parameter_declaration:
 	| decl_specifier_seq abstract_declarator_opt '=' assignment_expression
 																			{ $$ = (TreeNode *)alacnary(PARAMETER_DECLARATIONr4, 3, $1, $2, $4); }
 	;
+*/
+			case FUNCTION_DEFINITIONr1 :
+				break;
+			case FUNCTION_DEFINITIONr2 :
+				/*
+				 * 		returnVariable(child[1])
+				 *			params(child[2])
+				 *	functionLabel	
+				 *			functionBody(child[3])
+				 */
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				//temp = (NType *)createTempSymbol(node->u.n.child[1]->type->u.func.retType, T_TEMP, mode);
+				//icode = (IntrCode *)createIntrCode();
+				//icode->elem->desc = C_PARAM;
+				//icode->elem->label = node->type->label;
+				//if((location = (Location *)calloc(1, sizeof(Location))) == NULL) memoryError();
+				//location->region = temp->symbTable->scope;
+				//location->offset = temp->offset;
+				//location->elem = icode->elem;
+				//icode->elem->loc[0] = location;					
+				//node->intCode = icode;
+					/* returnVariable */
+				//node->intCode = concatCode(node->intCode, node->u.n.child[2]->intCode);
+				node->intCode = node->u.n.child[2]->intCode;
+					/* returnVariable|chile[2] */
+				icode = (IntrCode *)createIntrCode();
+				icode->elem->desc = C_FUNC;
+				icode->elem->label = node->type->label;
+				if(node->intCode != NULL)node->intCode = concatCode(node->intCode, icode);
+				else node->intCode = icode;
+					/* returnVariable|chile[2]|functionLabel */
+				node->intCode = concatCode(node->intCode, node->u.n.child[3]->intCode);
+					/* returnVariable|chile[2]|functionLabel|child[3] */
+				if(SHOW_CODE)printCode(node);
+				break;
+/*
 
 function_definition:
 	declarator ctor_initializer_opt function_body			{ $$ = (TreeNode *)alacnary(FUNCTION_DEFINITIONr1, 3, $1, $2, $3); }
@@ -4833,11 +5053,14 @@ function_definition:
 	| declarator function_try_block								{ $$ = (TreeNode *)alacnary(FUNCTION_DEFINITIONr3, 2, $1, $2); }
 	| decl_specifier_seq declarator function_try_block		{ $$ = (TreeNode *)alacnary(FUNCTION_DEFINITIONr4, 3, $1, $2, $3); }
 	;
-
-function_body:
-	compound_statement												{ $$ = (TreeNode *)alacnary(FUNCTION_BODYr1, 1, $1); }
-	;
-
+*/
+			case FUNCTION_BODYr1 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				if(SHOW_CODE)printCode(node);
+				break;
+			
+/*
 initializer:
 	'=' initializer_clause											{ $$ = (TreeNode *)alacnary(INITIALIZERr1, 1, $2); }
 	| '(' expression_list ')'										{ $$ = (TreeNode *)alacnary(INITIALIZERr2, 1, $2); }
@@ -5146,7 +5369,13 @@ type_id_list:
 			case TYPE_ID_LIST_OPTr1 :
 			case TYPE_ID_LIST_OPTr2 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
-				if(node->u.n.child[0] != NULL) node->intCode = node->u.n.child[0]->intCode;
+				if(node->u.n.child[0] != NULL) {
+					printCode(node->u.n.child[0]);
+					if(node->u.n.child[0]->intCode != NULL){
+						node->intCode = node->u.n.child[0]->intCode;
+					}
+				}
+				if(SHOW_CODE)printCode(node);
 				break;
 
 		}

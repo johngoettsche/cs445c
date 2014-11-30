@@ -35,6 +35,7 @@ struct TypeStack{
 typedef struct Location {
 	struct NType *region;
 	int offset;
+	char *val;
 	struct CodeElem *elem;
 }Location;
 
@@ -58,6 +59,7 @@ typedef struct NType {
 	int lineno;
    int base_type;
 	char *label;
+	char *val;
 	int pub;
 	char *ref;
 	struct NType *cType;
