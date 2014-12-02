@@ -702,12 +702,6 @@ elaborated_type_specifier:
 																				/*$$ = alacnary(ELABORATED_TYPE_SPECIFIERr7, 5, $1, $2, $3, $4, $6); */}
 	;
 
-/*
-enum_name:
-	identifier
-	;
-*/
-
 enum_specifier:
 	ENUM identifier '{' enumerator_list_opt '}'				{ $$ = (TreeNode *)alacnary(ENUM_SPECIFIERr1, 3, $1, $2, $4); }
 	;

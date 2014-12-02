@@ -889,34 +889,34 @@ static const yytype_uint16 yyrline[] =
      651,   658,   659,   660,   661,   662,   666,   667,   668,   669,
      670,   671,   672,   673,   674,   675,   676,   677,   678,   679,
      680,   684,   685,   686,   690,   691,   692,   693,   694,   695,
-     697,   712,   716,   717,   721,   722,   726,   741,   742,   746,
-     747,   751,   755,   760,   764,   774,   779,   780,   781,   782,
-     786,   788,   790,   792,   793,   797,   799,   800,   802,   806,
-     810,   811,   819,   820,   824,   828,   829,   833,   834,   836,
-     838,   840,   842,   843,   845,   847,   848,   852,   853,   854,
-     855,   856,   857,   858,   863,   864,   868,   869,   873,   874,
-     875,   876,   880,   884,   888,   889,   893,   895,   897,   899,
-     901,   903,   907,   908,   909,   910,   911,   915,   916,   921,
-     922,   924,   925,   930,   931,   933,   934,   938,   942,   943,
-     947,   948,   949,   953,   954,   962,   966,   967,   968,   969,
-     974,   975,   976,   980,   981,   985,   986,   987,   988,   989,
-     990,   991,   992,  1000,  1001,  1005,  1006,  1007,  1008,  1017,
-    1021,  1029,  1033,  1034,  1038,  1039,  1040,  1041,  1042,  1044,
-    1046,  1048,  1049,  1051,  1053,  1055,  1060,  1061,  1062,  1070,
-    1074,  1078,  1082,  1086,  1087,  1091,  1095,  1096,  1097,  1098,
-    1099,  1107,  1111,  1112,  1113,  1114,  1115,  1116,  1117,  1118,
-    1119,  1120,  1121,  1122,  1123,  1124,  1125,  1126,  1127,  1128,
-    1129,  1130,  1131,  1132,  1133,  1134,  1135,  1136,  1137,  1138,
-    1139,  1140,  1141,  1142,  1143,  1144,  1145,  1146,  1147,  1148,
-    1149,  1150,  1151,  1152,  1160,  1169,  1174,  1182,  1187,  1195,
-    1200,  1205,  1210,  1215,  1220,  1228,  1235,  1240,  1248,  1253,
-    1258,  1266,  1274,  1286,  1290,  1294,  1298,  1303,  1304,  1305,
-    1306,  1310,  1314,  1318,  1319,  1327,  1328,  1332,  1333,  1337,
-    1338,  1342,  1343,  1347,  1348,  1352,  1353,  1357,  1358,  1362,
-    1363,  1367,  1368,  1372,  1373,  1377,  1378,  1382,  1383,  1387,
-    1388,  1392,  1393,  1397,  1398,  1402,  1403,  1407,  1408,  1412,
-    1413,  1417,  1418,  1422,  1423,  1427,  1428,  1432,  1433,  1437,
-    1438,  1442,  1443,  1447,  1448
+     697,   706,   710,   711,   715,   716,   720,   735,   736,   740,
+     741,   745,   749,   754,   758,   768,   773,   774,   775,   776,
+     780,   782,   784,   786,   787,   791,   793,   794,   796,   800,
+     804,   805,   813,   814,   818,   822,   823,   827,   828,   830,
+     832,   834,   836,   837,   839,   841,   842,   846,   847,   848,
+     849,   850,   851,   852,   857,   858,   862,   863,   867,   868,
+     869,   870,   874,   878,   882,   883,   887,   889,   891,   893,
+     895,   897,   901,   902,   903,   904,   905,   909,   910,   915,
+     916,   918,   919,   924,   925,   927,   928,   932,   936,   937,
+     941,   942,   943,   947,   948,   956,   960,   961,   962,   963,
+     968,   969,   970,   974,   975,   979,   980,   981,   982,   983,
+     984,   985,   986,   994,   995,   999,  1000,  1001,  1002,  1011,
+    1015,  1023,  1027,  1028,  1032,  1033,  1034,  1035,  1036,  1038,
+    1040,  1042,  1043,  1045,  1047,  1049,  1054,  1055,  1056,  1064,
+    1068,  1072,  1076,  1080,  1081,  1085,  1089,  1090,  1091,  1092,
+    1093,  1101,  1105,  1106,  1107,  1108,  1109,  1110,  1111,  1112,
+    1113,  1114,  1115,  1116,  1117,  1118,  1119,  1120,  1121,  1122,
+    1123,  1124,  1125,  1126,  1127,  1128,  1129,  1130,  1131,  1132,
+    1133,  1134,  1135,  1136,  1137,  1138,  1139,  1140,  1141,  1142,
+    1143,  1144,  1145,  1146,  1154,  1163,  1168,  1176,  1181,  1189,
+    1194,  1199,  1204,  1209,  1214,  1222,  1229,  1234,  1242,  1247,
+    1252,  1260,  1268,  1280,  1284,  1288,  1292,  1297,  1298,  1299,
+    1300,  1304,  1308,  1312,  1313,  1321,  1322,  1326,  1327,  1331,
+    1332,  1336,  1337,  1341,  1342,  1346,  1347,  1351,  1352,  1356,
+    1357,  1361,  1362,  1366,  1367,  1371,  1372,  1376,  1377,  1381,
+    1382,  1386,  1387,  1391,  1392,  1396,  1397,  1401,  1402,  1406,
+    1407,  1411,  1412,  1416,  1417,  1421,  1422,  1426,  1427,  1431,
+    1432,  1436,  1437,  1441,  1442
 };
 #endif
 
@@ -4778,784 +4778,784 @@ yyreduce:
   case 231:
 
 /* Line 1464 of yacc.c  */
-#line 712 "120gram.y"
+#line 706 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(ENUM_SPECIFIERr1, 3, (yyvsp[(1) - (5)].n), (yyvsp[(2) - (5)].n), (yyvsp[(4) - (5)].n)); }
     break;
 
   case 232:
 
 /* Line 1464 of yacc.c  */
-#line 716 "120gram.y"
+#line 710 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(ENUMERATOR_LISTr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 233:
 
 /* Line 1464 of yacc.c  */
-#line 717 "120gram.y"
+#line 711 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(ENUMERATOR_LISTr2, 2, (yyvsp[(1) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 234:
 
 /* Line 1464 of yacc.c  */
-#line 721 "120gram.y"
+#line 715 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(ENUMERATOR_DEFINITIONr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 235:
 
 /* Line 1464 of yacc.c  */
-#line 722 "120gram.y"
+#line 716 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(ENUMERATOR_DEFINITIONr2, 2, (yyvsp[(1) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 236:
 
 /* Line 1464 of yacc.c  */
-#line 726 "120gram.y"
+#line 720 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(ENUMERATORr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 237:
 
 /* Line 1464 of yacc.c  */
-#line 741 "120gram.y"
+#line 735 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(NAMESPACE_DEFINITIONr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 238:
 
 /* Line 1464 of yacc.c  */
-#line 742 "120gram.y"
+#line 736 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(NAMESPACE_DEFINITIONr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 239:
 
 /* Line 1464 of yacc.c  */
-#line 746 "120gram.y"
+#line 740 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(NAMED_NAMESPACE_DEFINITIONr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 240:
 
 /* Line 1464 of yacc.c  */
-#line 747 "120gram.y"
+#line 741 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(NAMED_NAMESPACE_DEFINITIONr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 241:
 
 /* Line 1464 of yacc.c  */
-#line 751 "120gram.y"
+#line 745 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(ORIGINAL_NAMESPACE_DEFINITIONr1, 3, (yyvsp[(1) - (5)].n), (yyvsp[(2) - (5)].n), (yyvsp[(4) - (5)].n)); }
     break;
 
   case 242:
 
 /* Line 1464 of yacc.c  */
-#line 756 "120gram.y"
+#line 750 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(EXTENSION_NAMESPACE_DEFINITIONr1, 3, (yyvsp[(1) - (5)].n), (yyvsp[(2) - (5)].n), (yyvsp[(4) - (5)].n)); }
     break;
 
   case 243:
 
 /* Line 1464 of yacc.c  */
-#line 760 "120gram.y"
+#line 754 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(UNNAMED_NAMESPACE_DEFINITIONr1, 2, (yyvsp[(1) - (4)].n), (yyvsp[(3) - (4)].n)); }
     break;
 
   case 244:
 
 /* Line 1464 of yacc.c  */
-#line 764 "120gram.y"
+#line 758 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(NAMESPACE_BODYr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 245:
 
 /* Line 1464 of yacc.c  */
-#line 775 "120gram.y"
+#line 769 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(NAMESPACE_ALIAS_DEFINITIONr1, 3, (yyvsp[(1) - (5)].n), (yyvsp[(2) - (5)].n), (yyvsp[(4) - (5)].n)); }
     break;
 
   case 246:
 
 /* Line 1464 of yacc.c  */
-#line 779 "120gram.y"
+#line 773 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(QUALIFIED_NAMESPACE_SPECIFIERr1, 3, (yyvsp[(1) - (3)].n), (yyvsp[(2) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 247:
 
 /* Line 1464 of yacc.c  */
-#line 780 "120gram.y"
+#line 774 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(QUALIFIED_NAMESPACE_SPECIFIERr2, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 248:
 
 /* Line 1464 of yacc.c  */
-#line 781 "120gram.y"
+#line 775 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(QUALIFIED_NAMESPACE_SPECIFIERr3, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 249:
 
 /* Line 1464 of yacc.c  */
-#line 782 "120gram.y"
+#line 776 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(QUALIFIED_NAMESPACE_SPECIFIERr4, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 250:
 
 /* Line 1464 of yacc.c  */
-#line 787 "120gram.y"
+#line 781 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(USING_DECLARATIONr1, 5, (yyvsp[(1) - (6)].n), (yyvsp[(2) - (6)].n), (yyvsp[(3) - (6)].n), (yyvsp[(4) - (6)].n), (yyvsp[(5) - (6)].n)); }
     break;
 
   case 251:
 
 /* Line 1464 of yacc.c  */
-#line 789 "120gram.y"
+#line 783 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(USING_DECLARATIONr2, 4, (yyvsp[(1) - (5)].n), (yyvsp[(2) - (5)].n), (yyvsp[(3) - (5)].n), (yyvsp[(4) - (5)].n)); }
     break;
 
   case 252:
 
 /* Line 1464 of yacc.c  */
-#line 791 "120gram.y"
+#line 785 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(USING_DECLARATIONr3, 4, (yyvsp[(1) - (5)].n), (yyvsp[(2) - (5)].n), (yyvsp[(3) - (5)].n), (yyvsp[(4) - (5)].n)); }
     break;
 
   case 253:
 
 /* Line 1464 of yacc.c  */
-#line 792 "120gram.y"
+#line 786 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(USING_DECLARATIONr4, 3, (yyvsp[(1) - (4)].n), (yyvsp[(2) - (4)].n), (yyvsp[(3) - (4)].n)); }
     break;
 
   case 254:
 
 /* Line 1464 of yacc.c  */
-#line 793 "120gram.y"
+#line 787 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(USING_DECLARATIONr5, 3, (yyvsp[(1) - (4)].n), (yyvsp[(2) - (4)].n), (yyvsp[(3) - (4)].n)); }
     break;
 
   case 255:
 
 /* Line 1464 of yacc.c  */
-#line 798 "120gram.y"
+#line 792 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(USING_DIRECTIVEr1, 5, (yyvsp[(1) - (6)].n), (yyvsp[(2) - (6)].n), (yyvsp[(3) - (6)].n), (yyvsp[(4) - (6)].n), (yyvsp[(5) - (6)].n)); }
     break;
 
   case 256:
 
 /* Line 1464 of yacc.c  */
-#line 799 "120gram.y"
+#line 793 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(USING_DIRECTIVEr2, 4, (yyvsp[(1) - (5)].n), (yyvsp[(2) - (5)].n), (yyvsp[(3) - (5)].n), (yyvsp[(4) - (5)].n)); }
     break;
 
   case 257:
 
 /* Line 1464 of yacc.c  */
-#line 801 "120gram.y"
+#line 795 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(USING_DIRECTIVEr3, 4, (yyvsp[(1) - (5)].n), (yyvsp[(2) - (5)].n), (yyvsp[(3) - (5)].n), (yyvsp[(4) - (5)].n)); }
     break;
 
   case 258:
 
 /* Line 1464 of yacc.c  */
-#line 802 "120gram.y"
+#line 796 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(USING_DIRECTIVEr4, 3, (yyvsp[(1) - (4)].n), (yyvsp[(2) - (4)].n), (yyvsp[(3) - (4)].n)); }
     break;
 
   case 259:
 
 /* Line 1464 of yacc.c  */
-#line 806 "120gram.y"
+#line 800 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(ASM_DEFINITIONr1, 2, (yyvsp[(1) - (5)].n), (yyvsp[(3) - (5)].n)); }
     break;
 
   case 260:
 
 /* Line 1464 of yacc.c  */
-#line 810 "120gram.y"
+#line 804 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(LINKAGE_SPECIFICATIONr1, 3, (yyvsp[(1) - (5)].n), (yyvsp[(2) - (5)].n), (yyvsp[(4) - (5)].n)); }
     break;
 
   case 261:
 
 /* Line 1464 of yacc.c  */
-#line 811 "120gram.y"
+#line 805 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(LINKAGE_SPECIFICATIONr2, 3, (yyvsp[(1) - (3)].n), (yyvsp[(2) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 262:
 
 /* Line 1464 of yacc.c  */
-#line 819 "120gram.y"
+#line 813 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(INIT_DECLARATOR_LISTr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 263:
 
 /* Line 1464 of yacc.c  */
-#line 820 "120gram.y"
+#line 814 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(INIT_DECLARATOR_LISTr2, 2, (yyvsp[(1) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 264:
 
 /* Line 1464 of yacc.c  */
-#line 824 "120gram.y"
+#line 818 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(INIT_DECLARATORr1, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 265:
 
 /* Line 1464 of yacc.c  */
-#line 828 "120gram.y"
+#line 822 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DECLARATORr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 266:
 
 /* Line 1464 of yacc.c  */
-#line 829 "120gram.y"
+#line 823 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DECLARATORr2, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 267:
 
 /* Line 1464 of yacc.c  */
-#line 833 "120gram.y"
+#line 827 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DIRECT_DECLARATORr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 268:
 
 /* Line 1464 of yacc.c  */
-#line 835 "120gram.y"
+#line 829 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DIRECT_DECLARATORr2, 4, (yyvsp[(1) - (6)].n), (yyvsp[(3) - (6)].n), (yyvsp[(5) - (6)].n), (yyvsp[(6) - (6)].n)); }
     break;
 
   case 269:
 
 /* Line 1464 of yacc.c  */
-#line 837 "120gram.y"
+#line 831 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DIRECT_DECLARATORr3, 3, (yyvsp[(1) - (5)].n), (yyvsp[(3) - (5)].n), (yyvsp[(5) - (5)].n)); }
     break;
 
   case 270:
 
 /* Line 1464 of yacc.c  */
-#line 839 "120gram.y"
+#line 833 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DIRECT_DECLARATORr4, 3, (yyvsp[(1) - (5)].n), (yyvsp[(3) - (5)].n), (yyvsp[(5) - (5)].n)); }
     break;
 
   case 271:
 
 /* Line 1464 of yacc.c  */
-#line 841 "120gram.y"
+#line 835 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DIRECT_DECLARATORr5, 2, (yyvsp[(1) - (4)].n), (yyvsp[(3) - (4)].n)); }
     break;
 
   case 272:
 
 /* Line 1464 of yacc.c  */
-#line 842 "120gram.y"
+#line 836 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DIRECT_DECLARATORr6, 2, (yyvsp[(1) - (4)].n), (yyvsp[(3) - (4)].n)); }
     break;
 
   case 273:
 
 /* Line 1464 of yacc.c  */
-#line 844 "120gram.y"
+#line 838 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DIRECT_DECLARATORr7, 4, (yyvsp[(1) - (6)].n), (yyvsp[(2) - (6)].n), (yyvsp[(3) - (6)].n), (yyvsp[(5) - (6)].n)); }
     break;
 
   case 274:
 
 /* Line 1464 of yacc.c  */
-#line 846 "120gram.y"
+#line 840 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DIRECT_DECLARATORr8, 4, (yyvsp[(1) - (6)].n), (yyvsp[(2) - (6)].n), (yyvsp[(3) - (6)].n), (yyvsp[(5) - (6)].n)); }
     break;
 
   case 275:
 
 /* Line 1464 of yacc.c  */
-#line 847 "120gram.y"
+#line 841 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DIRECT_DECLARATORr9, 2, (yyvsp[(1) - (4)].n), (yyvsp[(3) - (4)].n)); }
     break;
 
   case 276:
 
 /* Line 1464 of yacc.c  */
-#line 848 "120gram.y"
+#line 842 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DIRECT_DECLARATORr10, 1, (yyvsp[(2) - (3)].n)); }
     break;
 
   case 277:
 
 /* Line 1464 of yacc.c  */
-#line 852 "120gram.y"
+#line 846 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(PTR_OPERATORr1, 0); }
     break;
 
   case 278:
 
 /* Line 1464 of yacc.c  */
-#line 853 "120gram.y"
+#line 847 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(PTR_OPERATORr2, 1, (yyvsp[(2) - (2)].n)); }
     break;
 
   case 279:
 
 /* Line 1464 of yacc.c  */
-#line 854 "120gram.y"
+#line 848 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(PTR_OPERATORr3, 0); }
     break;
 
   case 280:
 
 /* Line 1464 of yacc.c  */
-#line 855 "120gram.y"
+#line 849 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(PTR_OPERATORr4, 1, (yyvsp[(1) - (2)].n)); }
     break;
 
   case 281:
 
 /* Line 1464 of yacc.c  */
-#line 856 "120gram.y"
+#line 850 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(PTR_OPERATORr5, 2, (yyvsp[(1) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 282:
 
 /* Line 1464 of yacc.c  */
-#line 857 "120gram.y"
+#line 851 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(PTR_OPERATORr6, 2, (yyvsp[(1) - (3)].n), (yyvsp[(2) - (3)].n)); }
     break;
 
   case 283:
 
 /* Line 1464 of yacc.c  */
-#line 859 "120gram.y"
+#line 853 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(PTR_OPERATORr7, 3, (yyvsp[(1) - (4)].n), (yyvsp[(2) - (4)].n), (yyvsp[(4) - (4)].n)); }
     break;
 
   case 284:
 
 /* Line 1464 of yacc.c  */
-#line 863 "120gram.y"
+#line 857 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CV_QUALIFIER_SEQr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 285:
 
 /* Line 1464 of yacc.c  */
-#line 864 "120gram.y"
+#line 858 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CV_QUALIFIER_SEQr2, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 286:
 
 /* Line 1464 of yacc.c  */
-#line 868 "120gram.y"
+#line 862 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CV_QUALIFIERr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 287:
 
 /* Line 1464 of yacc.c  */
-#line 869 "120gram.y"
+#line 863 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CV_QUALIFIERr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 288:
 
 /* Line 1464 of yacc.c  */
-#line 873 "120gram.y"
+#line 867 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DECLARATOR_IDr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 289:
 
 /* Line 1464 of yacc.c  */
-#line 874 "120gram.y"
+#line 868 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DECLARATOR_IDr2, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 290:
 
 /* Line 1464 of yacc.c  */
-#line 875 "120gram.y"
+#line 869 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DECLARATOR_IDr3, 3, (yyvsp[(1) - (3)].n), (yyvsp[(2) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 291:
 
 /* Line 1464 of yacc.c  */
-#line 876 "120gram.y"
+#line 870 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DECLARATOR_IDr4, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 292:
 
 /* Line 1464 of yacc.c  */
-#line 880 "120gram.y"
+#line 874 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(TYPE_IDr1, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 293:
 
 /* Line 1464 of yacc.c  */
-#line 884 "120gram.y"
+#line 878 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(TYPE_SPECIFIER_SEQr1, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 294:
 
 /* Line 1464 of yacc.c  */
-#line 888 "120gram.y"
+#line 882 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(ABSTRACT_DECLARATORr1, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 295:
 
 /* Line 1464 of yacc.c  */
-#line 889 "120gram.y"
+#line 883 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(ABSTRACT_DECLARATORr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 296:
 
 /* Line 1464 of yacc.c  */
-#line 894 "120gram.y"
+#line 888 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DIRECT_ABSTRACT_DECLARATORr1, 4, (yyvsp[(1) - (6)].n), (yyvsp[(3) - (6)].n), (yyvsp[(5) - (6)].n), (yyvsp[(6) - (6)].n)); }
     break;
 
   case 297:
 
 /* Line 1464 of yacc.c  */
-#line 896 "120gram.y"
+#line 890 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DIRECT_ABSTRACT_DECLARATORr2, 3, (yyvsp[(1) - (5)].n), (yyvsp[(3) - (5)].n), (yyvsp[(5) - (5)].n)); }
     break;
 
   case 298:
 
 /* Line 1464 of yacc.c  */
-#line 898 "120gram.y"
+#line 892 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DIRECT_ABSTRACT_DECLARATORr3, 3, (yyvsp[(1) - (5)].n), (yyvsp[(3) - (5)].n), (yyvsp[(5) - (5)].n)); }
     break;
 
   case 299:
 
 /* Line 1464 of yacc.c  */
-#line 900 "120gram.y"
+#line 894 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DIRECT_ABSTRACT_DECLARATORr4, 2, (yyvsp[(1) - (4)].n), (yyvsp[(3) - (4)].n)); }
     break;
 
   case 300:
 
 /* Line 1464 of yacc.c  */
-#line 902 "120gram.y"
+#line 896 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DIRECT_ABSTRACT_DECLARATORr5, 2, (yyvsp[(1) - (4)].n), (yyvsp[(3) - (4)].n)); }
     break;
 
   case 301:
 
 /* Line 1464 of yacc.c  */
-#line 903 "120gram.y"
+#line 897 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DIRECT_ABSTRACT_DECLARATORr6, 1, (yyvsp[(2) - (3)].n)); }
     break;
 
   case 302:
 
 /* Line 1464 of yacc.c  */
-#line 907 "120gram.y"
+#line 901 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(PARAMETER_DECLARATION_CLAUSEr1, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 303:
 
 /* Line 1464 of yacc.c  */
-#line 908 "120gram.y"
+#line 902 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(PARAMETER_DECLARATION_CLAUSEr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 304:
 
 /* Line 1464 of yacc.c  */
-#line 909 "120gram.y"
+#line 903 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(PARAMETER_DECLARATION_CLAUSEr3, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 305:
 
 /* Line 1464 of yacc.c  */
-#line 910 "120gram.y"
+#line 904 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(PARAMETER_DECLARATION_CLAUSEr4, 0); }
     break;
 
   case 306:
 
 /* Line 1464 of yacc.c  */
-#line 911 "120gram.y"
+#line 905 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(PARAMETER_DECLARATION_CLAUSEr5, 2, (yyvsp[(1) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 307:
 
 /* Line 1464 of yacc.c  */
-#line 915 "120gram.y"
+#line 909 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(PARAMETER_DECLARATION_LISTr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 308:
 
 /* Line 1464 of yacc.c  */
-#line 917 "120gram.y"
+#line 911 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(PARAMETER_DECLARATION_LISTr2, 2, (yyvsp[(1) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 309:
 
 /* Line 1464 of yacc.c  */
-#line 921 "120gram.y"
+#line 915 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(PARAMETER_DECLARATIONr1, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 310:
 
 /* Line 1464 of yacc.c  */
-#line 923 "120gram.y"
+#line 917 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(PARAMETER_DECLARATIONr2, 3, (yyvsp[(1) - (4)].n), (yyvsp[(2) - (4)].n), (yyvsp[(4) - (4)].n)); }
     break;
 
   case 311:
 
 /* Line 1464 of yacc.c  */
-#line 924 "120gram.y"
+#line 918 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(PARAMETER_DECLARATIONr3, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 312:
 
 /* Line 1464 of yacc.c  */
-#line 926 "120gram.y"
+#line 920 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(PARAMETER_DECLARATIONr4, 3, (yyvsp[(1) - (4)].n), (yyvsp[(2) - (4)].n), (yyvsp[(4) - (4)].n)); }
     break;
 
   case 313:
 
 /* Line 1464 of yacc.c  */
-#line 930 "120gram.y"
+#line 924 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(FUNCTION_DEFINITIONr1, 3, (yyvsp[(1) - (3)].n), (yyvsp[(2) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 314:
 
 /* Line 1464 of yacc.c  */
-#line 932 "120gram.y"
+#line 926 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(FUNCTION_DEFINITIONr2, 4, (yyvsp[(1) - (4)].n), (yyvsp[(2) - (4)].n), (yyvsp[(3) - (4)].n), (yyvsp[(4) - (4)].n)); }
     break;
 
   case 315:
 
 /* Line 1464 of yacc.c  */
-#line 933 "120gram.y"
+#line 927 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(FUNCTION_DEFINITIONr3, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 316:
 
 /* Line 1464 of yacc.c  */
-#line 934 "120gram.y"
+#line 928 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(FUNCTION_DEFINITIONr4, 3, (yyvsp[(1) - (3)].n), (yyvsp[(2) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 317:
 
 /* Line 1464 of yacc.c  */
-#line 938 "120gram.y"
+#line 932 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(FUNCTION_BODYr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 318:
 
 /* Line 1464 of yacc.c  */
-#line 942 "120gram.y"
+#line 936 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(INITIALIZERr1, 1, (yyvsp[(2) - (2)].n)); }
     break;
 
   case 319:
 
 /* Line 1464 of yacc.c  */
-#line 943 "120gram.y"
+#line 937 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(INITIALIZERr2, 1, (yyvsp[(2) - (3)].n)); }
     break;
 
   case 320:
 
 /* Line 1464 of yacc.c  */
-#line 947 "120gram.y"
+#line 941 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(INITIALIZER_CLAUSEr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 321:
 
 /* Line 1464 of yacc.c  */
-#line 948 "120gram.y"
+#line 942 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(INITIALIZER_CLAUSEr2, 2, (yyvsp[(2) - (4)].n), (yyvsp[(3) - (4)].n)); }
     break;
 
   case 322:
 
 /* Line 1464 of yacc.c  */
-#line 949 "120gram.y"
+#line 943 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(INITIALIZER_CLAUSEr3, 0); }
     break;
 
   case 323:
 
 /* Line 1464 of yacc.c  */
-#line 953 "120gram.y"
+#line 947 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(INITIALIZER_LISTr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 324:
 
 /* Line 1464 of yacc.c  */
-#line 954 "120gram.y"
+#line 948 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(INITIALIZER_LISTr2, 2, (yyvsp[(1) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 325:
 
 /* Line 1464 of yacc.c  */
-#line 962 "120gram.y"
+#line 956 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CLASS_SPECIFIERr1, 2, (yyvsp[(1) - (4)].n), (yyvsp[(3) - (4)].n)); }
     break;
 
   case 326:
 
 /* Line 1464 of yacc.c  */
-#line 966 "120gram.y"
+#line 960 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CLASS_HEADr1, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 327:
 
 /* Line 1464 of yacc.c  */
-#line 967 "120gram.y"
+#line 961 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CLASS_HEADr2, 3, (yyvsp[(1) - (3)].n), (yyvsp[(2) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 328:
 
 /* Line 1464 of yacc.c  */
-#line 968 "120gram.y"
+#line 962 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CLASS_HEADr3, 3, (yyvsp[(1) - (3)].n), (yyvsp[(2) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 329:
 
 /* Line 1464 of yacc.c  */
-#line 970 "120gram.y"
+#line 964 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CLASS_HEADr4, 4, (yyvsp[(1) - (4)].n), (yyvsp[(2) - (4)].n), (yyvsp[(3) - (4)].n), (yyvsp[(4) - (4)].n)); }
     break;
 
   case 330:
 
 /* Line 1464 of yacc.c  */
-#line 974 "120gram.y"
+#line 968 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CLASS_KEYr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 331:
 
 /* Line 1464 of yacc.c  */
-#line 975 "120gram.y"
+#line 969 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CLASS_KEYr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 332:
 
 /* Line 1464 of yacc.c  */
-#line 976 "120gram.y"
+#line 970 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CLASS_KEYr3, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 333:
 
 /* Line 1464 of yacc.c  */
-#line 980 "120gram.y"
+#line 974 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEMBER_SPECIFICATIONr1, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 334:
 
 /* Line 1464 of yacc.c  */
-#line 981 "120gram.y"
+#line 975 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEMBER_SPECIFICATIONr2, 2, (yyvsp[(1) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 335:
 
 /* Line 1464 of yacc.c  */
-#line 985 "120gram.y"
+#line 979 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEMBER_DECLARATIONr1, 2, (yyvsp[(1) - (3)].n), (yyvsp[(2) - (3)].n)); }
     break;
 
   case 336:
 
 /* Line 1464 of yacc.c  */
-#line 986 "120gram.y"
+#line 980 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEMBER_DECLARATIONr2, 1, (yyvsp[(1) - (2)].n)); }
     break;
 
   case 337:
 
 /* Line 1464 of yacc.c  */
-#line 987 "120gram.y"
+#line 981 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEMBER_DECLARATIONr3, 1, (yyvsp[(1) - (2)].n)); }
     break;
 
   case 338:
 
 /* Line 1464 of yacc.c  */
-#line 988 "120gram.y"
+#line 982 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEMBER_DECLARATIONr4, 0); }
     break;
 
   case 339:
 
 /* Line 1464 of yacc.c  */
-#line 989 "120gram.y"
+#line 983 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEMBER_DECLARATIONr5, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 340:
 
 /* Line 1464 of yacc.c  */
-#line 990 "120gram.y"
+#line 984 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEMBER_DECLARATIONr6, 1, (yyvsp[(1) - (2)].n)); }
     break;
 
   case 341:
 
 /* Line 1464 of yacc.c  */
-#line 991 "120gram.y"
+#line 985 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEMBER_DECLARATIONr7, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 342:
 
 /* Line 1464 of yacc.c  */
-#line 992 "120gram.y"
+#line 986 "120gram.y"
     { exitStatus = 3;
 																				getErrorMessage(ER_TEMPLATE);
 																				yerror(NULL, -1);
@@ -5566,574 +5566,574 @@ yyreduce:
   case 343:
 
 /* Line 1464 of yacc.c  */
-#line 1000 "120gram.y"
+#line 994 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEMBER_DECLARATOR_LISTr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 344:
 
 /* Line 1464 of yacc.c  */
-#line 1001 "120gram.y"
+#line 995 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEMBER_DECLARATOR_LISTr1, 2, (yyvsp[(1) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 345:
 
 /* Line 1464 of yacc.c  */
-#line 1005 "120gram.y"
+#line 999 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEMBER_DECLARATORr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 346:
 
 /* Line 1464 of yacc.c  */
-#line 1006 "120gram.y"
+#line 1000 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEMBER_DECLARATORr2, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 347:
 
 /* Line 1464 of yacc.c  */
-#line 1007 "120gram.y"
+#line 1001 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEMBER_DECLARATORr3, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 348:
 
 /* Line 1464 of yacc.c  */
-#line 1008 "120gram.y"
+#line 1002 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEMBER_DECLARATORr4, 2, (yyvsp[(1) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 349:
 
 /* Line 1464 of yacc.c  */
-#line 1017 "120gram.y"
+#line 1011 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(PURE_SPECIFIERr1, 0); }
     break;
 
   case 350:
 
 /* Line 1464 of yacc.c  */
-#line 1021 "120gram.y"
+#line 1015 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CONSTANT_INITIALIZERr1, 1, (yyvsp[(2) - (2)].n)); }
     break;
 
   case 351:
 
 /* Line 1464 of yacc.c  */
-#line 1029 "120gram.y"
+#line 1023 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(BASE_CLAUSEr1, 1, (yyvsp[(2) - (2)].n)); }
     break;
 
   case 352:
 
 /* Line 1464 of yacc.c  */
-#line 1033 "120gram.y"
+#line 1027 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(BASE_SPECIFIER_LISTr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 353:
 
 /* Line 1464 of yacc.c  */
-#line 1034 "120gram.y"
+#line 1028 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(BASE_SPECIFIER_LISTr2, 2, (yyvsp[(1) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 354:
 
 /* Line 1464 of yacc.c  */
-#line 1038 "120gram.y"
+#line 1032 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(BASE_SPECIFIERr1, 3, (yyvsp[(1) - (3)].n), (yyvsp[(2) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 355:
 
 /* Line 1464 of yacc.c  */
-#line 1039 "120gram.y"
+#line 1033 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(BASE_SPECIFIERr2, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 356:
 
 /* Line 1464 of yacc.c  */
-#line 1040 "120gram.y"
+#line 1034 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(BASE_SPECIFIERr3, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 357:
 
 /* Line 1464 of yacc.c  */
-#line 1041 "120gram.y"
+#line 1035 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(BASE_SPECIFIERr4, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 358:
 
 /* Line 1464 of yacc.c  */
-#line 1043 "120gram.y"
+#line 1037 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(BASE_SPECIFIERr5, 5, (yyvsp[(1) - (5)].n), (yyvsp[(2) - (5)].n), (yyvsp[(3) - (5)].n), (yyvsp[(4) - (5)].n), (yyvsp[(5) - (5)].n)); }
     break;
 
   case 359:
 
 /* Line 1464 of yacc.c  */
-#line 1045 "120gram.y"
+#line 1039 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(BASE_SPECIFIERr6, 4, (yyvsp[(1) - (4)].n), (yyvsp[(2) - (4)].n), (yyvsp[(3) - (4)].n), (yyvsp[(4) - (4)].n)); }
     break;
 
   case 360:
 
 /* Line 1464 of yacc.c  */
-#line 1047 "120gram.y"
+#line 1041 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(BASE_SPECIFIERr7, 4, (yyvsp[(1) - (4)].n), (yyvsp[(2) - (4)].n), (yyvsp[(3) - (4)].n), (yyvsp[(4) - (4)].n)); }
     break;
 
   case 361:
 
 /* Line 1464 of yacc.c  */
-#line 1048 "120gram.y"
+#line 1042 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(BASE_SPECIFIERr8, 3, (yyvsp[(1) - (3)].n), (yyvsp[(2) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 362:
 
 /* Line 1464 of yacc.c  */
-#line 1050 "120gram.y"
+#line 1044 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(BASE_SPECIFIERr9, 5, (yyvsp[(1) - (5)].n), (yyvsp[(2) - (5)].n), (yyvsp[(3) - (5)].n), (yyvsp[(4) - (5)].n), (yyvsp[(5) - (5)].n)); }
     break;
 
   case 363:
 
 /* Line 1464 of yacc.c  */
-#line 1052 "120gram.y"
+#line 1046 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(BASE_SPECIFIERr10, 4, (yyvsp[(1) - (4)].n), (yyvsp[(2) - (4)].n), (yyvsp[(3) - (4)].n), (yyvsp[(4) - (4)].n)); }
     break;
 
   case 364:
 
 /* Line 1464 of yacc.c  */
-#line 1054 "120gram.y"
+#line 1048 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(BASE_SPECIFIERr11, 4, (yyvsp[(1) - (4)].n), (yyvsp[(2) - (4)].n), (yyvsp[(3) - (4)].n), (yyvsp[(4) - (4)].n)); }
     break;
 
   case 365:
 
 /* Line 1464 of yacc.c  */
-#line 1056 "120gram.y"
+#line 1050 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(BASE_SPECIFIERr12, 3, (yyvsp[(1) - (3)].n), (yyvsp[(2) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 366:
 
 /* Line 1464 of yacc.c  */
-#line 1060 "120gram.y"
+#line 1054 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(ACCESS_SPECIFIERr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 367:
 
 /* Line 1464 of yacc.c  */
-#line 1061 "120gram.y"
+#line 1055 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(ACCESS_SPECIFIERr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 368:
 
 /* Line 1464 of yacc.c  */
-#line 1062 "120gram.y"
+#line 1056 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(ACCESS_SPECIFIERr3, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 369:
 
 /* Line 1464 of yacc.c  */
-#line 1070 "120gram.y"
+#line 1064 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CONVERSION_FUNCTION_IDr1, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 370:
 
 /* Line 1464 of yacc.c  */
-#line 1074 "120gram.y"
+#line 1068 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CONVERSION_TYPE_IDr1, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 371:
 
 /* Line 1464 of yacc.c  */
-#line 1078 "120gram.y"
+#line 1072 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CONVERSION_DECLARATORr1, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 372:
 
 /* Line 1464 of yacc.c  */
-#line 1082 "120gram.y"
+#line 1076 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CTOR_INITIALIZERr1, 1, (yyvsp[(2) - (2)].n)); }
     break;
 
   case 373:
 
 /* Line 1464 of yacc.c  */
-#line 1086 "120gram.y"
+#line 1080 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEM_INITIALIZER_LISTr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 374:
 
 /* Line 1464 of yacc.c  */
-#line 1087 "120gram.y"
+#line 1081 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEM_INITIALIZER_LISTr1, 2, (yyvsp[(1) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 375:
 
 /* Line 1464 of yacc.c  */
-#line 1091 "120gram.y"
+#line 1085 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEM_INITIALIZERr1, 2, (yyvsp[(1) - (4)].n), (yyvsp[(3) - (4)].n)); }
     break;
 
   case 376:
 
 /* Line 1464 of yacc.c  */
-#line 1095 "120gram.y"
+#line 1089 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEM_INITIALIZER_IDr1, 3, (yyvsp[(1) - (3)].n), (yyvsp[(2) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 377:
 
 /* Line 1464 of yacc.c  */
-#line 1096 "120gram.y"
+#line 1090 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEM_INITIALIZER_IDr2, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 378:
 
 /* Line 1464 of yacc.c  */
-#line 1097 "120gram.y"
+#line 1091 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEM_INITIALIZER_IDr3, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 379:
 
 /* Line 1464 of yacc.c  */
-#line 1098 "120gram.y"
+#line 1092 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEM_INITIALIZER_IDr4, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 380:
 
 /* Line 1464 of yacc.c  */
-#line 1099 "120gram.y"
+#line 1093 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEM_INITIALIZER_IDr5, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 381:
 
 /* Line 1464 of yacc.c  */
-#line 1107 "120gram.y"
+#line 1101 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATOR_FUNCTION_IDr1, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 382:
 
 /* Line 1464 of yacc.c  */
-#line 1111 "120gram.y"
+#line 1105 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 383:
 
 /* Line 1464 of yacc.c  */
-#line 1112 "120gram.y"
+#line 1106 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 384:
 
 /* Line 1464 of yacc.c  */
-#line 1113 "120gram.y"
+#line 1107 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr3, 1, (yyvsp[(1) - (3)].n)); }
     break;
 
   case 385:
 
 /* Line 1464 of yacc.c  */
-#line 1114 "120gram.y"
+#line 1108 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr4, 1, (yyvsp[(1) - (3)].n)); }
     break;
 
   case 386:
 
 /* Line 1464 of yacc.c  */
-#line 1115 "120gram.y"
+#line 1109 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr5, 0); }
     break;
 
   case 387:
 
 /* Line 1464 of yacc.c  */
-#line 1116 "120gram.y"
+#line 1110 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr6, 0); }
     break;
 
   case 388:
 
 /* Line 1464 of yacc.c  */
-#line 1117 "120gram.y"
+#line 1111 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr7, 0); }
     break;
 
   case 389:
 
 /* Line 1464 of yacc.c  */
-#line 1118 "120gram.y"
+#line 1112 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr8, 0); }
     break;
 
   case 390:
 
 /* Line 1464 of yacc.c  */
-#line 1119 "120gram.y"
+#line 1113 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr9, 0); }
     break;
 
   case 391:
 
 /* Line 1464 of yacc.c  */
-#line 1120 "120gram.y"
+#line 1114 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr10, 0); }
     break;
 
   case 392:
 
 /* Line 1464 of yacc.c  */
-#line 1121 "120gram.y"
+#line 1115 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr11, 0); }
     break;
 
   case 393:
 
 /* Line 1464 of yacc.c  */
-#line 1122 "120gram.y"
+#line 1116 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr12, 0); }
     break;
 
   case 394:
 
 /* Line 1464 of yacc.c  */
-#line 1123 "120gram.y"
+#line 1117 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr13, 0); }
     break;
 
   case 395:
 
 /* Line 1464 of yacc.c  */
-#line 1124 "120gram.y"
+#line 1118 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr14, 0); }
     break;
 
   case 396:
 
 /* Line 1464 of yacc.c  */
-#line 1125 "120gram.y"
+#line 1119 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr15, 0); }
     break;
 
   case 397:
 
 /* Line 1464 of yacc.c  */
-#line 1126 "120gram.y"
+#line 1120 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr16, 0); }
     break;
 
   case 398:
 
 /* Line 1464 of yacc.c  */
-#line 1127 "120gram.y"
+#line 1121 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr17, 0); }
     break;
 
   case 399:
 
 /* Line 1464 of yacc.c  */
-#line 1128 "120gram.y"
+#line 1122 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr18, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 400:
 
 /* Line 1464 of yacc.c  */
-#line 1129 "120gram.y"
+#line 1123 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr19, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 401:
 
 /* Line 1464 of yacc.c  */
-#line 1130 "120gram.y"
+#line 1124 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr20, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 402:
 
 /* Line 1464 of yacc.c  */
-#line 1131 "120gram.y"
+#line 1125 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr21, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 403:
 
 /* Line 1464 of yacc.c  */
-#line 1132 "120gram.y"
+#line 1126 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr22, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 404:
 
 /* Line 1464 of yacc.c  */
-#line 1133 "120gram.y"
+#line 1127 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr23, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 405:
 
 /* Line 1464 of yacc.c  */
-#line 1134 "120gram.y"
+#line 1128 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr24, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 406:
 
 /* Line 1464 of yacc.c  */
-#line 1135 "120gram.y"
+#line 1129 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr25, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 407:
 
 /* Line 1464 of yacc.c  */
-#line 1136 "120gram.y"
+#line 1130 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr26, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 408:
 
 /* Line 1464 of yacc.c  */
-#line 1137 "120gram.y"
+#line 1131 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr27, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 409:
 
 /* Line 1464 of yacc.c  */
-#line 1138 "120gram.y"
+#line 1132 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr28, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 410:
 
 /* Line 1464 of yacc.c  */
-#line 1139 "120gram.y"
+#line 1133 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr29, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 411:
 
 /* Line 1464 of yacc.c  */
-#line 1140 "120gram.y"
+#line 1134 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr30, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 412:
 
 /* Line 1464 of yacc.c  */
-#line 1141 "120gram.y"
+#line 1135 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr31, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 413:
 
 /* Line 1464 of yacc.c  */
-#line 1142 "120gram.y"
+#line 1136 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr32, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 414:
 
 /* Line 1464 of yacc.c  */
-#line 1143 "120gram.y"
+#line 1137 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr33, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 415:
 
 /* Line 1464 of yacc.c  */
-#line 1144 "120gram.y"
+#line 1138 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr34, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 416:
 
 /* Line 1464 of yacc.c  */
-#line 1145 "120gram.y"
+#line 1139 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr35, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 417:
 
 /* Line 1464 of yacc.c  */
-#line 1146 "120gram.y"
+#line 1140 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr36, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 418:
 
 /* Line 1464 of yacc.c  */
-#line 1147 "120gram.y"
+#line 1141 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr37, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 419:
 
 /* Line 1464 of yacc.c  */
-#line 1148 "120gram.y"
+#line 1142 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr38, 0); }
     break;
 
   case 420:
 
 /* Line 1464 of yacc.c  */
-#line 1149 "120gram.y"
+#line 1143 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr39, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 421:
 
 /* Line 1464 of yacc.c  */
-#line 1150 "120gram.y"
+#line 1144 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr40, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 422:
 
 /* Line 1464 of yacc.c  */
-#line 1151 "120gram.y"
+#line 1145 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr41, 0); }
     break;
 
   case 423:
 
 /* Line 1464 of yacc.c  */
-#line 1152 "120gram.y"
+#line 1146 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(OPERATORr42, 0); }
     break;
 
   case 424:
 
 /* Line 1464 of yacc.c  */
-#line 1161 "120gram.y"
+#line 1155 "120gram.y"
     { exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
 																			yerror(NULL, -1);
@@ -6144,7 +6144,7 @@ yyreduce:
   case 425:
 
 /* Line 1464 of yacc.c  */
-#line 1169 "120gram.y"
+#line 1163 "120gram.y"
     { exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
 																			yerror(NULL, -1);
@@ -6155,7 +6155,7 @@ yyreduce:
   case 426:
 
 /* Line 1464 of yacc.c  */
-#line 1174 "120gram.y"
+#line 1168 "120gram.y"
     { exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
 																			yerror(NULL, -1);
@@ -6166,7 +6166,7 @@ yyreduce:
   case 427:
 
 /* Line 1464 of yacc.c  */
-#line 1182 "120gram.y"
+#line 1176 "120gram.y"
     { exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
 																			yerror(NULL, -1);
@@ -6177,7 +6177,7 @@ yyreduce:
   case 428:
 
 /* Line 1464 of yacc.c  */
-#line 1187 "120gram.y"
+#line 1181 "120gram.y"
     { exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
 																			yerror(NULL, -1);
@@ -6188,7 +6188,7 @@ yyreduce:
   case 429:
 
 /* Line 1464 of yacc.c  */
-#line 1195 "120gram.y"
+#line 1189 "120gram.y"
     { exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
 																			yerror(NULL, -1);
@@ -6199,7 +6199,7 @@ yyreduce:
   case 430:
 
 /* Line 1464 of yacc.c  */
-#line 1200 "120gram.y"
+#line 1194 "120gram.y"
     { exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
 																			yerror(NULL, -1);
@@ -6210,7 +6210,7 @@ yyreduce:
   case 431:
 
 /* Line 1464 of yacc.c  */
-#line 1205 "120gram.y"
+#line 1199 "120gram.y"
     { exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
 																			yerror(NULL, -1);
@@ -6221,7 +6221,7 @@ yyreduce:
   case 432:
 
 /* Line 1464 of yacc.c  */
-#line 1210 "120gram.y"
+#line 1204 "120gram.y"
     { exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
 																			yerror(NULL, -1);
@@ -6232,7 +6232,7 @@ yyreduce:
   case 433:
 
 /* Line 1464 of yacc.c  */
-#line 1216 "120gram.y"
+#line 1210 "120gram.y"
     { exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
 																			yerror(NULL, -1);
@@ -6242,7 +6242,7 @@ yyreduce:
   case 434:
 
 /* Line 1464 of yacc.c  */
-#line 1221 "120gram.y"
+#line 1215 "120gram.y"
     { exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
 																			yerror(NULL, -1);
@@ -6252,7 +6252,7 @@ yyreduce:
   case 435:
 
 /* Line 1464 of yacc.c  */
-#line 1228 "120gram.y"
+#line 1222 "120gram.y"
     { exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
 																			yerror(NULL, -1);
@@ -6262,7 +6262,7 @@ yyreduce:
   case 436:
 
 /* Line 1464 of yacc.c  */
-#line 1235 "120gram.y"
+#line 1229 "120gram.y"
     { exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
 																			yerror(NULL, -1);
@@ -6273,7 +6273,7 @@ yyreduce:
   case 437:
 
 /* Line 1464 of yacc.c  */
-#line 1240 "120gram.y"
+#line 1234 "120gram.y"
     { exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
 																			yerror(NULL, -1);
@@ -6284,7 +6284,7 @@ yyreduce:
   case 438:
 
 /* Line 1464 of yacc.c  */
-#line 1248 "120gram.y"
+#line 1242 "120gram.y"
     { exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
 																			yerror(NULL, -1);
@@ -6295,7 +6295,7 @@ yyreduce:
   case 439:
 
 /* Line 1464 of yacc.c  */
-#line 1253 "120gram.y"
+#line 1247 "120gram.y"
     { exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
 																			yerror(NULL, -1);
@@ -6306,7 +6306,7 @@ yyreduce:
   case 440:
 
 /* Line 1464 of yacc.c  */
-#line 1258 "120gram.y"
+#line 1252 "120gram.y"
     { exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
 																			yerror(NULL, -1);
@@ -6317,7 +6317,7 @@ yyreduce:
   case 441:
 
 /* Line 1464 of yacc.c  */
-#line 1266 "120gram.y"
+#line 1260 "120gram.y"
     { exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
 																			yerror(NULL, -1);
@@ -6328,7 +6328,7 @@ yyreduce:
   case 442:
 
 /* Line 1464 of yacc.c  */
-#line 1274 "120gram.y"
+#line 1268 "120gram.y"
     { exitStatus = 3;
 																			getErrorMessage(ER_TEMPLATE);
 																			yerror(NULL, -1);
@@ -6339,434 +6339,434 @@ yyreduce:
   case 443:
 
 /* Line 1464 of yacc.c  */
-#line 1286 "120gram.y"
+#line 1280 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(TRY_BLOCKr1, 3, (yyvsp[(1) - (3)].n), (yyvsp[(2) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 444:
 
 /* Line 1464 of yacc.c  */
-#line 1290 "120gram.y"
+#line 1284 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(FUNCTION_TRY_BLOCKr1, 3, (yyvsp[(1) - (4)].n), (yyvsp[(2) - (4)].n), (yyvsp[(3) - (4)].n)); }
     break;
 
   case 445:
 
 /* Line 1464 of yacc.c  */
-#line 1294 "120gram.y"
+#line 1288 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(HANDLER_SEQr1, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 446:
 
 /* Line 1464 of yacc.c  */
-#line 1299 "120gram.y"
+#line 1293 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(HANDLERr1, 3, (yyvsp[(1) - (5)].n), (yyvsp[(3) - (5)].n), (yyvsp[(5) - (5)].n)); }
     break;
 
   case 447:
 
 /* Line 1464 of yacc.c  */
-#line 1303 "120gram.y"
+#line 1297 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(EXCEPTION_DECLARATIONr1, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 448:
 
 /* Line 1464 of yacc.c  */
-#line 1304 "120gram.y"
+#line 1298 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(EXCEPTION_DECLARATIONr2, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 449:
 
 /* Line 1464 of yacc.c  */
-#line 1305 "120gram.y"
+#line 1299 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(EXCEPTION_DECLARATIONr3, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 450:
 
 /* Line 1464 of yacc.c  */
-#line 1306 "120gram.y"
+#line 1300 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(EXCEPTION_DECLARATIONr4, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 451:
 
 /* Line 1464 of yacc.c  */
-#line 1310 "120gram.y"
+#line 1304 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(THROW_EXPRESSIONr1, 2, (yyvsp[(1) - (2)].n), (yyvsp[(2) - (2)].n)); }
     break;
 
   case 452:
 
 /* Line 1464 of yacc.c  */
-#line 1314 "120gram.y"
+#line 1308 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(EXCEPTION_SPECIFICATIONr1, 2, (yyvsp[(1) - (4)].n), (yyvsp[(3) - (4)].n)); }
     break;
 
   case 453:
 
 /* Line 1464 of yacc.c  */
-#line 1318 "120gram.y"
+#line 1312 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(TYPE_ID_LISTr1, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 454:
 
 /* Line 1464 of yacc.c  */
-#line 1319 "120gram.y"
+#line 1313 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(TYPE_ID_LISTr2, 2, (yyvsp[(1) - (3)].n), (yyvsp[(3) - (3)].n)); }
     break;
 
   case 455:
 
 /* Line 1464 of yacc.c  */
-#line 1327 "120gram.y"
+#line 1321 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DECLARATION_SEQ_OPTr1, 0); }
     break;
 
   case 456:
 
 /* Line 1464 of yacc.c  */
-#line 1328 "120gram.y"
+#line 1322 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DECLARATION_SEQ_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 457:
 
 /* Line 1464 of yacc.c  */
-#line 1332 "120gram.y"
+#line 1326 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(NESTED_NAME_SPECIFIER_OPTr1, 0); }
     break;
 
   case 458:
 
 /* Line 1464 of yacc.c  */
-#line 1333 "120gram.y"
+#line 1327 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(NESTED_NAME_SPECIFIER_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 459:
 
 /* Line 1464 of yacc.c  */
-#line 1337 "120gram.y"
+#line 1331 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(EXPRESSION_LIST_OPTr1, 0); }
     break;
 
   case 460:
 
 /* Line 1464 of yacc.c  */
-#line 1338 "120gram.y"
+#line 1332 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(EXPRESSION_LIST_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 461:
 
 /* Line 1464 of yacc.c  */
-#line 1342 "120gram.y"
+#line 1336 "120gram.y"
     { (yyval.n) = (TreeNode *)(TreeNode *)alacnary(COLONCOLON_OPTr1, 0); }
     break;
 
   case 462:
 
 /* Line 1464 of yacc.c  */
-#line 1343 "120gram.y"
+#line 1337 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(COLONCOLON_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 463:
 
 /* Line 1464 of yacc.c  */
-#line 1347 "120gram.y"
+#line 1341 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(NEW_PLACEMENT_OPTr1, 0); }
     break;
 
   case 464:
 
 /* Line 1464 of yacc.c  */
-#line 1348 "120gram.y"
+#line 1342 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(NEW_PLACEMENT_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 465:
 
 /* Line 1464 of yacc.c  */
-#line 1352 "120gram.y"
+#line 1346 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(NEW_INITIALIZER_OPTr1, 0); }
     break;
 
   case 466:
 
 /* Line 1464 of yacc.c  */
-#line 1353 "120gram.y"
+#line 1347 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(NEW_INITIALIZER_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 467:
 
 /* Line 1464 of yacc.c  */
-#line 1357 "120gram.y"
+#line 1351 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(NEW_DECLARATOR_OPTr1, 0); }
     break;
 
   case 468:
 
 /* Line 1464 of yacc.c  */
-#line 1358 "120gram.y"
+#line 1352 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(NEW_DECLARATOR_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 469:
 
 /* Line 1464 of yacc.c  */
-#line 1362 "120gram.y"
+#line 1356 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(EXPRESSION_OPTr1, 0); }
     break;
 
   case 470:
 
 /* Line 1464 of yacc.c  */
-#line 1363 "120gram.y"
+#line 1357 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(EXPRESSION_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 471:
 
 /* Line 1464 of yacc.c  */
-#line 1367 "120gram.y"
+#line 1361 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(STATEMENT_SEQ_OPTr1, 0); }
     break;
 
   case 472:
 
 /* Line 1464 of yacc.c  */
-#line 1368 "120gram.y"
+#line 1362 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(STATEMENT_SEQ_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 473:
 
 /* Line 1464 of yacc.c  */
-#line 1372 "120gram.y"
+#line 1366 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CONDITION_OPTr1, 0); }
     break;
 
   case 474:
 
 /* Line 1464 of yacc.c  */
-#line 1373 "120gram.y"
+#line 1367 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CONDITION_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 475:
 
 /* Line 1464 of yacc.c  */
-#line 1377 "120gram.y"
+#line 1371 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(ENUMERATOR_LIST_OPTr1, 0); }
     break;
 
   case 476:
 
 /* Line 1464 of yacc.c  */
-#line 1378 "120gram.y"
+#line 1372 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(ENUMERATOR_LIST_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 477:
 
 /* Line 1464 of yacc.c  */
-#line 1382 "120gram.y"
+#line 1376 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(INITIALIZER_OPTr1, 0); }
     break;
 
   case 478:
 
 /* Line 1464 of yacc.c  */
-#line 1383 "120gram.y"
+#line 1377 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(INITIALIZER_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 479:
 
 /* Line 1464 of yacc.c  */
-#line 1387 "120gram.y"
+#line 1381 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CONSTANT_EXPRESSION_OPTr1, 0); }
     break;
 
   case 480:
 
 /* Line 1464 of yacc.c  */
-#line 1388 "120gram.y"
+#line 1382 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CONSTANT_EXPRESSION_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 481:
 
 /* Line 1464 of yacc.c  */
-#line 1392 "120gram.y"
+#line 1386 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(ABSTRACT_DECLARATOR_OPTr1, 0); }
     break;
 
   case 482:
 
 /* Line 1464 of yacc.c  */
-#line 1393 "120gram.y"
+#line 1387 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(ABSTRACT_DECLARATOR_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 483:
 
 /* Line 1464 of yacc.c  */
-#line 1397 "120gram.y"
+#line 1391 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(TYPE_SPECIFIER_SEQ_OPTr1, 0); }
     break;
 
   case 484:
 
 /* Line 1464 of yacc.c  */
-#line 1398 "120gram.y"
+#line 1392 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(TYPE_SPECIFIER_SEQ_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 485:
 
 /* Line 1464 of yacc.c  */
-#line 1402 "120gram.y"
+#line 1396 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DIRECT_ABSTRACT_DECLARATOR_OPTr1, 0); }
     break;
 
   case 486:
 
 /* Line 1464 of yacc.c  */
-#line 1403 "120gram.y"
+#line 1397 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(DIRECT_ABSTRACT_DECLARATOR_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 487:
 
 /* Line 1464 of yacc.c  */
-#line 1407 "120gram.y"
+#line 1401 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CTOR_INITIALIZER_OPTr1, 0); }
     break;
 
   case 488:
 
 /* Line 1464 of yacc.c  */
-#line 1408 "120gram.y"
+#line 1402 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CTOR_INITIALIZER_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 489:
 
 /* Line 1464 of yacc.c  */
-#line 1412 "120gram.y"
+#line 1406 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(COMMA_OPTr1, 0); }
     break;
 
   case 490:
 
 /* Line 1464 of yacc.c  */
-#line 1413 "120gram.y"
+#line 1407 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(COMMA_OPTr2, 0); }
     break;
 
   case 491:
 
 /* Line 1464 of yacc.c  */
-#line 1417 "120gram.y"
+#line 1411 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEMBER_SPECIFICATION_OPTr1, 0); }
     break;
 
   case 492:
 
 /* Line 1464 of yacc.c  */
-#line 1418 "120gram.y"
+#line 1412 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(MEMBER_SPECIFICATION_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 493:
 
 /* Line 1464 of yacc.c  */
-#line 1422 "120gram.y"
+#line 1416 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(SEMICOLON_OPTr1, 0); }
     break;
 
   case 494:
 
 /* Line 1464 of yacc.c  */
-#line 1423 "120gram.y"
+#line 1417 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(SEMICOLON_OPTr2, 0); }
     break;
 
   case 495:
 
 /* Line 1464 of yacc.c  */
-#line 1427 "120gram.y"
+#line 1421 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CONVERSION_DECLARATOR_OPTr1, 0); }
     break;
 
   case 496:
 
 /* Line 1464 of yacc.c  */
-#line 1428 "120gram.y"
+#line 1422 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(CONVERSION_DECLARATOR_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 497:
 
 /* Line 1464 of yacc.c  */
-#line 1432 "120gram.y"
+#line 1426 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(EXPORT_OPTr1, 0); }
     break;
 
   case 498:
 
 /* Line 1464 of yacc.c  */
-#line 1433 "120gram.y"
+#line 1427 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(EXPORT_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 499:
 
 /* Line 1464 of yacc.c  */
-#line 1437 "120gram.y"
+#line 1431 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(HANDLER_SEQ_OPTr1, 0); }
     break;
 
   case 500:
 
 /* Line 1464 of yacc.c  */
-#line 1438 "120gram.y"
+#line 1432 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(HANDLER_SEQ_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 501:
 
 /* Line 1464 of yacc.c  */
-#line 1442 "120gram.y"
+#line 1436 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(ASSIGNMENT_EXPRESSION_OPTr1, 0); }
     break;
 
   case 502:
 
 /* Line 1464 of yacc.c  */
-#line 1443 "120gram.y"
+#line 1437 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(ASSIGNMENT_EXPRESSION_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
   case 503:
 
 /* Line 1464 of yacc.c  */
-#line 1447 "120gram.y"
+#line 1441 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(TYPE_ID_LIST_OPTr1, 0); }
     break;
 
   case 504:
 
 /* Line 1464 of yacc.c  */
-#line 1448 "120gram.y"
+#line 1442 "120gram.y"
     { (yyval.n) = (TreeNode *)alacnary(TYPE_ID_LIST_OPTr2, 1, (yyvsp[(1) - (1)].n)); }
     break;
 
@@ -6985,7 +6985,7 @@ yyreturn:
 
 
 /* Line 1684 of yacc.c  */
-#line 1451 "120gram.y"
+#line 1445 "120gram.y"
 
 
 TreeNode *alacnary(int prodRule, int children,...){

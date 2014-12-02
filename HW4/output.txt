@@ -172,10 +172,39 @@
             statement: 1
              compound_statement: 1
               statement_seq_opt: 1
-               statement_seq: 1
+               statement_seq: 2
+                statement_seq: 1
+                 statement: 1
+                  expression_statement: 1
+                   expression_opt: 1
+                    expression: 1
+                     assignment_expression: 1
+                      conditional_expression: 1
+                       logical_or_expression: 1
+                        logical_and_expression: 1
+                         inclusive_or_expression: 1
+                          exclusive_or_expression: 1
+                           and_expression: 1
+                            equality_expression: 1
+                             relational_expression: 1
+                              shift_expression: 1
+                               additive_expression: 1
+                                multiplicative_expression: 1
+                                 pm_expression: 1
+                                  cast_expression: 1
+                                   unary_expression: 1
+                                    postfix_expression: 2
+                                     postfix_expression: 1
+                                      primary_expression: 1
+                                       id_expression: 1
+                                        unqualified_id: 1
+                                         identifier: 1
+                                          IDENTIFIER: a
+                                     PLUSPLUS: ++
                 statement: 1
-                 expression_statement: 1
-                  expression_opt: 1
+                 selection_statement: 3
+                  IF: if
+                  condition: 1
                    expression: 1
                     assignment_expression: 1
                      conditional_expression: 1
@@ -184,7 +213,22 @@
                         inclusive_or_expression: 1
                          exclusive_or_expression: 1
                           and_expression: 1
-                           equality_expression: 1
+                           equality_expression: 3
+                            equality_expression: 1
+                             relational_expression: 1
+                              shift_expression: 1
+                               additive_expression: 1
+                                multiplicative_expression: 1
+                                 pm_expression: 1
+                                  cast_expression: 1
+                                   unary_expression: 1
+                                    postfix_expression: 1
+                                     primary_expression: 1
+                                      id_expression: 1
+                                       unqualified_id: 1
+                                        identifier: 1
+                                         IDENTIFIER: a
+                            EQ: ==
                             relational_expression: 1
                              shift_expression: 1
                               additive_expression: 1
@@ -192,14 +236,14 @@
                                 pm_expression: 1
                                  cast_expression: 1
                                   unary_expression: 1
-                                   postfix_expression: 2
-                                    postfix_expression: 1
-                                     primary_expression: 1
-                                      id_expression: 1
-                                       unqualified_id: 1
-                                        identifier: 1
-                                         IDENTIFIER: a
-                                    PLUSPLUS: ++
+                                   postfix_expression: 1
+                                    primary_expression: 1
+                                     literal: 1
+                                      integer_literal: 1
+                                       INTEGER: 10
+                  statement: 1
+                   jump_statement: 1
+                    BREAK: break
          statement: 1
           jump_statement: 2
            RETURN: return
@@ -401,6 +445,44 @@ expression opt2
 expression statement1
 statement2
 statement seq1
+identifier1
+unqualified id1
+id expression1
+primary expression4
+postfix expression1
+unary expression1
+cast_expression1
+pm_expression1
+multiplicative_expression1
+additive_expression1
+shift_expression1
+relational_expression1
+equality_expression1
+integer literal1
+literal1
+primary expression1
+postfix expression1
+unary expression1
+cast_expression1
+pm_expression1
+multiplicative_expression1
+additive_expression1
+shift_expression1
+relational_expression1
+equality_expression2
+and_expression1
+exclusive_or_expression1
+inclusive_or_expression1
+logical and expression1
+logical or expression1
+conditional expression1
+assignment expression1
+expression1
+condition1
+jump_statement1statement6
+selection_statement1
+statement4
+statement seq2
 statement seq opt2
 compound statement1
 statement3
@@ -614,35 +696,79 @@ global ST: 31
                               PLUSPLUS: ++ - UNKNOWN TYPE
             statement: 1 - statement
              compound_statement: 1 - statement
-              statement_seq_opt: 1 - statement
-               statement_seq: 1 - statement
+              statement_seq_opt: 1 - touple
+               statement_seq: 2 - touple
+                statement_seq: 1 - statement
+                 statement: 1 - statement
+                  expression_statement: 1 - statement
+                   expression_opt: 1 a  - UNKNOWN TYPE
+                    expression: 1 a  - UNKNOWN TYPE
+                     assignment_expression: 1 a  - UNKNOWN TYPE
+                      conditional_expression: 1 a  - UNKNOWN TYPE
+                       logical_or_expression: 1 a  - UNKNOWN TYPE
+                        logical_and_expression: 1 a  - UNKNOWN TYPE
+                         inclusive_or_expression: 1 a  - UNKNOWN TYPE
+                          exclusive_or_expression: 1 a  - UNKNOWN TYPE
+                           and_expression: 1 a  - UNKNOWN TYPE
+                            equality_expression: 1 a  - UNKNOWN TYPE
+                             relational_expression: 1 a  - UNKNOWN TYPE
+                              shift_expression: 1 a  - UNKNOWN TYPE
+                               additive_expression: 1 a  - UNKNOWN TYPE
+                                multiplicative_expression: 1 a  - UNKNOWN TYPE
+                                 pm_expression: 1 a  - UNKNOWN TYPE
+                                  cast_expression: 1 a  - UNKNOWN TYPE
+                                   unary_expression: 1 a  - UNKNOWN TYPE
+                                    postfix_expression: 2 a  - UNKNOWN TYPE
+                                     postfix_expression: 1 a  - UNKNOWN TYPE
+                                      primary_expression: 1 a  - UNKNOWN TYPE
+                                       id_expression: 1 a  - UNKNOWN TYPE
+                                        unqualified_id: 1 a  - UNKNOWN TYPE
+                                         identifier: 1 a  - UNKNOWN TYPE
+                                          IDENTIFIER: a - UNKNOWN TYPE
+                                     PLUSPLUS: ++ - UNKNOWN TYPE
                 statement: 1 - statement
-                 expression_statement: 1 - statement
-                  expression_opt: 1 a  - UNKNOWN TYPE
-                   expression: 1 a  - UNKNOWN TYPE
-                    assignment_expression: 1 a  - UNKNOWN TYPE
-                     conditional_expression: 1 a  - UNKNOWN TYPE
-                      logical_or_expression: 1 a  - UNKNOWN TYPE
-                       logical_and_expression: 1 a  - UNKNOWN TYPE
-                        inclusive_or_expression: 1 a  - UNKNOWN TYPE
-                         exclusive_or_expression: 1 a  - UNKNOWN TYPE
-                          and_expression: 1 a  - UNKNOWN TYPE
-                           equality_expression: 1 a  - UNKNOWN TYPE
-                            relational_expression: 1 a  - UNKNOWN TYPE
-                             shift_expression: 1 a  - UNKNOWN TYPE
-                              additive_expression: 1 a  - UNKNOWN TYPE
-                               multiplicative_expression: 1 a  - UNKNOWN TYPE
-                                pm_expression: 1 a  - UNKNOWN TYPE
-                                 cast_expression: 1 a  - UNKNOWN TYPE
-                                  unary_expression: 1 a  - UNKNOWN TYPE
-                                   postfix_expression: 2 a  - UNKNOWN TYPE
+                 selection_statement: 3 - statement
+                  IF: if - statement
+                  condition: 1 - bool
+                   expression: 1 - bool
+                    assignment_expression: 1 - bool
+                     conditional_expression: 1 - bool
+                      logical_or_expression: 1 - bool
+                       logical_and_expression: 1 - bool
+                        inclusive_or_expression: 1 - bool
+                         exclusive_or_expression: 1 - bool
+                          and_expression: 1 - bool
+                           equality_expression: 3 - bool
+                            equality_expression: 1 a  - UNKNOWN TYPE
+                             relational_expression: 1 a  - UNKNOWN TYPE
+                              shift_expression: 1 a  - UNKNOWN TYPE
+                               additive_expression: 1 a  - UNKNOWN TYPE
+                                multiplicative_expression: 1 a  - UNKNOWN TYPE
+                                 pm_expression: 1 a  - UNKNOWN TYPE
+                                  cast_expression: 1 a  - UNKNOWN TYPE
+                                   unary_expression: 1 a  - UNKNOWN TYPE
                                     postfix_expression: 1 a  - UNKNOWN TYPE
                                      primary_expression: 1 a  - UNKNOWN TYPE
                                       id_expression: 1 a  - UNKNOWN TYPE
                                        unqualified_id: 1 a  - UNKNOWN TYPE
                                         identifier: 1 a  - UNKNOWN TYPE
                                          IDENTIFIER: a - UNKNOWN TYPE
-                                    PLUSPLUS: ++ - UNKNOWN TYPE
+                            EQ: == - UNKNOWN TYPE
+                            relational_expression: 1 10  - int
+                             shift_expression: 1 10  - int
+                              additive_expression: 1 10  - int
+                               multiplicative_expression: 1 10  - int
+                                pm_expression: 1 10  - int
+                                 cast_expression: 1 10  - int
+                                  unary_expression: 1 10  - int
+                                   postfix_expression: 1 10  - int
+                                    primary_expression: 1 10  - int
+                                     literal: 1 10  - int
+                                      integer_literal: 1 10  - int
+                                       INTEGER: 10 - int
+                  statement: 1 - statement
+                   jump_statement: 1 - statement
+                    BREAK: break - UNKNOWN TYPE
          statement: 1 a  - UNKNOWN TYPE
           jump_statement: 2 a  - UNKNOWN TYPE
            RETURN: return - UNKNOWN TYPE
@@ -673,6 +799,8 @@ global ST: 31
 identifier 1
 identifier 1
 identifier 1
+identifier 1
+		SymbolTable: program
 identifier 1
 		SymbolTable: program
 identifier 1
@@ -920,10 +1048,68 @@ int i
 **addFunctionBodySymbols**
 **addFunctionBodySymbols**
 **addFunctionBodySymbols**
+**addFunctionBodySymbols**
 identifier 1
 UNKNOWN TYPE a
 		SymbolTable: main
 int a
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+relational_expression
+		SymbolTable: main
+	Operator: int : int
+	Base:  int : int
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+identifier 1
+int a
+int a
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+literal
+temp count: 3
+_Const_3 0
+adding to symbol table main:
+int _Const_3
+
+addToSymbolTable: [6]
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
+**addFunctionBodySymbols**
 **addFunctionBodySymbols**
 **addFunctionBodySymbols**
 **addFunctionBodySymbols**
@@ -1134,35 +1320,79 @@ translation unit 1 complete
                               PLUSPLUS: ++ - UNKNOWN TYPE
             statement: 1 - statement
              compound_statement: 1 - statement
-              statement_seq_opt: 1 - statement
-               statement_seq: 1 - statement
+              statement_seq_opt: 1 - touple
+               statement_seq: 2 - touple
+                statement_seq: 1 - statement
+                 statement: 1 - statement
+                  expression_statement: 1 - statement
+                   expression_opt: 1 a  - int
+                    expression: 1 a  - int
+                     assignment_expression: 1 a  - int
+                      conditional_expression: 1 a  - int
+                       logical_or_expression: 1 a  - int
+                        logical_and_expression: 1 a  - int
+                         inclusive_or_expression: 1 a  - int
+                          exclusive_or_expression: 1 a  - int
+                           and_expression: 1 a  - int
+                            equality_expression: 1 a  - int
+                             relational_expression: 1 a  - int
+                              shift_expression: 1 a  - int
+                               additive_expression: 1 a  - int
+                                multiplicative_expression: 1 a  - int
+                                 pm_expression: 1 a  - int
+                                  cast_expression: 1 a  - int
+                                   unary_expression: 1 a  - int
+                                    postfix_expression: 2 a  - int
+                                     postfix_expression: 1 a  - int
+                                      primary_expression: 1 a  - int
+                                       id_expression: 1 a  - int
+                                        unqualified_id: 1 a  - int
+                                         identifier: 1 a  - int
+                                          IDENTIFIER: a - int
+                                     PLUSPLUS: ++ - UNKNOWN TYPE
                 statement: 1 - statement
-                 expression_statement: 1 - statement
-                  expression_opt: 1 a  - int
-                   expression: 1 a  - int
-                    assignment_expression: 1 a  - int
-                     conditional_expression: 1 a  - int
-                      logical_or_expression: 1 a  - int
-                       logical_and_expression: 1 a  - int
-                        inclusive_or_expression: 1 a  - int
-                         exclusive_or_expression: 1 a  - int
-                          and_expression: 1 a  - int
-                           equality_expression: 1 a  - int
-                            relational_expression: 1 a  - int
-                             shift_expression: 1 a  - int
-                              additive_expression: 1 a  - int
-                               multiplicative_expression: 1 a  - int
-                                pm_expression: 1 a  - int
-                                 cast_expression: 1 a  - int
-                                  unary_expression: 1 a  - int
-                                   postfix_expression: 2 a  - int
+                 selection_statement: 3 - statement
+                  IF: if - statement
+                  condition: 1 - bool
+                   expression: 1 - bool
+                    assignment_expression: 1 - bool
+                     conditional_expression: 1 - bool
+                      logical_or_expression: 1 - bool
+                       logical_and_expression: 1 - bool
+                        inclusive_or_expression: 1 - bool
+                         exclusive_or_expression: 1 - bool
+                          and_expression: 1 - bool
+                           equality_expression: 3 - bool
+                            equality_expression: 1 a  - int
+                             relational_expression: 1 a  - int
+                              shift_expression: 1 a  - int
+                               additive_expression: 1 a  - int
+                                multiplicative_expression: 1 a  - int
+                                 pm_expression: 1 a  - int
+                                  cast_expression: 1 a  - int
+                                   unary_expression: 1 a  - int
                                     postfix_expression: 1 a  - int
                                      primary_expression: 1 a  - int
                                       id_expression: 1 a  - int
                                        unqualified_id: 1 a  - int
                                         identifier: 1 a  - int
                                          IDENTIFIER: a - int
-                                    PLUSPLUS: ++ - UNKNOWN TYPE
+                            EQ: == - UNKNOWN TYPE
+                            relational_expression: 1 _Const_3  - int
+                             shift_expression: 1 _Const_3  - int
+                              additive_expression: 1 _Const_3  - int
+                               multiplicative_expression: 1 _Const_3  - int
+                                pm_expression: 1 _Const_3  - int
+                                 cast_expression: 1 _Const_3  - int
+                                  unary_expression: 1 _Const_3  - int
+                                   postfix_expression: 1 _Const_3  - int
+                                    primary_expression: 1 _Const_3  - int
+                                     literal: 1 _Const_3  - int
+                                      integer_literal: 1 _Const_3  - int
+                                       INTEGER: 10 - int
+                  statement: 1 - statement
+                   jump_statement: 1 - statement
+                    BREAK: break - UNKNOWN TYPE
          statement: 1 a  - int
           jump_statement: 2 a  - int
            RETURN: return - int
@@ -1195,12 +1425,13 @@ translation unit 1 complete
 program: [0]
 0	int main()
 ----------------------
-function main: [48]
+function main: [56]
 8	int a
 16	int _Const_0
 24	int i
 32	int _Const_1
 40	int _Const_2
+48	int _Const_3
 ----------------------
 *** Intermediate Code Generation ***
 simple_type_specifier
@@ -1210,6 +1441,7 @@ decl_specifier_seq
 identifier
 unqualified_id
 id_expression
+declarator
 ctor_initializer_opt
 simple_type_specifier
 type_specifier
@@ -1218,6 +1450,7 @@ decl_specifier_seq
 identifier
 unqualified_id
 id_expression
+declarator
 integer_literal
 literal
 		SymbolTable: main
@@ -1243,19 +1476,19 @@ init_declarator
 		SymbolTable: main
 		SymbolTable: main
 		SymbolTable: main
-                             ASN    main:8,    Const:
+                             ASN    main:8, Const:5
 init_declarator_list
-                             ASN    main:8,    Const:
+                             ASN    main:8, Const:5
 simple_declaration
-                             ASN    main:8,    Const:
+                             ASN    main:8, Const:5
 block_declaration
-                             ASN    main:8,    Const:
+                             ASN    main:8, Const:5
 declaration_statement
-                             ASN    main:8,    Const:
+                             ASN    main:8, Const:5
 statement
-                             ASN    main:8,    Const:
+                             ASN    main:8, Const:5
 statement_seq
-                             ASN    main:8,    Const:
+                             ASN    main:8, Const:5
 simple_type_specifier
 type_specifier
 decl_specifier
@@ -1263,6 +1496,7 @@ decl_specifier_seq
 identifier
 unqualified_id
 id_expression
+declarator
 integer_literal
 literal
 		SymbolTable: main
@@ -1288,13 +1522,13 @@ init_declarator
 		SymbolTable: main
 		SymbolTable: main
 		SymbolTable: main
-                             ASN    main:24,    Const:
+                             ASN    main:24, Const:0
 init_declarator_list
-                             ASN    main:24,    Const:
+                             ASN    main:24, Const:0
 simple_declaration
-                             ASN    main:24,    Const:
+                             ASN    main:24, Const:0
 for_init_statement
-                             ASN    main:24,    Const:
+                             ASN    main:24, Const:0
 identifier
 unqualified_id
 id_expression
@@ -1318,39 +1552,39 @@ pm_expression
 multiplicative_expression
 additive_expression
 shift_expression
-temp count: 3
-_Temp_3 48
+temp count: 4
+_Temp_4 56
 adding to symbol table main:
-bool _Temp_3
+bool _Temp_4
 
-addToSymbolTable: [6]
+addToSymbolTable: [7]
 		SymbolTable: main
 		SymbolTable: main
 		SymbolTable: main
-                              LT    main:48, main:24,    Const:
+                              LT    main:56, main:24, Const:7
 equality_expression
-                              LT    main:48, main:24,    Const:
+                              LT    main:56, main:24, Const:7
 and_expression
-                              LT    main:48, main:24,    Const:
+                              LT    main:56, main:24, Const:7
 exclusive_or_expression
-                              LT    main:48, main:24,    Const:
+                              LT    main:56, main:24, Const:7
 inclusive_or_expression
-                              LT    main:48, main:24,    Const:
+                              LT    main:56, main:24, Const:7
 logical_and_expression
-                              LT    main:48, main:24,    Const:
+                              LT    main:56, main:24, Const:7
 logical_or_expression
-                              LT    main:48, main:24,    Const:
+                              LT    main:56, main:24, Const:7
 conditional_expression
-                              LT    main:48, main:24,    Const:
+                              LT    main:56, main:24, Const:7
 assignment_expression
-                              LT    main:48, main:24,    Const:
+                              LT    main:56, main:24, Const:7
 expression
-                              LT    main:48, main:24,    Const:
+                              LT    main:56, main:24, Const:7
 condition
-                              LT    main:48, main:24,    Const:
+                              LT    main:56, main:24, Const:7
 condition_opt
-                              LT    main:48, main:24,    Const:
-                              LT    main:48, main:24,    Const:
+                              LT    main:56, main:24, Const:7
+                              LT    main:56, main:24, Const:7
 identifier
 unqualified_id
 id_expression
@@ -1437,42 +1671,157 @@ statement
                             ADD1    main:8, main:8
 statement_seq
                             ADD1    main:8, main:8
+identifier
+unqualified_id
+id_expression
+primary_expression
+postfix_expression
+unary_expression
+cast_expression
+pm_expression
+multiplicative_expression
+additive_expression
+shift_expression
+relational_expression
+equality_expression
+integer_literal
+literal
+		SymbolTable: main
+primary_expression
+postfix_expression
+unary_expression
+cast_expression
+pm_expression
+multiplicative_expression
+additive_expression
+shift_expression
+relational_expression
+temp count: 5
+_Temp_5 64
+adding to symbol table main:
+bool _Temp_5
+
+addToSymbolTable: [8]
+		SymbolTable: main
+		SymbolTable: main
+		SymbolTable: main
+                              EQ    main:64, main:8, Const:10
+main:64
+and_expression
+                              EQ    main:64, main:8, Const:10
+exclusive_or_expression
+                              EQ    main:64, main:8, Const:10
+inclusive_or_expression
+                              EQ    main:64, main:8, Const:10
+logical_and_expression
+                              EQ    main:64, main:8, Const:10
+logical_or_expression
+                              EQ    main:64, main:8, Const:10
+conditional_expression
+                              EQ    main:64, main:8, Const:10
+assignment_expression
+                              EQ    main:64, main:8, Const:10
+expression
+                              EQ    main:64, main:8, Const:10
+condition
+                              EQ    main:64, main:8, Const:10
+jump_statement
+statement
+selection_statement
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
+statement
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
+statement_seq
+                            ADD1    main:8, main:8
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
 statement_seq_opt
                             ADD1    main:8, main:8
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
                             ADD1    main:8, main:8
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
 compound_statement
                             ADD1    main:8, main:8
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
 statement
                             ADD1    main:8, main:8
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
 iteration_statement
+a
+setBreaksAndContinues
+LABEL_3
+LABEL_2
+b
+c
+d
+e
+f
 		SymbolTable: main
-                             ASN    main:24,    Const:
-                            GOTO    LABEL_1
-         LABEL_0:
+g
+h
+i
+                             ASN    main:24, Const:0
+                            GOTO    LABEL_2
+         LABEL_1:
                             ADD1    main:24, main:24
                             ADD1    main:8, main:8
-         LABEL_1:
-                              LT    main:48, main:24,    Const:
-                              BR    LABEL_0, main:48
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
+         LABEL_2:
+                              LT    main:56, main:24, Const:7
+                              BR    LABEL_1, main:56
+         LABEL_3:
 statement
-                             ASN    main:24,    Const:
-                            GOTO    LABEL_1
-         LABEL_0:
+                             ASN    main:24, Const:0
+                            GOTO    LABEL_2
+         LABEL_1:
                             ADD1    main:24, main:24
                             ADD1    main:8, main:8
-         LABEL_1:
-                              LT    main:48, main:24,    Const:
-                              BR    LABEL_0, main:48
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
+         LABEL_2:
+                              LT    main:56, main:24, Const:7
+                              BR    LABEL_1, main:56
+         LABEL_3:
 statement_seq
-                             ASN    main:8,    Const:
-                             ASN    main:24,    Const:
-                            GOTO    LABEL_1
-         LABEL_0:
+                             ASN    main:8, Const:5
+                             ASN    main:24, Const:0
+                            GOTO    LABEL_2
+         LABEL_1:
                             ADD1    main:24, main:24
                             ADD1    main:8, main:8
-         LABEL_1:
-                              LT    main:48, main:24,    Const:
-                              BR    LABEL_0, main:48
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
+         LABEL_2:
+                              LT    main:56, main:24, Const:7
+                              BR    LABEL_1, main:56
+         LABEL_3:
 identifier
 unqualified_id
 id_expression
@@ -1501,140 +1850,197 @@ jump_statement
 statement
                           RETURN    main:8
 statement_seq
-                             ASN    main:8,    Const:
-                             ASN    main:24,    Const:
-                            GOTO    LABEL_1
-         LABEL_0:
+                             ASN    main:8, Const:5
+                             ASN    main:24, Const:0
+                            GOTO    LABEL_2
+         LABEL_1:
                             ADD1    main:24, main:24
                             ADD1    main:8, main:8
-         LABEL_1:
-                              LT    main:48, main:24,    Const:
-                              BR    LABEL_0, main:48
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
+         LABEL_2:
+                              LT    main:56, main:24, Const:7
+                              BR    LABEL_1, main:56
+         LABEL_3:
                           RETURN    main:8
 statement_seq_opt
-                             ASN    main:8,    Const:
-                             ASN    main:24,    Const:
-                            GOTO    LABEL_1
-         LABEL_0:
+                             ASN    main:8, Const:5
+                             ASN    main:24, Const:0
+                            GOTO    LABEL_2
+         LABEL_1:
                             ADD1    main:24, main:24
                             ADD1    main:8, main:8
-         LABEL_1:
-                              LT    main:48, main:24,    Const:
-                              BR    LABEL_0, main:48
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
+         LABEL_2:
+                              LT    main:56, main:24, Const:7
+                              BR    LABEL_1, main:56
+         LABEL_3:
                           RETURN    main:8
-                             ASN    main:8,    Const:
-                             ASN    main:24,    Const:
-                            GOTO    LABEL_1
-         LABEL_0:
+                             ASN    main:8, Const:5
+                             ASN    main:24, Const:0
+                            GOTO    LABEL_2
+         LABEL_1:
                             ADD1    main:24, main:24
                             ADD1    main:8, main:8
-         LABEL_1:
-                              LT    main:48, main:24,    Const:
-                              BR    LABEL_0, main:48
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
+         LABEL_2:
+                              LT    main:56, main:24, Const:7
+                              BR    LABEL_1, main:56
+         LABEL_3:
                           RETURN    main:8
 compound_statement
-                             ASN    main:8,    Const:
-                             ASN    main:24,    Const:
-                            GOTO    LABEL_1
-         LABEL_0:
+                             ASN    main:8, Const:5
+                             ASN    main:24, Const:0
+                            GOTO    LABEL_2
+         LABEL_1:
                             ADD1    main:24, main:24
                             ADD1    main:8, main:8
-         LABEL_1:
-                              LT    main:48, main:24,    Const:
-                              BR    LABEL_0, main:48
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
+         LABEL_2:
+                              LT    main:56, main:24, Const:7
+                              BR    LABEL_1, main:56
+         LABEL_3:
                           RETURN    main:8
 function_body
-                             ASN    main:8,    Const:
-                             ASN    main:24,    Const:
-                            GOTO    LABEL_1
-         LABEL_0:
+                             ASN    main:8, Const:5
+                             ASN    main:24, Const:0
+                            GOTO    LABEL_2
+         LABEL_1:
                             ADD1    main:24, main:24
                             ADD1    main:8, main:8
-         LABEL_1:
-                              LT    main:48, main:24,    Const:
-                              BR    LABEL_0, main:48
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
+         LABEL_2:
+                              LT    main:56, main:24, Const:7
+                              BR    LABEL_1, main:56
+         LABEL_3:
                           RETURN    main:8
 function_definition
 main:
-                             ASN    main:8,    Const:
-                             ASN    main:24,    Const:
-                            GOTO    LABEL_1
-         LABEL_0:
+                             ASN    main:8, Const:5
+                             ASN    main:24, Const:0
+                            GOTO    LABEL_2
+         LABEL_1:
                             ADD1    main:24, main:24
                             ADD1    main:8, main:8
-         LABEL_1:
-                              LT    main:48, main:24,    Const:
-                              BR    LABEL_0, main:48
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
+         LABEL_2:
+                              LT    main:56, main:24, Const:7
+                              BR    LABEL_1, main:56
+         LABEL_3:
                           RETURN    main:8
 declaration
 main:
-                             ASN    main:8,    Const:
-                             ASN    main:24,    Const:
-                            GOTO    LABEL_1
-         LABEL_0:
+                             ASN    main:8, Const:5
+                             ASN    main:24, Const:0
+                            GOTO    LABEL_2
+         LABEL_1:
                             ADD1    main:24, main:24
                             ADD1    main:8, main:8
-         LABEL_1:
-                              LT    main:48, main:24,    Const:
-                              BR    LABEL_0, main:48
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
+         LABEL_2:
+                              LT    main:56, main:24, Const:7
+                              BR    LABEL_1, main:56
+         LABEL_3:
                           RETURN    main:8
 declaration_seq
 main:
-                             ASN    main:8,    Const:
-                             ASN    main:24,    Const:
-                            GOTO    LABEL_1
-         LABEL_0:
+                             ASN    main:8, Const:5
+                             ASN    main:24, Const:0
+                            GOTO    LABEL_2
+         LABEL_1:
                             ADD1    main:24, main:24
                             ADD1    main:8, main:8
-         LABEL_1:
-                              LT    main:48, main:24,    Const:
-                              BR    LABEL_0, main:48
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
+         LABEL_2:
+                              LT    main:56, main:24, Const:7
+                              BR    LABEL_1, main:56
+         LABEL_3:
                           RETURN    main:8
 declaration_seq_opt
 main:
-                             ASN    main:8,    Const:
-                             ASN    main:24,    Const:
-                            GOTO    LABEL_1
-         LABEL_0:
+                             ASN    main:8, Const:5
+                             ASN    main:24, Const:0
+                            GOTO    LABEL_2
+         LABEL_1:
                             ADD1    main:24, main:24
                             ADD1    main:8, main:8
-         LABEL_1:
-                              LT    main:48, main:24,    Const:
-                              BR    LABEL_0, main:48
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
+         LABEL_2:
+                              LT    main:56, main:24, Const:7
+                              BR    LABEL_1, main:56
+         LABEL_3:
                           RETURN    main:8
 main:
-                             ASN    main:8,    Const:
-                             ASN    main:24,    Const:
-                            GOTO    LABEL_1
-         LABEL_0:
+                             ASN    main:8, Const:5
+                             ASN    main:24, Const:0
+                            GOTO    LABEL_2
+         LABEL_1:
                             ADD1    main:24, main:24
                             ADD1    main:8, main:8
-         LABEL_1:
-                              LT    main:48, main:24,    Const:
-                              BR    LABEL_0, main:48
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
+         LABEL_2:
+                              LT    main:56, main:24, Const:7
+                              BR    LABEL_1, main:56
+         LABEL_3:
                           RETURN    main:8
 program
 program: [0]
 0	int main()
 ----------------------
-function main: [56]
+function main: [72]
 8	int a
 16	int _Const_0
 24	int i
 32	int _Const_1
 40	int _Const_2
-48	bool _Temp_3
+48	int _Const_3
+56	bool _Temp_4
+64	bool _Temp_5
 ----------------------
 main:
-                             ASN    main:8,    Const:
-                             ASN    main:24,    Const:
-                            GOTO    LABEL_1
-         LABEL_0:
+                             ASN    main:8, Const:5
+                             ASN    main:24, Const:0
+                            GOTO    LABEL_2
+         LABEL_1:
                             ADD1    main:24, main:24
                             ADD1    main:8, main:8
-         LABEL_1:
-                              LT    main:48, main:24,    Const:
-                              BR    LABEL_0, main:48
+                              EQ    main:64, main:8, Const:10
+                             NOT    main:64, main:64
+                              BR    LABEL_0, main:64
+         LABEL_0:
+         LABEL_2:
+                              LT    main:56, main:24, Const:7
+                              BR    LABEL_1, main:56
+         LABEL_3:
                           RETURN    main:8
 
 0

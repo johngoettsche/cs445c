@@ -12,10 +12,8 @@
 /* prototypes */
 char *humanreadable(int);
 void printTree(TreeNode *t, int depth, int b);
-//TreeNode *alacnary(int prodRule, int children,...);
 NType *getType(int tcode);
 SymbolTable *createSymbolTable(SymbolTable *parent, int size);
-//SymbolTable *createGlobalSymbolTable(int size);
 SymbolTable *getSymbolTable(SymbolTable *currentSymbolTable, char *tableName);
 int hashSymbol(NType *symb, int size);
 int inSymbolTable(SymbolTable *symbolTable, NType *symb);
@@ -43,8 +41,8 @@ void makeSymbolTables(TreeNode *node);
 CodeElem *createCodeElement();
 IntrCode *createIntrCode();
 NType *createTempSymbol(NType *source, int lab, int mode);
-//NType *createTempSymbol(NType *source, char *pre);
 Location *makeLocation(NType *source);
 IntrCode *makePairedExpression(int code, NType *child1, NType *child2, int mode);
 IntrCode *concatCode(IntrCode *front, IntrCode *back);
+void setBreaksAndContinues(IntrCode *intCode, IntrCode *brk, IntrCode *cont);
 void intermediateCodeGeneration(TreeNode *node);

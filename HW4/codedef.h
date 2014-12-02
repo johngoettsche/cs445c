@@ -17,11 +17,7 @@
 #define C_LABEL 210001
 #define C_PARAM 210002
 #define C_ASN 210003
-#define C_MULT 210004
-#define C_DIV 210005
-#define C_MOD 210006
-#define C_ADD 210007
-#define C_SUB 210008
+
 #define C_LT 210009
 #define C_GT 210010
 #define C_LTEQ 210011
@@ -33,17 +29,31 @@
 #define C_INOR 210017
 #define C_ANDAND 210018
 #define C_OROR 210019
-#define C_BR 210020
-#define C_GOTO 210021
-#define C_RET 210022 
-#define C_IDENT 210023
-#define C_INT_LIT 210024
-#define C_CHAR_LIT 210025
-#define C_FLT_LIT 210026
-#define C_STR_LIT 210027
-#define C_BOOL_LIT 210028
-#define C_NOT 210029
-#define C_ADD1 210030
-#define C_SUB1 210031
-#define C_ASN_INT 210032
-#define C_FUNC 210033
+
+#define C_BR 210100
+#define C_GOTO 210101
+#define C_RET 210102 
+#define C_BRK 210103
+#define C_CONT 210104
+
+#define C_IDENT 210200
+#define C_INT_LIT 210201
+#define C_CHAR_LIT 210202
+#define C_FLT_LIT 210203
+#define C_STR_LIT 210204
+#define C_BOOL_LIT 210205
+
+#define C_NOT 210300
+#define C_ADD1 210301
+#define C_SUB1 210302
+#define C_ASN_INT 210303
+#define C_MULT 210304
+#define C_DIV 210305
+#define C_MOD 210306
+#define C_ADD 210307
+#define C_SUB 210308
+
+#define C_FUNC 210400
+#define C_CLASS 210401
+#define C_DCODE 210402
+#define C_DSTRING 210403
