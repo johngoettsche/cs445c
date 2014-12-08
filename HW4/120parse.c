@@ -28,6 +28,7 @@ extern int exitStatus;
 extern TreeNode *root;
 extern SymbolTable *currentSymbolTable;
 extern SymbolTable *globalSymbolTable;
+extern SymbolTable *stringTable;
 
 extern int using_namespace_std;
 extern int included_iostream;
@@ -41,6 +42,7 @@ extern int included_stdlib;
 extern int codeMemory;
 extern int labelNumber;
 extern int tempSymbNumber;
+extern int stringListOffset;
 
 extern NType *codeRegion;
 
@@ -492,9 +494,14 @@ void printCode(TreeNode *node){
 		//count++;
 		switch(current->elem->desc){
 			case C_FUNC :
-			case C_DSTRING :
 			case C_DCODE :
 				printf("%s:\n", current->elem->label);
+				break;
+			case C_DSTRING :
+				printf("%s %d\n", current->elem->label, stringListOffset);
+				break;
+			case C_STR_LIT :
+				printf("%32s\n", current->elem->label);
 				break;
 			case C_LABEL :
 				printf("%16s:\n", current->elem->label);
@@ -3130,6 +3137,66 @@ if(SHOW_TREES)printf("%s %d\n", tempSymb->label, tempSymb->symbTable->offset);
 	return tempSymb;
 }
 
+NType *addToStringList(NType *source){
+	SymbolListItem *listItem;
+	if((listItem = (SymbolListItem *)calloc(1, sizeof(SymbolListItem))) == NULL) memoryError();
+	listItem->item = source;
+	listItem->offset = stringListOffset;
+	source->offset = stringListOffset;
+	stringListOffset += strlen(source->label);
+	if(stringTable->list->head == NULL){
+		stringTable->list->head = listItem;
+		stringTable->list->tail = listItem;
+	} else {
+		stringTable->list->tail->next = listItem;
+		stringTable->list->tail = listItem;
+	}
+	source->symbTable = stringTable;
+	return source;
+}
+
+char *cvnIntString(int length, int *stVal){
+   char *st = (char *)calloc(length, sizeof(char));
+	if(st == NULL) memoryError();
+   int s = 0;  /* 182 */
+   int i;
+   int escape = 0;
+   for(i = 0; i < length; i++){
+      if(escape == 0){
+         if(stVal[i] != (int)'\"')
+            if(stVal[i] == (int)'\\') escape = 1;
+            else {
+               st[s] = (char)stVal[i];
+               s++;
+            }
+      }else{
+		   int ch = -1;
+	      switch(stVal[i]) {
+		      case (int)'n' :
+		         ch = 10;
+				   break;
+			   case (int)'t' :
+			      ch = 9;
+				   break;
+			   case (int)'\'' :
+			   case (int)'\"' :
+			   case (int)'\\' :
+			      ch = stVal[i];
+				   break;
+			   case (int)'0' :
+			      ch = 0;
+				   break;
+			}
+			if (ch >= 0) {
+			   st[s] = (char)ch;
+				s++;
+			}			
+      escape = 0;
+    }
+  }
+  return st;
+}
+
 /* adds symbols in a function body and type checks for appropriate type.*/
 void addFunctionBodySymbols(SymbolTable *currentSymbolTable, TreeNode *node, int mode){
 	if(SHOW_TREES) printf("**addFunctionBodySymbols**\n");
@@ -3404,10 +3471,16 @@ void addFunctionBodySymbols(SymbolTable *currentSymbolTable, TreeNode *node, int
 				if(SHOW_TREES) printf("%s %s\n", humanreadable(node->type->base_type), node->type->label);
 				break;
 			
+			case LITERALr4 :
+				if(SHOW_TREES)printf("literal 4\n");
+				node->type->label = cvnIntString(node->u.t.token->ival, node->u.t.token->sval);
+				//node->type->label = node->u.t.token->text;
+				tempType = addToStringList(node->type);
+				copyType(tempType, node->type);
+				break;
 			case LITERALr1 :
 			case LITERALr2 :
 			case LITERALr3 :
-			case LITERALr4 :
 			case LITERALr5 :
 			if(SHOW_TREES)printf("literal\n");
 				tempType = (NType *)createTempSymbol(node->type, T_CONST, mode);
@@ -3769,6 +3842,7 @@ void intermediateCodeGeneration(TreeNode *node){
 	Location *NullLoc;
 	CodeElem *codeElem;
 	SymbolTable *thisSymbolTable;
+	SymbolListItem *currentListItem;
 	int mode = M_CODEGEN;
 	if((NullLoc = (Location *)calloc(1, sizeof(Location))) == NULL) memoryError();
 	NullLoc->val = "__NULL_";
@@ -3786,6 +3860,14 @@ void intermediateCodeGeneration(TreeNode *node){
 				icode->elem->label = ".string";
 				node->intCode = icode;
 				//get strings
+				currentListItem = stringTable->list->head;
+				while(currentListItem != NULL){
+					icode = createIntrCode();
+					icode->elem->desc = C_STR_LIT;
+					icode->elem->label = currentListItem->item->label;
+					node->intCode = concatCode(node->intCode, icode);
+					currentListItem = currentListItem->next;
+				}
 				icode = createIntrCode();
 				icode->elem->desc = C_DCODE;
 				icode->elem->label = ".code";

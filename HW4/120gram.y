@@ -76,10 +76,12 @@ TreeNode *root;
 extern int exitStatus;
 SymbolTable *currentSymbolTable;
 SymbolTable *globalSymbolTable;
+SymbolTable *stringTable;
 
 int codeMemory;
 int labelNumber;
 int tempSymbNumber;
+int stringListOffset;
 
 NType *codeRegion;
 
@@ -1506,6 +1508,10 @@ int main(int argc, char **argv){
 					globalSymbolTable = (SymbolTable *)createGlobalSymbolTable(SYMBOL_TABLE_SIZE);
 					currentSymbolTable = globalSymbolTable;
 					addLibrariesData();
+					stringTable = (SymbolTable *)calloc(1, sizeof(SymbolTable));	
+					SymbolList *stringList = (SymbolList *)calloc(1, sizeof(SymbolList));	
+					stringTable->list = stringList;
+					stringListOffset = 0;
 					if(SHOW_TREES) printTree(root, 0, 1);
 					if(SHOW_TREES) printf("*** adding symbol tables ***\n");
 					tempSymbNumber = 0;
