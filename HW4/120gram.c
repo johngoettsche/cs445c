@@ -113,7 +113,7 @@ extern int included_stdio;
 extern int included_stdlib;
 
 TreeNode *alacnary(int prodRule, int children,...);
-SymbolTable *createGlobalSymbolTable(int size);
+SymbolTable *createGlobalSymbolTable(int size, NType *r);
 
 
 /* Line 189 of yacc.c  */
@@ -7008,14 +7008,21 @@ TreeNode *alacnary(int prodRule, int children,...){
 	return nd;
 }
 
-SymbolTable *createGlobalSymbolTable(int size){
+SymbolTable *createGlobalSymbolTable(int size, NType *r){
+	NType *tempType;
 	if(SHOW_TREES) printf("\t*createGlobalSymbolTable*\n");
 	int i;
 	SymbolTable *symbolTable;
 	if((symbolTable = (SymbolTable *)calloc(1, sizeof(SymbolTable))) == NULL) memoryError();
 	symbolTable->size = size;
 	symbolTable->entries = 0;
-	symbolTable->scope = root->type;
+	if(r == NULL){
+		if((tempType = (NType *)calloc(1, sizeof(NType))) == NULL) memoryError();
+		tempType->label = "strings";
+		symbolTable->scope = tempType;
+	} else {
+		symbolTable->scope = root->type;
+	}
 	if((symbolTable->bucket = calloc(size, sizeof(SymbolTableEntry))) == NULL) memoryError();
 	for(i = 0; i < size; i++){
 		symbolTable->bucket[i] = NULL;
@@ -7029,6 +7036,7 @@ SymbolTable *createGlobalSymbolTable(int size){
 
 int main(int argc, char **argv){
 	int rv;
+	NType *temp;
    if(argc > 1) { 
 		int f;
 		//read each file in arguments
@@ -7049,21 +7057,27 @@ int main(int argc, char **argv){
 					if(SHOW_TREES) printf("*** building types ***\n");
 					buildTypes(root);
 					if(SHOW_TREES) printf("*** build types successful ***\n");
-					globalSymbolTable = (SymbolTable *)createGlobalSymbolTable(SYMBOL_TABLE_SIZE);
-					currentSymbolTable = globalSymbolTable;
-					addLibrariesData();
-					stringTable = (SymbolTable *)calloc(1, sizeof(SymbolTable));	
-					SymbolList *stringList = (SymbolList *)calloc(1, sizeof(SymbolList));	
-					stringTable->list = stringList;
+					
+					stringTable = (SymbolTable *)createGlobalSymbolTable(SYMBOL_TABLE_SIZE, NULL);
 					stringListOffset = 0;
+					
+					globalSymbolTable = (SymbolTable *)createGlobalSymbolTable(SYMBOL_TABLE_SIZE, root);
+					currentSymbolTable = globalSymbolTable;
+					
+					addLibrariesData();
+					
 					if(SHOW_TREES) printTree(root, 0, 1);
 					if(SHOW_TREES) printf("*** adding symbol tables ***\n");
+					
 					tempSymbNumber = 0;
 					makeSymbolTables(root);
+					
 					if(SHOW_TREES) printf("*** make symbol tables successful ***\n");
 					if(SHOW_TREES) printTree(root, 0, 1);
 					if(SHOW_TREES) printf("*** print tree successful ***\n");
+					
 					calculateOffsets(globalSymbolTable);
+				
 					if(SHOW_MEMMORY)printSymbolTables(globalSymbolTable);
 					if(SHOW_MEMMORY)printf("*** Intermediate Code Generation ***\n");
 					if((codeRegion = (NType *)calloc(1, sizeof(NType))) == NULL) memoryError();

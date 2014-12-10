@@ -37,6 +37,7 @@
 #define C_CONT 210104
 
 #define C_IDENT 210200
+
 #define C_INT_LIT 210201
 #define C_CHAR_LIT 210202
 #define C_FLT_LIT 210203
@@ -52,6 +53,17 @@
 #define C_MOD 210306
 #define C_ADD 210307
 #define C_SUB 210308
+#define C_MULEQ 210309
+#define C_DIVEQ 210310
+#define C_MODEQ 210311
+#define C_ADDEQ 210312
+#define C_SUBEQ 210313
+#define C_SREQ 210314
+#define C_SLEQ 210315
+#define C_ANDEQ 210316
+#define C_XOREQ 210317
+#define C_OREQ 210318
+
 
 #define C_FUNC 210400
 #define C_CLASS 210401

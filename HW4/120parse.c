@@ -379,7 +379,16 @@ char *humanreadable(int ncode){
 		case C_BRK : name = "BREAK"; break;
 		case C_CONT : name = "CONTINUE"; break;
 		case C_DSTRING : name = ".string"; break;
-		case C_DCODE : name = ".code"; break;
+		case C_MULEQ : name = "MULEQ"; break;
+		case C_DIVEQ : name = "DIVEQ"; break;
+		case C_MODEQ : name = "MODEQ"; break;
+		case C_ADDEQ : name = "ADDEQ"; break;
+		case C_SUBEQ : name = "SUBEQ"; break;
+		case C_SREQ : name = "SREQ"; break;
+		case C_SLEQ : name = "SLEQ"; break;
+		case C_ANDEQ : name = "ADDEQ"; break;
+		case C_XOREQ : name = "XOREQ"; break;
+		case C_OREQ : name = "OREQ"; break;
 
 		default : name =  "Not Found"; break;
 	}
@@ -427,13 +436,13 @@ void printSymbolTables(SymbolTable *symbolTable){
 		case CONSTRUCTOR_TYPE :
 		case FUNC_TYPE :
 			printf("%s %s: [%d]\n", humanreadable(symbolTable->scope->base_type), symbolTable->scope->label, symbolTable->offset);	
-			for(i = 0; i < symbolTable->scope->u.func.nargs; i++){
+			/*for(i = 0; i < symbolTable->scope->u.func.nargs; i++){
 				if(symbolTable->scope->u.func.args[i]->elemtype->base_type == FUNC_TYPE)	{
 					printf("%d\t%s %s %s()\n", symbolTable->scope->u.func.args[i]->elemtype->offset, humanreadable(symbolTable->scope->u.func.args[i]->elemtype->base_type), humanreadable(symbolTable->scope->u.func.retType->base_type), symbolTable->scope->u.func.args[i]->elemtype->label);
 				} else {
 					printf("%d\t%s %s\n", symbolTable->scope->u.func.args[i]->elemtype->offset, humanreadable(symbolTable->scope->u.func.args[i]->elemtype->base_type), symbolTable->scope->u.func.args[i]->elemtype->label);
 				}
-			}
+			}*/
 			item = symbolTable->list->head; 
 			while(item != NULL){
 				if(item->item->base_type == FUNC_TYPE)	printf("%d\t%s %s()\n", item->offset, humanreadable(item->item->u.func.retType->base_type), item->item->label);
@@ -444,13 +453,13 @@ void printSymbolTables(SymbolTable *symbolTable){
 			break;
 		case CLASS_TYPE :
 			printf("%s %s: [%d]\n", humanreadable(symbolTable->scope->base_type), symbolTable->scope->label, symbolTable->offset);
-			for(i = 0; i < symbolTable->scope->u.clas.nfields; i++){
+			/*for(i = 0; i < symbolTable->scope->u.clas.nfields; i++){
 				if(symbolTable->scope->u.clas.f[i]->elemtype->base_type == FUNC_TYPE)	{
-					printf("%d\t%s %s %s()\n", symbolTable->scope->u.clas.f[i]->elemtype->offset, humanreadable(symbolTable->scope->u.clas.f[i]->elemtype->base_type), humanreadable(symbolTable->scope->u.clas.f[i]->elemtype->u.func.retType->base_type),symbolTable->scope->u.clas.f[i]->elemtype->label);
+					printf("+%d\t%s %s %s()\n", symbolTable->scope->u.clas.f[i]->elemtype->offset, humanreadable(symbolTable->scope->u.clas.f[i]->elemtype->base_type), humanreadable(symbolTable->scope->u.clas.f[i]->elemtype->u.func.retType->base_type),symbolTable->scope->u.clas.f[i]->elemtype->label);
 				} else {
-					printf("%d\t%s %s\n", symbolTable->scope->u.clas.f[i]->elemtype->offset, humanreadable(symbolTable->scope->u.clas.f[i]->elemtype->base_type), symbolTable->scope->u.clas.f[i]->elemtype->label);
+					printf("+%d\t%s %s\n", symbolTable->scope->u.clas.f[i]->elemtype->offset, humanreadable(symbolTable->scope->u.clas.f[i]->elemtype->base_type), symbolTable->scope->u.clas.f[i]->elemtype->label);
 				}
-			}
+			}*/
 			item = symbolTable->list->head; 
 			while(item != NULL){
 				if(item->item->base_type == FUNC_TYPE)	printf("%d\t%s %s()\n", item->offset, humanreadable(item->item->u.func.retType->base_type), item->item->label);
@@ -465,6 +474,17 @@ void printSymbolTables(SymbolTable *symbolTable){
 	}
 }
 
+SymbolTable *getSymbolTable(SymbolTable *currentSymbolTable, char *tableName){
+	int c;
+	SymbolTable *symbolTable;
+	if(strcmp(currentSymbolTable->scope->label, tableName) == 0) return currentSymbolTable;
+	else for(c = 0; c < currentSymbolTable->children; c++){
+		symbolTable = getSymbolTable(currentSymbolTable->child[c], tableName);
+		if(symbolTable != NULL) return symbolTable;
+	}
+	return NULL;
+}
+
 char *findLocation(SymbolTable *symbolTable, int offset){
 	SymbolListItem *current = symbolTable->list->head;
 	int count = 0;
@@ -477,12 +497,15 @@ char *findLocation(SymbolTable *symbolTable, int offset){
 }
 
 void printLocation(Location * loc){
-	char *temp = findLocation(loc->region->symbTable, loc->offset);
+	if(loc->val != "__NULL_"){
+		SymbolTable *tempTable = getSymbolTable(loc->region->symbTable, loc->region->label);
+		char *temp = findLocation(tempTable, loc->offset);
 		if(strstr(temp, "_Const_") != NULL){
 			printf("Const:%s", loc->val);
 		} else {
 			printf("%s:%d", loc->region->label, loc->offset);
 		}
+	}
 }
 
 void printCode(TreeNode *node){
@@ -490,6 +513,7 @@ void printCode(TreeNode *node){
 	IntrCode *current = node->intCode;
 	while(current != NULL){
 		//printf("(%d) ", count);
+		//printf("%s\n", current->elem->label); 
 		//printf("%s\n", humanreadable(current->elem->desc)); 
 		//count++;
 		switch(current->elem->desc){
@@ -516,6 +540,16 @@ void printCode(TreeNode *node){
 			case C_NOT :
 			case C_ADD1 :
 			case C_SUB1 :
+			case C_MULEQ :
+			case C_DIVEQ :
+			case C_MODEQ :
+			case C_ADDEQ :
+			case C_SUBEQ :
+			case C_SREQ :
+			case C_SLEQ :
+			case C_ANDEQ :
+			case C_XOREQ :
+			case C_OREQ :			
 				printf("%32s    ", humanreadable(current->elem->desc));
 				printLocation(current->elem->loc[0]);
 				printf(", ");
@@ -605,17 +639,6 @@ SymbolTable *createSymbolTable(SymbolTable *parent, int size){
 	return symbolTable;
 }
 
-SymbolTable *getSymbolTable(SymbolTable *currentSymbolTable, char *tableName){
-	int c;
-	SymbolTable *symbolTable;
-	if(strcmp(currentSymbolTable->scope->label, tableName) == 0) return currentSymbolTable;
-	else for(c = 0; c < currentSymbolTable->children; c++){
-		symbolTable = getSymbolTable(currentSymbolTable->child[c], tableName);
-		if(symbolTable != NULL) return symbolTable;
-	}
-	return NULL;
-}
-
 int hashSymbol(NType *symb, int size){
 	int i;
 	int sum = 0;
@@ -699,6 +722,7 @@ NType *getClass(SymbolTable* symbolTable, char *clas){
 	int i;
 	switch(symb->base_type){
 		case VOID_TYPE  :
+			bits += 8;
 			break;
 		case CHAR_TYPE : 
 			bits += 1;
@@ -710,13 +734,17 @@ NType *getClass(SymbolTable* symbolTable, char *clas){
 		case LONG_TYPE  :
 		case FLOAT_TYPE :
 		case DOUBLE_TYPE	:
+		case STREAM_TYPE :
+		case POINTER_TYPE :
 			bits += 8;
 			break;
 		case CLASS_TYPE :
+			bits += 8;
+		/*
 			for(i = 0; i < symb->u.clas.nfields; i++){ // elements
 				bits = getBits(symb->u.clas.f[i]->elemtype, bits);
 			}
-			item = symb->symbTable->list->head;
+			item = symb->symbTable->list->head;*/
 			break;
 		case CONSTRUCTOR_TYPE :
 		case FUNC_TYPE :
@@ -724,15 +752,20 @@ NType *getClass(SymbolTable* symbolTable, char *clas){
 				bits = getBits(symb->u.func.retType, bits); //return type
 			} else {
 				bits += 8;
-			}
+			}/*
 			for(i = 0; i < symb->u.func.nargs; i++){ //arguments
+				printf("B");
 				bits = getBits(symb->u.func.args[i]->elemtype, bits);
 			}
+			printf("C");
 			item = symb->symbTable->list->head;
+			printf("D");
 			while(item != NULL){ // in body
+				printf("E");
 				bits = getBits(item->item, bits);
+				printf("F");
 				item = item->next;
-			}
+			}*/
 			break;
 		default :
 			bits += 8;
@@ -745,32 +778,18 @@ if(SHOW_TREES)printf("*** Calculating Offsets ***\n");
 	int i, t;
 	SymbolListItem *item;
 	int mode = M_OFFSETS;
-	switch(symbolTable->scope->base_type){
-		case CONSTRUCTOR_TYPE :
-		case FUNC_TYPE :		
-			if(symbolTable->scope->base_type == FUNC_TYPE){
-				symbolTable->offset = getBits(symbolTable->scope->u.func.retType, symbolTable->offset); //return type
-			}
-			for(i = 0; i < symbolTable->scope->u.func.nargs; i++){
-				symbolTable->scope->u.func.args[i]->elemtype->offset = symbolTable->offset;
-				symbolTable->offset = getBits(symbolTable->scope->u.func.args[i]->elemtype, symbolTable->offset);
-			}
-			item = symbolTable->list->head; 
-			while(item != NULL){
-				item->offset = symbolTable->offset;
-				item->item->offset = symbolTable->offset;
-				symbolTable->offset = getBits(item->item, symbolTable->offset);
-				item = item->next;
-			}
-			break;
-		case CLASS_TYPE :	
-			for(i = 0; i < symbolTable->scope->u.clas.nfields; i++){
-				symbolTable->scope->u.clas.f[i]->elemtype->offset = symbolTable->offset;
-				symbolTable->offset = getBits(symbolTable->scope->u.clas.f[i]->elemtype, symbolTable->offset);
-			}
-			item = symbolTable->list->head; 
-			break;
+	item = symbolTable->list->head;
+	printf("(%s:", symbolTable->scope->label);
+	if(symbolTable->list->head != NULL) printf(" %s", symbolTable->list->head->item->label);
+	printf(")\n");
+	while(item != NULL){
+		item->offset = symbolTable->offset;
+		item->item->offset = symbolTable->offset;
+		item->item->symbTable = symbolTable;
+		symbolTable->offset = getBits(item->item, symbolTable->offset);
+		item = item->next;
 	}
+	printf("complete\n");
 	for(t = 0; t < symbolTable->children; t++){
 		calculateOffsets(symbolTable->child[t]);
 	}
@@ -781,6 +800,7 @@ void addToSymbolTable(SymbolTable *symbolTable, NType *symb, int mode){
 	if(mode == M_CODEGEN){
 		symb->offset = symbolTable->offset;
 		symbolTable->offset = getBits(symb, symbolTable->offset);
+		printf("{%d}\n", symbolTable->offset);
 	}
 	if(SHOW_TREES) printf("adding to symbol table %s:\n", symbolTable->scope->label);
 	SymbolTableEntry *newEntry;
@@ -834,33 +854,50 @@ void addToSymbolTableList(SymbolTable *currentSymbolTable, NType *current, int m
 }
 
 void addLibrariesData(){
-	NType *tempType;
+	NType *tempType; 
+	if((tempType = (NType *)calloc(1, sizeof(NType))) == NULL) memoryError();
 	int mode = M_LIB;
 	if(included_iostream){
 		if(using_namespace_std){
 			tempType = (NType *)getType(STREAM_TYPE);
 			tempType->label = "cin";
+			tempType->symbTable = globalSymbolTable;
 			addToSymbolTable(globalSymbolTable, tempType, mode);
 			addToSymbolTableList(globalSymbolTable, tempType, mode);
+			
 			tempType = (NType *)getType(STREAM_TYPE);
 			tempType->label = "cout";
+			tempType->symbTable = globalSymbolTable;
 			addToSymbolTable(globalSymbolTable, tempType, mode);
 			addToSymbolTableList(globalSymbolTable, tempType, mode);
+			
 			tempType = (NType *)getType(STREAM_TYPE);
 			tempType->label = "endl";
+			tempType->symbTable = globalSymbolTable;
 			addToSymbolTable(globalSymbolTable, tempType, mode);
 			addToSymbolTableList(globalSymbolTable, tempType, mode);
 		}
 		tempType = (NType *)getType(STREAM_TYPE);
 		tempType->label = "std::cin";
+		tempType->symbTable = globalSymbolTable;
 		addToSymbolTable(globalSymbolTable, tempType, mode);
 		addToSymbolTableList(globalSymbolTable, tempType, mode);
+		
 		tempType = (NType *)getType(STREAM_TYPE);
 		tempType->label = "std::cout";
+		tempType->symbTable = globalSymbolTable;
 		addToSymbolTable(globalSymbolTable, tempType, mode);
 		addToSymbolTableList(globalSymbolTable, tempType, mode);
+		
 		tempType = (NType *)getType(STREAM_TYPE);
 		tempType->label = "std::endl";
+		tempType->symbTable = globalSymbolTable;
+		addToSymbolTable(globalSymbolTable, tempType, mode);
+		addToSymbolTableList(globalSymbolTable, tempType, mode);
+		
+		tempType = (NType *)getType(STREAM_TYPE);
+		tempType->label = "printf";
+		tempType->symbTable = globalSymbolTable;
 		addToSymbolTable(globalSymbolTable, tempType, mode);
 		addToSymbolTableList(globalSymbolTable, tempType, mode);
 	}
@@ -3137,7 +3174,7 @@ if(SHOW_TREES)printf("%s %d\n", tempSymb->label, tempSymb->symbTable->offset);
 	return tempSymb;
 }
 
-NType *addToStringList(NType *source){
+NType *addToStringList(NType *source, int mode){
 	SymbolListItem *listItem;
 	if((listItem = (SymbolListItem *)calloc(1, sizeof(SymbolListItem))) == NULL) memoryError();
 	listItem->item = source;
@@ -3152,49 +3189,38 @@ NType *addToStringList(NType *source){
 		stringTable->list->tail = listItem;
 	}
 	source->symbTable = stringTable;
+	addToSymbolTable(stringTable, source, mode);
 	return source;
 }
 
-char *cvnIntString(int length, int *stVal){
+char *cvnIntString(char *str){
+	int length = strlen(str);
    char *st = (char *)calloc(length, sizeof(char));
 	if(st == NULL) memoryError();
    int s = 0;  /* 182 */
    int i;
    int escape = 0;
    for(i = 0; i < length; i++){
-      if(escape == 0){
-         if(stVal[i] != (int)'\"')
-            if(stVal[i] == (int)'\\') escape = 1;
-            else {
-               st[s] = (char)stVal[i];
-               s++;
-            }
-      }else{
-		   int ch = -1;
-	      switch(stVal[i]) {
-		      case (int)'n' :
-		         ch = 10;
-				   break;
-			   case (int)'t' :
-			      ch = 9;
-				   break;
-			   case (int)'\'' :
-			   case (int)'\"' :
-			   case (int)'\\' :
-			      ch = stVal[i];
-				   break;
-			   case (int)'0' :
-			      ch = 0;
-				   break;
-			}
-			if (ch >= 0) {
-			   st[s] = (char)ch;
-				s++;
-			}			
-      escape = 0;
-    }
+		if((int)str[i] != (int)'\"'){
+			st[s] = str[i];
+			s++;
+		}
   }
+  st[s] = '\0';
   return st;
+}
+
+Location *makeLocation(NType *source){
+printf("makeLocation\n");
+	Location *location;	
+	NType *temp;
+	temp = (NType *)getSymbolFromTable(source->symbTable, source);
+	if(temp != NULL) source = temp;
+	if((location = (Location *)calloc(1, sizeof(Location))) == NULL) memoryError();
+	location->region = source->symbTable->scope;
+	location->offset = source->offset;
+	location->val = source->val;
+	return location;
 }
 
 /* adds symbols in a function body and type checks for appropriate type.*/
@@ -3473,9 +3499,9 @@ void addFunctionBodySymbols(SymbolTable *currentSymbolTable, TreeNode *node, int
 			
 			case LITERALr4 :
 				if(SHOW_TREES)printf("literal 4\n");
-				node->type->label = cvnIntString(node->u.t.token->ival, node->u.t.token->sval);
-				//node->type->label = node->u.t.token->text;
-				tempType = addToStringList(node->type);
+				node->type->label = cvnIntString(node->type->label);
+				node->type->symbTable = globalSymbolTable;
+				tempType = addToStringList(node->type, mode);
 				copyType(tempType, node->type);
 				break;
 			case LITERALr1 :
@@ -3692,9 +3718,11 @@ void makeSymbolTables(TreeNode *node){
 				for(p = 0; p < node->type->u.clas.nfields; p++){
 					addToSymbolTable(currentSymbolTable, node->type->u.clas.f[p]->elemtype, mode);
 					addToSymbolTableList(currentSymbolTable, node->type->u.clas.f[p]->elemtype, mode);
-					newSymbolTable = createSymbolTable(currentSymbolTable, currentSymbolTable->size);
-					newSymbolTable->scope = node->type->u.clas.f[p]->elemtype;
-					node->type->u.clas.f[p]->elemtype->symbTable = newSymbolTable;
+					if(currentSymbolTable, node->type->u.clas.f[p]->elemtype->base_type == FUNC_TYPE){ 
+						newSymbolTable = createSymbolTable(currentSymbolTable, currentSymbolTable->size);
+						newSymbolTable->scope = node->type->u.clas.f[p]->elemtype;
+						node->type->u.clas.f[p]->elemtype->symbTable = newSymbolTable;
+					}
 				}
 				if(SHOW_TREES) printf("class specifier 1 complete[%d]\n", currentSymbolTable->entries);
 				currentSymbolTable = oldSymbolTable;
@@ -3758,19 +3786,8 @@ IntrCode *createIntrCode(){
 	return intrCode;
 }
 
-Location *makeLocation(NType *source){
-	Location *location;	
-	NType *temp;
-	temp = (NType *)getSymbolFromTable(source->symbTable, source);
-	if(temp != NULL) source = temp;
-	if((location = (Location *)calloc(1, sizeof(Location))) == NULL) memoryError();
-	location->region = source->symbTable->scope;
-	location->offset = source->offset;
-	location->val = source->val;
-	return location;
-}
-
 IntrCode *makePairedExpression(int code, NType *child1, NType *child2, int mode){
+printf("makePairedExpression\n");
 	NType *tempSymb;
 	IntrCode *icode = createIntrCode();
 	CodeElem *codeElem = createCodeElement();	
@@ -3781,7 +3798,7 @@ IntrCode *makePairedExpression(int code, NType *child1, NType *child2, int mode)
 	icode->elem->loc[0]->elem = codeElem;
 	icode->elem->loc[1] = makeLocation(child1);
 	icode->elem->loc[2] = makeLocation(child2);
-	icode = createIntrCode();
+	//icode = createIntrCode();
 	return icode;
 }
 
@@ -3832,6 +3849,7 @@ void setBreaksAndContinues(IntrCode *intCode, IntrCode *brk, IntrCode *cont){
 }
 
 void intermediateCodeGeneration(TreeNode *node){
+	char *tempString;
 	IntrCode *icode;
 	IntrCode *label1;
 	IntrCode *label2;
@@ -3884,11 +3902,15 @@ void intermediateCodeGeneration(TreeNode *node){
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
 				break;
-				
+			
+			case LITERALr4 :	
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
+				node->place = makeLocation(node->type);
+				break;
 			case LITERALr1 :	
 			case LITERALr2 :	
 			case LITERALr3 :	
-			case LITERALr4 :	
 			case LITERALr5 :
 			case INTEGER_LITERALr1 :
 			case CHARACTER_LITERALr1 :
@@ -3963,46 +3985,40 @@ nested_name_specifier:
 				else node->intCode = icode;
 				if(SHOW_CODE)printCode(node);
 				break;
+			case POSTFIX_EXPRESSIONr13 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0]->intCode != NULL)node->intCode = node->u.n.child[0]->intCode;
+				icode = (IntrCode *)createIntrCode();
+				icode->elem->label = "SUB1";
+				icode->elem->desc = C_SUB1;
+				if(node->u.n.child[0]->intCode == NULL){
+					temp = getSymbolFromTable(node->type->symbTable, node->type);
+					icode->elem->loc[0] = makeLocation(temp);
+					icode->elem->loc[1] = makeLocation(temp);
+				} else {
+					icode->elem->loc[0] = node->u.n.child[0]->intCode->elem->loc[0];
+					icode->elem->loc[1] = node->u.n.child[0]->intCode->elem->loc[0];
+				}
+				if(node->intCode != NULL) node->intCode = concatCode(node->intCode, icode);
+				else node->intCode = icode;
+				if(SHOW_CODE)printCode(node);
+				break;
 /*
 	
 postfix_expression:
 	primary_expression												{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr1, 1, $1); }
 	| postfix_expression '[' expression ']'					{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr2, 2, $1, $3); }
 	| postfix_expression '(' expression_list_opt ')'		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr3, 2, $1, $3); }
-	| postfix_expression '.' TEMPLATE COLONCOLON id_expression
-																			{ exitStatus = 3;
-																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
-																				$$ = NULL;
-																			/*$$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr4, 3, $1, $3, $4); }
-	| postfix_expression '.' TEMPLATE id_expression			{ exitStatus = 3;
-																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
-																				$$ = NULL;
-																			/*$$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr5, 3, $1, $3, $4); }
+
 	| postfix_expression '.' COLONCOLON id_expression		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr6, 3, $1, $3, $4); }
 	| postfix_expression '.' id_expression						{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr7, 2, $1, $3); }
-	| postfix_expression ARROW TEMPLATE COLONCOLON id_expression
-																			{ exitStatus = 3;
-																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
-																				$$ = NULL;
-																			/*$$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr8, 5, $1, $2, $3, $4, $5);}
-	| postfix_expression ARROW TEMPLATE id_expression		{ exitStatus = 3;
-																				getErrorMessage(ER_TEMPLATE);
-																				yyerror(NULL);
-																				$$ = NULL;
-																			/*$$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr9, 4, $1, $2, $3, $4); }
+
 	| postfix_expression ARROW COLONCOLON id_expression	{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr10, 4, $1, $2, $3, $4); }
 	| postfix_expression ARROW id_expression					{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr11, 3, $1, $2, $3); }
 	| postfix_expression PLUSPLUS									{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr12, 2, $1, $2); }
 	| postfix_expression MINUSMINUS								{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr13, 2, $1, $2); }
 	| DYNAMIC_CAST '<' type_id '>' '(' expression ')'		{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr14, 3, $1, $3, $6); }
-	| STATIC_CAST '<' type_id '>' '(' expression ')'		{ exitStatus = 2;
-																				getErrorMessage(ER_STATIC);
-																				yyerror(NULL);
-																				$$ = NULL;
-																			/* $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr15, 3, $1, $3, $6); }
+
 	| REINTERPRET_CAST '<' type_id '>' '(' expression ')'	{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr16, 3, $1, $3, $6); }
 	| CONST_CAST '<' type_id '>' '(' expression ')'			{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr17, 3, $1, $3, $6); }
 	| TYPEID '(' expression ')'									{ $$ = (TreeNode *)alacnary(POSTFIX_EXPRESSIONr18, 2, $1, $3); }
@@ -4125,16 +4141,19 @@ pm_expression:
 			case MULTIPLICATIVE_EXPRESSIONr2 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				node->intCode = makePairedExpression(C_MULT, node->u.n.child[0]->type, node->u.n.child[1]->type, mode);
+				node->place = node->intCode->elem->loc[0];
 				if(SHOW_CODE)printCode(node);
 				break;
 			case MULTIPLICATIVE_EXPRESSIONr3 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				node->intCode = makePairedExpression(C_DIV, node->u.n.child[0]->type, node->u.n.child[1]->type, mode);
+				node->place = node->intCode->elem->loc[0];
 				if(SHOW_CODE)printCode(node);
 				break;
 			case MULTIPLICATIVE_EXPRESSIONr4 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				node->intCode = makePairedExpression(C_MOD, node->u.n.child[0]->type, node->u.n.child[1]->type, mode);
+				node->place = node->intCode->elem->loc[0];
 				if(SHOW_CODE)printCode(node);
 				break;
 				
@@ -4145,11 +4164,14 @@ pm_expression:
 			case ADDITIVE_EXPRESSIONr2 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				node->intCode = makePairedExpression(C_ADD, node->u.n.child[0]->type, node->u.n.child[1]->type, mode);
+				node->place = node->intCode->elem->loc[0];
+				//printLocation(node->place);
 				if(SHOW_CODE)printCode(node);
 				break;
 			case ADDITIVE_EXPRESSIONr3 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				node->intCode = makePairedExpression(C_SUB, node->u.n.child[0]->type, node->u.n.child[1]->type, mode);
+				node->place = node->intCode->elem->loc[0];
 				if(SHOW_CODE)printCode(node);
 				break;
 				
@@ -4188,6 +4210,7 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[1]->type);
 				node->type->label = "<";
+				node->place = node->intCode->elem->loc[0];
 				if(SHOW_CODE)printCode(node);
 				break;
 			case RELATIONAL_EXPRESSIONr3 :
@@ -4201,6 +4224,7 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[1]->type);
 				node->type->label = ">";
+				node->place = node->intCode->elem->loc[0];
 				if(SHOW_CODE)printCode(node);
 				break;
 			case RELATIONAL_EXPRESSIONr4 :	
@@ -4214,6 +4238,7 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[2]->type);
 				node->type->label = "<=";
+				node->place = node->intCode->elem->loc[0];
 				if(SHOW_CODE)printCode(node);
 				break;
 			case RELATIONAL_EXPRESSIONr5 :
@@ -4227,6 +4252,7 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[2]->type);
 				node->type->label = ">=";
+				node->place = node->intCode->elem->loc[0];
 				if(SHOW_CODE)printCode(node);
 				break;
 				
@@ -4246,6 +4272,7 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[2]->type);
 				node->type->label = "==";
+				node->place = node->intCode->elem->loc[0];
 				if(SHOW_CODE)printCode(node);
 				if(SHOW_MEMMORY)printf("%s:%d\n", node->place->region->label, node->place->offset);
 				break;
@@ -4260,6 +4287,7 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[2]->type);
 				node->type->label = "!=";
+				node->place = node->intCode->elem->loc[0];
 				if(SHOW_CODE)printCode(node);
 				break;
 				
@@ -4279,6 +4307,7 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[1]->type);
 				node->type->label = "&";
+				node->place = node->intCode->elem->loc[0];
 				if(SHOW_CODE)printCode(node);
 				break;
 				
@@ -4298,6 +4327,7 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[1]->type);
 				node->type->label = "^";
+				node->place = node->intCode->elem->loc[0];
 				printCode(node);
 				break;
 				
@@ -4317,6 +4347,7 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[1]->type);
 				node->type->label = "|";
+				node->place = node->intCode->elem->loc[0];
 				if(SHOW_CODE)printCode(node);
 				break;
 				
@@ -4336,6 +4367,7 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[2]->type);
 				node->type->label = "&&";
+				node->place = node->intCode->elem->loc[0];
 				if(SHOW_CODE)printCode(node);
 				break;
 			case LOGICAL_OR_EXPRESSIONr1 :
@@ -4354,6 +4386,7 @@ shift_expression:
 				node->intCode->elem->loc[1] = makeLocation(node->u.n.child[0]->type);
 				node->intCode->elem->loc[2] = makeLocation(node->u.n.child[2]->type);
 				node->type->label = "||";
+				node->place = node->intCode->elem->loc[0];
 				if(SHOW_CODE)printCode(node);
 				break;
 			
@@ -4369,20 +4402,137 @@ shift_expression:
 				if(SHOW_CODE)printCode(node);
 				break;
 			case ASSIGNMENT_EXPRESSIONr2 :
+				/*
+				 *			code (child[0])
+				 *			code (child[2])
+				 *			assignment operator (child[1]) 
+				 *
+				 */
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				if(node->u.n.child[0]->intCode != NULL)node->intCode = node->u.n.child[0]->intCode;
+				if(node->intCode == NULL) node->intCode = node->u.n.child[2]->intCode;
+				else node->intCode = concatCode(node->intCode, node->u.n.child[2]->intCode);
+				//assignment operator
+				if(node->u.n.child[0]->intCode == NULL) {
+					node->u.n.child[1]->intCode->elem->loc[0] = makeLocation(node->u.n.child[0]->type);
+				} else {
+					node->u.n.child[1]->intCode->elem->loc[0] = node->u.n.child[0]->intCode->elem->loc[0];
+				}
+				if(node->u.n.child[2]->intCode == NULL) {
+					node->u.n.child[1]->intCode->elem->loc[1] = makeLocation(node->u.n.child[2]->type);
+				} else {
+					node->u.n.child[1]->intCode->elem->loc[1] = node->u.n.child[2]->intCode->elem->loc[0];
+				}
+				node->intCode = concatCode(node->intCode, node->u.n.child[1]->intCode);
+				//node->place = node->intCode->elem->loc[0];
+				if(SHOW_CODE)printCode(node);
+				break;
 			case ASSIGNMENT_EXPRESSIONr3 :
 				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
 				if(node->u.n.child[0] != NULL)node->intCode = node->u.n.child[0]->intCode;
 				if(SHOW_CODE)printCode(node);
 				break;
-	
+				
+			case ASSIGNMENT_OPERATORr1 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				node->intCode = (IntrCode *)createIntrCode();
+				node->intCode->elem->desc = C_ASN;
+				node->intCode->elem->label = "ASN";
+				node->intCode->elem->loc[0] = NullLoc;
+				node->intCode->elem->loc[1] = NullLoc;
+				if(SHOW_CODE)printCode(node);
+				break;
+			case ASSIGNMENT_OPERATORr2 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				node->intCode = (IntrCode *)createIntrCode();
+				node->intCode->elem->desc = C_MULEQ;
+				node->intCode->elem->label = "MULEQ";
+				node->intCode->elem->loc[0] = NullLoc;
+				node->intCode->elem->loc[1] = NullLoc;
+				if(SHOW_CODE)printCode(node);
+				break;
+			case ASSIGNMENT_OPERATORr3 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				node->intCode = (IntrCode *)createIntrCode();
+				node->intCode->elem->desc = C_DIVEQ;
+				node->intCode->elem->label = "DIVEQ";
+				node->intCode->elem->loc[0] = NullLoc;
+				node->intCode->elem->loc[1] = NullLoc;
+				if(SHOW_CODE)printCode(node);
+				break;
+			case ASSIGNMENT_OPERATORr4 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				node->intCode = (IntrCode *)createIntrCode();
+				node->intCode->elem->desc = C_MODEQ;
+				node->intCode->elem->label = "MODEQ";
+				node->intCode->elem->loc[0] = NullLoc;
+				node->intCode->elem->loc[1] = NullLoc;
+				if(SHOW_CODE)printCode(node);
+				break;
+			case ASSIGNMENT_OPERATORr5 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				node->intCode = (IntrCode *)createIntrCode();
+				node->intCode->elem->desc = C_ADDEQ;
+				node->intCode->elem->label = "ADDEQ";
+				node->intCode->elem->loc[0] = NullLoc;
+				node->intCode->elem->loc[1] = NullLoc;
+				if(SHOW_CODE)printCode(node);
+				break;
+			case ASSIGNMENT_OPERATORr6 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				node->intCode = (IntrCode *)createIntrCode();
+				node->intCode->elem->desc = C_SUBEQ;
+				node->intCode->elem->label = "SUBEQ";
+				node->intCode->elem->loc[0] = NullLoc;
+				node->intCode->elem->loc[1] = NullLoc;
+				if(SHOW_CODE)printCode(node);
+				break;
+			case ASSIGNMENT_OPERATORr7 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				node->intCode = (IntrCode *)createIntrCode();
+				node->intCode->elem->desc = C_SREQ;
+				node->intCode->elem->label = "SREQ";
+				node->intCode->elem->loc[0] = NullLoc;
+				node->intCode->elem->loc[1] = NullLoc;
+				if(SHOW_CODE)printCode(node);
+				break;
+			case ASSIGNMENT_OPERATORr8 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				node->intCode = (IntrCode *)createIntrCode();
+				node->intCode->elem->desc = C_SLEQ;
+				node->intCode->elem->label = "SLEQ";
+				node->intCode->elem->loc[0] = NullLoc;
+				node->intCode->elem->loc[1] = NullLoc;
+				if(SHOW_CODE)printCode(node);
+				break;
+			case ASSIGNMENT_OPERATORr9 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				node->intCode = (IntrCode *)createIntrCode();
+				node->intCode->elem->desc = C_ANDEQ;
+				node->intCode->elem->label = "ANDEQ";
+				node->intCode->elem->loc[0] = NullLoc;
+				node->intCode->elem->loc[1] = NullLoc;
+				if(SHOW_CODE)printCode(node);
+				break;
+			case ASSIGNMENT_OPERATORr10 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				node->intCode = (IntrCode *)createIntrCode();
+				node->intCode->elem->desc = C_XOREQ;
+				node->intCode->elem->label = "XOREQ";
+				node->intCode->elem->loc[0] = NullLoc;
+				node->intCode->elem->loc[1] = NullLoc;
+				if(SHOW_CODE)printCode(node);
+				break;
+			case ASSIGNMENT_OPERATORr11 :
+				if(SHOW_MEMMORY)printf("%s\n", humanreadable(node->u.n.rule));
+				node->intCode = (IntrCode *)createIntrCode();
+				node->intCode->elem->desc = C_OREQ;
+				node->intCode->elem->label = "OREQ";
+				node->intCode->elem->loc[0] = NullLoc;
+				node->intCode->elem->loc[1] = NullLoc;
+				if(SHOW_CODE)printCode(node);
+				break;
 	/*
-assignment_expression:
-	conditional_expression											{ $$ = (TreeNode *)alacnary(ASSIGNMENT_EXPRESSIONr1, 1, $1); }
-	| logical_or_expression assignment_operator assignment_expression
-																			{ $$ = (TreeNode *)alacnary(ASSIGNMENT_EXPRESSIONr2, 3, $1, $2, $3); }
-	| throw_expression												{ $$ = (TreeNode *)alacnary(ASSIGNMENT_EXPRESSIONr3, 1, $1); }
-	;
-
 assignment_operator:
 	'='																	{ $$ = (TreeNode *)alacnary(ASSIGNMENT_OPERATORr1, 0); }
 	| MULEQ																{ $$ = (TreeNode *)alacnary(ASSIGNMENT_OPERATORr2, 1, $1); }
@@ -4752,14 +4902,18 @@ iteration_statement:
 				node->intCode = (IntrCode *)createIntrCode();
 				node->intCode->elem->desc = C_RET;
 				node->intCode->elem->label = "RETURN";
-				temp = (NType *)getSymbolFromTable(node->u.n.child[1]->type->symbTable, node->u.n.child[1]->type);
+				thisSymbolTable = getSymbolTable(node->type->symbTable, node->u.n.child[1]->type->label);
+				temp = (NType *)getSymbolFromTable(node->type->symbTable, node->u.n.child[1]->type);
 				if((location = (Location *)calloc(1, sizeof(Location))) == NULL) memoryError();
 				location->region = temp->symbTable->scope;
 				location->offset = temp->offset;
+				
 				location->elem = node->intCode->elem;
+				location->val = node->type->val;
 				node->intCode->elem->loc[0] = location;
 				node->place = node->intCode->elem->loc[0];
 				node->type->label = "RETURN";
+
 				if(SHOW_CODE)printCode(node);
 				break;
 
