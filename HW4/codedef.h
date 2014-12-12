@@ -64,8 +64,8 @@
 #define C_XOREQ 210317
 #define C_OREQ 210318
 
-
 #define C_FUNC 210400
 #define C_CLASS 210401
 #define C_DCODE 210402
 #define C_DSTRING 210403
+#define C_CALL 210404

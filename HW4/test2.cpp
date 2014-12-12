@@ -1,6 +1,7 @@
 int main(){
 	int a = 3;
-	
-	if(a < 5) a *= a + 2;
+	do {
+		a++;
+	} while( a < 10);
 	return 10;
 }

@@ -63,8 +63,8 @@
 #include "errors.h"
 
 #define SYMBOL_TABLE_SIZE 31
-#define SHOW_TREES 1
-#define SHOW_MEMMORY 1
+#define SHOW_TREES 0
+#define SHOW_MEMMORY 0
 
 extern int lineno;
 int yydebug=0;
@@ -1478,6 +1478,7 @@ SymbolTable *createGlobalSymbolTable(int size, NType *r){
 		symbolTable->scope = tempType;
 	} else {
 		symbolTable->scope = root->type;
+		root->type->symbTable = symbolTable;
 	}
 	if((symbolTable->bucket = calloc(size, sizeof(SymbolTableEntry))) == NULL) memoryError();
 	for(i = 0; i < size; i++){
@@ -1509,7 +1510,7 @@ int main(int argc, char **argv){
 			switch(rv){
 				case 0 :
 					if(SHOW_TREES) printf("*** parse successful ***\n");
-					printTree(root, 0, 0);
+					if(SHOW_TREES) printTree(root, 0, 0);
 					if(SHOW_TREES) printf("*** building types ***\n");
 					buildTypes(root);
 					if(SHOW_TREES) printf("*** build types successful ***\n");
@@ -1517,7 +1518,7 @@ int main(int argc, char **argv){
 					stringTable = (SymbolTable *)createGlobalSymbolTable(SYMBOL_TABLE_SIZE, NULL);
 					stringListOffset = 0;
 					
-					globalSymbolTable = (SymbolTable *)createGlobalSymbolTable(SYMBOL_TABLE_SIZE, root);
+					globalSymbolTable = (SymbolTable *)createGlobalSymbolTable(SYMBOL_TABLE_SIZE, root->type);
 					currentSymbolTable = globalSymbolTable;
 					
 					addLibrariesData();
@@ -1535,12 +1536,16 @@ int main(int argc, char **argv){
 					calculateOffsets(globalSymbolTable);
 				
 					if(SHOW_MEMMORY)printSymbolTables(globalSymbolTable);
+					
 					if(SHOW_MEMMORY)printf("*** Intermediate Code Generation ***\n");
 					if((codeRegion = (NType *)calloc(1, sizeof(NType))) == NULL) memoryError();
 					if((codeRegion->label = (char *)calloc(8, sizeof(char))) == NULL) memoryError();
 					codeRegion->label = "Code";
 					intermediateCodeGeneration(root);
 					if(SHOW_MEMMORY)printSymbolTables(globalSymbolTable);
+					printf("\n\nSYMBOL TABLES:\n");
+					printSymbolTables(globalSymbolTable);
+					printf("\n\nINTERMEDIATE CODE:\n");
 					printCode(root);
 					break;
 				case 1 :
